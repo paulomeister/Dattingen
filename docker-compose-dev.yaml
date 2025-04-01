@@ -1,0 +1,101 @@
+services:
+  frontend:
+    image: frontend:dev
+    container_name: frontend_dev
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    init: true
+    volumes:
+      - type: bind
+        source: ./frontend/vite.config.js
+        target: /usr/src/app/vite.config.js
+      - type: bind
+        source: ./frontend
+        target: /usr/src/app
+      - type: volume
+        target: /usr/src/app/node_modules
+    ports:
+      - "5173:5173"
+    restart: unless-stopped
+    networks:
+      - frontend
+  businessservice:
+    env_file:
+      - .env
+    image: businessservice:dev
+    container_name: businessservice_dev
+    build:
+      context: ./businessservice
+      dockerfile: Dockerfile
+      target: dev
+    init: true
+    volumes:
+      - type: bind
+        source: ./businessservice
+        target: /app
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    networks:
+      - backend
+  auditprocessservice:
+    env_file:
+      - .env
+    image: auditprocessservice:dev
+    container_name: auditprocessservice_dev
+    build:
+      context: ./auditprocessservice
+      dockerfile: Dockerfile
+      target: dev
+    init: true
+    volumes:
+      - type: bind
+        source: ./auditprocessservice
+        target: /app
+    ports:
+      - "8081:8081"
+    restart: unless-stopped
+    networks:
+      - backend
+  rulesetservice:
+    env_file:
+      - .env
+    image: rulesetservice:dev
+    container_name: rulesetservice_dev
+    build:
+      context: ./rulesetservice
+      dockerfile: Dockerfile
+      target: dev
+    init: true
+    volumes:
+      - type: bind
+        source: ./rulesetservice
+        target: /app
+    ports:
+      - "8082:8082"
+    restart: unless-stopped
+    networks:
+      - backend
+  userservice:
+    env_file:
+      - .env
+    image: userservice:dev
+    container_name: userservice_dev
+    build:  
+      context: ./userservice
+      dockerfile: Dockerfile
+      target: dev
+    init: true
+    volumes:
+      - type: bind
+        source: ./userservice
+        target: /app
+    ports:
+      - "8083:8083"
+    restart: unless-stopped
+    networks:
+      - backend
+networks:
+  backend:
+  frontend:

@@ -1,0 +1,48 @@
+# Ignore OS-related files
+.DS_Store
+Thumbs.db
+
+# Ignore IntelliJ / Eclipse / VSCode files
+*.iml
+*.idea
+*.vscode
+*.classpath
+*.project
+*.settings/
+
+# Ignore target directory (compiled output)
+target/
+build/
+
+# Ignore local dependencies (especially if mounting volumes)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Ignore caches
+.gradle/
+**/logs/
+**/*.log
+!keep-me.log  # (if you need a specific log file)
+
+# Ignore environment variables and secrets
+.env
+.env.*
+config/application*.yml
+config/application*.properties
+
+# Ignore Git repository and metadata
+.git/
+.gitignore
+
+# Ignore Docker-related files that should not be copied into the image
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Ignore temporary files
+*.tmp
+*.swp
+*.swo
+*.bak
+*.orig
