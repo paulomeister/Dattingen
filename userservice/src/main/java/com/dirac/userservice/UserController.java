@@ -1,58 +1,64 @@
 package com.dirac.userservice;
 
+import com.dirac.userservice.DTOs.ResponseDTO;
+import com.dirac.userservice.DTOs.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("/api")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    @GetMapping
-    public List<UserModel> getAllUsers() {
-        return userService.getAllUsers();
+    // Obtener todos los usuarios
+    @GetMapping("/")
+    public ResponseEntity<ResponseDTO<Object>> getAllUsers() {
+        var users = userService.getAllUsers()
+                .stream()
+                .map(userService::toUserDTO)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(new ResponseDTO<>(200, "Users retrieved successfully", users));
     }
 
-    @GetMapping("/{authId}")
-    public Optional<UserModel> getUserById(@PathVariable String authId) {
-        return userService.getUserById(authId);
+    @GetMapping("/search")
+    public ResponseEntity<ResponseDTO<UserDTO>> getUserByUsername(@RequestParam String username) {
+        UserModel user = userService.getUserByUsername(username);
+        return ResponseEntity.ok(new ResponseDTO<>(200, "User Found", userService.toUserDTO(user)));
+    }
+    
+
+    // Obtener usuario por ID
+    @GetMapping("/{_id}")
+    public ResponseEntity<ResponseDTO<UserDTO>> getUserById(@PathVariable String _id) {
+        UserDTO user = userService.getUserById(_id);
+        return ResponseEntity.ok(new ResponseDTO<>(200, "User Found", user));
     }
 
-    @PostMapping("")
-    public String createUser(@RequestBody UserModel user) {
-        try {
-            UserModel createdUser = userService.createUser(user);
-            return "User " + createdUser.getUsername() + " created successfully.";
-        } catch (Exception e) {
-            return "Error creating user: " + e.getMessage();
-        }
-
+    // Crear nuevo usuario
+    @PostMapping("/")
+    public ResponseEntity<ResponseDTO<UserDTO>> createUser(@RequestBody UserModel user) {
+        UserDTO userDTO = userService.toUserDTO(userService.createUser(user));
+        return ResponseEntity.status(201)
+                .body(new ResponseDTO<>(201, "User created with id: " + userDTO.getId(), userDTO));
     }
 
-    @PutMapping("/{authId}")
-    public String updateUser(@PathVariable String authId, @RequestBody UserModel updatedUser) {
-        try{
-            UserModel userUpdated =  userService.updateUser(authId, updatedUser);
-            return "User " + userUpdated.getUsername() + " updated successfully.";
-        }catch(Exception e){
-            return "Error updating user: " + e.getMessage();
-        }
+    // Actualizar usuario
+    @PutMapping("/{_id}")
+    public ResponseEntity<ResponseDTO<UserDTO>> updateUser(@PathVariable String _id, @RequestBody UserModel updatedUser) {
+        UserDTO userDTO = userService.toUserDTO(userService.updateUser(_id, updatedUser));
+        return ResponseEntity.ok(new ResponseDTO<>(200, "User Updated!", userDTO));
     }
 
-    @DeleteMapping("{authId}")
-    public String deleteUser(@PathVariable String authId) {
-        try{
-
-            userService.deleteUser(authId);
-        }catch(Error e){
-            return "Error deleting user: " + e.getMessage();
-        }
-        
-        return "User with authId " + authId + " deleted successfully.";
+    // Eliminar usuario
+    @DeleteMapping("/{_id}")
+    public ResponseEntity<ResponseDTO<Object>> deleteUser(@PathVariable String _id) {
+        userService.deleteUser(_id);
+        return ResponseEntity.ok(new ResponseDTO<>(200, "User deleted with id: " + _id, null));
     }
 }

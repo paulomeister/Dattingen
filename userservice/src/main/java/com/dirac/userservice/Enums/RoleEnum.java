@@ -1,4 +1,4 @@
-package com.dirac.userservice.Enums;
+package com.dirac.userservice.enums;
 
 public enum RoleEnum {
     Admin,
