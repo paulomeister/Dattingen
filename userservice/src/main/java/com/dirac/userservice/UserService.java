@@ -8,6 +8,7 @@ import com.dirac.userservice.DTOs.UserDTO;
 import com.dirac.userservice.enums.RoleEnum;
 
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 
 @Service
@@ -37,26 +38,64 @@ public class UserService {
         return user;
     }
     
+    // Obtener usuarios por Business
+    public List<UserModel> getUsersByBusinessId(String businessId) {
+        List<UserModel> users = userRepository.findByBusinessId(businessId);
+        if (users.isEmpty()) {
+            throw new ResourceNotFoundException("Users with businessId", businessId);
+        }
+        return users;
+    }   
+
 
     // Crear un nuevo usuario
+    // NOTA: No importa si el usuario se crea sin un bussinessId,
+    // ya que el usuario puede ir creando sus credenciales y más adelante
+    // asociarse a un negocio. 
+    // En este caso, el businessId se puede dejar como null.
     public UserModel createUser(UserModel user) {
+        // Validar username
         if (user.getUsername() == null || user.getUsername().isBlank()) {
             throw new BadRequestException("Username cannot be null or empty");
         }
 
+        // Validar unicidad
         if (userRepository.findByUsername(user.getUsername()) != null) {
             throw new ResourceAlreadyExistsException("User", "username: " + user.getUsername());
         }
 
-        if(!Arrays.asList(RoleEnum.values()).contains(user.getRole())){
+        // Validar rol
+        if (user.getRole() == null || !EnumSet.allOf(RoleEnum.class).contains(user.getRole())) {
             throw new BadRequestException("Invalid role: " + user.getRole());
         }
+
+        // businessId puede ser null — se documenta, no se valida
 
         return userRepository.save(user);
     }
 
+    // Asignar usuarios a un negocio => Devuelve el número de usuarios actualizados
+    // NOTA: Se puede asignar un usuario a un negocio diferente al que ya tiene.
+    public int assignUsersToBusiness(List<String> userIds, String businessId) {
+        int count = 0;
+        for (String userId : userIds) {
+            UserModel user = userRepository.findById(userId)
+                    .orElseThrow(() -> new ResourceNotFoundException("User", userId));
+            
+            if (!businessId.equals(user.getBusinessId())) {
+                user.setBusinessId(businessId);
+                userRepository.save(user);
+                count++;
+            }
+        }
+        return count;
+    }
+
+
     // Actualizar un usuario existente
     public UserModel updateUser(String _id, UserModel updatedUser) {
+
+        // Si no existe, lanza la excepción
         UserModel existingUser = userRepository.findById(_id)
                 .orElseThrow(() -> new ResourceNotFoundException("User", _id));
 
@@ -73,7 +112,10 @@ public class UserService {
             existingUser.setBusinessId(updatedUser.getBusinessId());
         }
 
+        // Validar unicidad del username    
+
         return userRepository.save(existingUser);
+
     }
 
     // Eliminar un usuario
@@ -89,9 +131,10 @@ public class UserService {
     public UserDTO toUserDTO(UserModel userModel) {
         UserDTO userDTO = new UserDTO();
         userDTO.set_id(userModel.get_id());
-        userDTO.setId(userModel.getId());
+        userDTO.setAuthId(userModel.getAuthid());
         userDTO.setUsername(userModel.getUsername());
         userDTO.setName(userModel.getName());
+        userDTO.setBussinessId(userModel.getBusinessId());
         return userDTO;
     }
 }

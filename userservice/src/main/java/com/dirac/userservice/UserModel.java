@@ -17,7 +17,7 @@ public class UserModel {
 
     @Id
     private String _id;
-    private String id;
+    private String authid;
     // Voy a agregar este campo para
     private String username;
     private String name;
