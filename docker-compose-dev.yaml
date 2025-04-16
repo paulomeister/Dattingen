@@ -1,3 +1,6 @@
+
+
+
 services:
   frontend:
     image: frontend:dev
@@ -20,6 +23,21 @@ services:
     restart: unless-stopped
     networks:
       - frontend
+  apigateway:
+    image: apigateway:dev
+    container_name: apigateway_dev
+    init: true
+    env_file:
+      - .env
+    build:
+      context: ./apigateway
+      dockerfile: Dockerfile
+    ports:
+      - "8090:8090"
+    volumes:
+      - ./apigateway:/app
+    networks:
+      - backend
   businessservice:
     env_file:
       - .env
@@ -58,25 +76,6 @@ services:
     restart: unless-stopped
     networks:
       - backend
-  rulesetservice:
-    env_file:
-      - .env
-    image: rulesetservice:dev
-    container_name: rulesetservice_dev
-    build:
-      context: ./rulesetservice
-      dockerfile: Dockerfile
-      target: dev
-    init: true
-    volumes:
-      - type: bind
-        source: ./rulesetservice
-        target: /app
-    ports:
-      - "8082:8082"
-    restart: unless-stopped
-    networks:
-      - backend
   userservice:
     env_file:
       - .env
@@ -96,6 +95,26 @@ services:
     restart: unless-stopped
     networks:
       - backend
+  rulesetservice:
+    env_file:
+      - .env
+    image: rulesetservice:dev
+    container_name: rulesetservice_dev
+    build:
+      context: ./rulesetservice
+      dockerfile: Dockerfile
+      target: dev
+    init: true
+    volumes:
+      - type: bind
+        source: ./rulesetservice
+        target: /app
+    ports:
+      - "8082:8082"
+    restart: unless-stopped
+    networks:
+      - backend
+ 
 networks:
   backend:
   frontend:
