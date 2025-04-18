@@ -2,27 +2,21 @@
 
 
 services:
-  frontend:
-    image: frontend:dev
-    container_name: frontend_dev
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    init: true
-    volumes:
-      - type: bind
-        source: ./frontend/vite.config.js
-        target: /usr/src/app/vite.config.js
-      - type: bind
-        source: ./frontend
-        target: /usr/src/app
-      - type: volume
-        target: /usr/src/app/node_modules
-    ports:
-      - "5173:5173"
-    restart: unless-stopped
-    networks:
-      - frontend
+  # frontend:
+  #   image: frontend:dev
+  #   container_name: frontend_dev
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   init: true
+  #   volumes:
+  #   - ./frontend:/app:delegated
+  #   - /app/node_modules
+  #   ports:
+  #     - "3000:3000"
+  #   restart: always
+  #   # networks:
+  #   #   - frontend
   apigateway:
     image: apigateway:dev
     container_name: apigateway_dev
