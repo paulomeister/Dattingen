@@ -1,15 +1,5 @@
-FROM node:iron-bullseye AS build
-
-WORKDIR /usr/src/app
-
-COPY package*.json ./
-
-RUN --mount=type=cache,target=/usr/src/app/.npm \
-  npm set cache /usr/src/app/.npm && \
-  npm install
-
-COPY . .
-
-EXPOSE 5173
-
+FROM node:18
+WORKDIR /app
+COPY package.json ./
+RUN npm install
 CMD ["npm", "run", "dev"]
