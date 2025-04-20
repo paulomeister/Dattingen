@@ -20,7 +20,7 @@ export function UserInput({
 }: UserInputProps) {
   return (
     <div className="space-y-2">
-      <Label htmlFor={id} className="text-[#14213d]">
+      <Label htmlFor={id} className="text-primary-color">
         {label}
       </Label>
       <Input
@@ -31,7 +31,7 @@ export function UserInput({
         placeholder={placeholder}
         required
         autoComplete="off"
-        className="border-[#14213d] focus-visible:ring-[#fca311]"
+        className="border-[#14213d] focus-visible:ring-secondary-color placeholder:text-gray-400"
       />
     </div>
   );

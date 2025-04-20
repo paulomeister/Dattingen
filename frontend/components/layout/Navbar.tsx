@@ -27,11 +27,10 @@ export function Navbar() {
         <div>
           <Link href="/" className="flex items-center">
             <Image
-              src="https://1000marcas.net/wp-content/uploads/2022/06/ACME-Logo-1981.png"
+              src="/logo.png"
               alt="Company Logo"
-              width={70}
-              height={50}
-              className="h-10 w-auto"
+              width={55}
+              height={40}
             />
           </Link>
         </div>
@@ -41,7 +40,7 @@ export function Navbar() {
             <Link
               key={link.label}
               href={link.href}
-              className="text-sm font-medium text-[#000814] transition-colors hover:text-gray-400"
+              className="text-sm font-medium text-black transition-colors hover:text-gray-400"
             >
               {link.label}
             </Link>
@@ -55,7 +54,7 @@ export function Navbar() {
           ) : (
             <Link
               href="/auth/login"
-              className="text-sm font-medium text-[#fca311] transition-colors hover:text-gray-400"
+              className="text-sm font-medium text-primary-color transition-colors hover:text-gray-400"
             >
               Login
             </Link>

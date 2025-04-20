@@ -2,21 +2,21 @@
 
 
 services:
-  # frontend:
-  #   image: frontend:dev
-  #   container_name: frontend_dev
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: Dockerfile
-  #   init: true
-  #   volumes:
-  #   - ./frontend:/app:delegated
-  #   - /app/node_modules
-  #   ports:
-  #     - "3000:3000"
-  #   restart: always
-  #   # networks:
-  #   #   - frontend
+  frontend:
+    image: frontend:dev
+    container_name: frontend_dev
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    init: true
+    volumes:
+    - ./frontend:/app
+    - /app/node_modules
+    ports:
+      - "3000:3000"
+    restart: always
+    networks:
+      - frontend
   apigateway:
     image: apigateway:dev
     container_name: apigateway_dev
@@ -25,12 +25,18 @@ services:
       - .env
     build:
       context: ./apigateway
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile 
     ports:
       - "8090:8090"
     volumes:
-      - ./apigateway:/app
+      - type: bind
+        source: ./apigateway
+        target: /app 
+    environment:
+      - SPRING_DEVTOOLS_RESTART_ADDITIONAL_PATHS=/app # Path to watch for changes
+    restart: always
     networks:
+      - frontend
       - backend
   businessservice:
     env_file:

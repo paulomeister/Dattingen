@@ -17,11 +17,10 @@ public class UserModel {
 
     @Id
     private String _id;
-    private String authid;
-    // Voy a agregar este campo para
     private String username;
     private String name;
     private String email;
+    private String language; // nuevo atributo
     private RoleEnum role;
     private String businessId;  
 

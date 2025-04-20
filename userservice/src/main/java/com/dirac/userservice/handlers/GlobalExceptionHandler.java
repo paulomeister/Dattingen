@@ -4,6 +4,7 @@ import com.dirac.commons.exceptions.BadRequestException;
 import com.dirac.commons.exceptions.BaseException;
 import com.dirac.commons.exceptions.ResourceAlreadyExistsException;
 import com.dirac.commons.exceptions.ResourceNotFoundException;
+import com.dirac.commons.exceptions.UnauthorizedException;
 import com.dirac.userservice.DTOs.ResponseDTO;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +34,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ResponseDTO<Object>> handleBase(BaseException ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ResponseDTO<>(500, ex.getMessage(), null));
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ResponseDTO<Object>> handleUnauthorized(UnauthorizedException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ResponseDTO<>(401, ex.getMessage(), null));
     }
 
     @ExceptionHandler(Exception.class)

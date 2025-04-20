@@ -10,6 +10,9 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 const UserDropdown = () => {
+
+  // TODO!!! Cambiar este dropdown
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

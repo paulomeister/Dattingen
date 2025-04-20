@@ -1,0 +1,31 @@
+{
+  "auth": {
+    "tabs": {
+      "title": "ACME Audit System",
+      "subtitle": "Login or create an account to continue",
+      "login": "Login",
+      "register": "Register"
+    },
+    "login": {
+      "title": "Login",
+      "email": "Email",
+      "password": "Password",
+      "rememberMe": "Remember Me",
+      "loginButton": "Login",
+      "forgotPasswordLink": "Forgot Password?",
+      "registerLink": "Register"
+    },
+    "register": {
+      "title": "Register",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "registerButton": "Register",
+      "loginLink": "Login"
+    }
+  },
+  "rulesets": {},
+  "statistics": {},
+  "user": {},
+  "components": {}
+}

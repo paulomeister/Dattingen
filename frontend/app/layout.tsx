@@ -1,31 +1,35 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
+import { LanguageProvider } from "@/lib/LanguageContext";
+import { ViewTransitions } from "next-view-transitions";
+import { AuthProvider } from "@/lib/AuthContext";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+export const montserrat = Inter({
+  subsets: ["latin"]
 });
 
 export const metadata: Metadata = {
-  title: "ACME",
+  title: "ACME - Audits",
   description: "ACME, the best solution for companies acquaintance!",
+  icons: {
+    icon: "/logo.png",
+  },
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="en" className={montserrat.className}>
       <body className="min-h-screen flex flex-col">
-        <Navbar />
-        <main className="flex-grow pt-20">{children}</main>
+        <AuthProvider> 
+          <LanguageProvider>
+            <Navbar />
+            <main className="flex-grow py-20">{children}</main>
+          </LanguageProvider>
+        </AuthProvider>
       </body>
     </html>
   );

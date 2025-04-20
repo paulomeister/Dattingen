@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -35,7 +34,6 @@ public class UserController {
         UserModel user = userService.getUserByUsername(username);
         return ResponseEntity.ok(new ResponseDTO<>(200, "User Found", userService.toUserDTO(user)));
     }
-    
 
     // Obtener usuario por ID
     @GetMapping("/{_id}")
@@ -49,13 +47,13 @@ public class UserController {
     public ResponseEntity<ResponseDTO<List<UserDTO>>> getUsersByBusinessId(@PathVariable String businessId) {
         List<UserModel> users = userService.getUsersByBusinessId(businessId);
         List<UserDTO> userDTOs = users.stream()
-                                    .map(userService::toUserDTO)
-                                    .toList();
+                .map(userService::toUserDTO)
+                .toList();
         return ResponseEntity.ok(new ResponseDTO<>(200, "Users from business " + businessId, userDTOs));
     }
 
-
     // Crear nuevo usuario
+
     @PostMapping("/")
     public ResponseEntity<ResponseDTO<UserDTO>> createUser(@RequestBody UserModel user) {
         UserDTO userDTO = userService.toUserDTO(userService.createUser(user));
@@ -68,19 +66,17 @@ public class UserController {
     public ResponseEntity<ResponseDTO<Object>> assignUsersToBusiness(
             @PathVariable String businessId,
             @RequestBody UsersAssignDTO assignUsersDTO) {
-    
+
         int updatedCount = userService.assignUsersToBusiness(assignUsersDTO.getUserIds(), businessId);
-    
+
         return ResponseEntity.ok(new ResponseDTO<>(200,
-            updatedCount + " user(s) assigned to business " + businessId, null));
+                updatedCount + " user(s) assigned to business " + businessId, null));
     }
-    
-
-
 
     // Actualizar usuario
     @PutMapping("/{_id}")
-    public ResponseEntity<ResponseDTO<UserDTO>> updateUser(@PathVariable String _id, @RequestBody UserModel updatedUser) {
+    public ResponseEntity<ResponseDTO<UserDTO>> updateUser(@PathVariable String _id,
+            @RequestBody UserModel updatedUser) {
         UserDTO userDTO = userService.toUserDTO(userService.updateUser(_id, updatedUser));
         return ResponseEntity.ok(new ResponseDTO<>(200, "User Updated!", userDTO));
     }

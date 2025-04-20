@@ -7,53 +7,58 @@ spring:
 
   cloud:
     gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:3000" # Esto está bien para tu navegador en el anfitrión
+            allowCredentials: true
+            allowedHeaders: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - DELETE
+              - PUT
+              - OPTIONS
+
       routes:
+        # --- Servicios Backend ---
         - id: users-service
-          uri: http://host.docker.internal:8083
           predicates:
             - Path=/users/**
           filters:
             - RewritePath=/users(?<segment>/.*), /${segment}
+          uri: http://userservice:8083
 
         - id: businesses-service
-          uri: http://host.docker.internal:8080
           predicates:
             - Path=/businesses/**
           filters:
             - RewritePath=/businesses(?<segment>/.*), /${segment}
+          uri: http://businessservice:8080 
 
         - id: audits-service
-          uri: http://host.docker.internal:8081
           predicates:
             - Path=/audits/**
           filters:
             - RewritePath=/audits(?<segment>/.*), /${segment}
+          uri: http://auditprocessservice:8081 
 
         - id: rulesets-service
-          uri: http://host.docker.internal:8082
           predicates:
             - Path=/rulesets/**
           filters:
             - RewritePath=/rulesets(?<segment>/.*), /${segment}
+          uri: http://rulesetservice:8082
 
+        # --- Frontend ---
         - id: frontend
-          uri: http://host.docker.internal:5173
           predicates:
             - Path=/frontend/**
           filters:
             - RewritePath=/frontend(?<segment>/.*), /${segment}
-
-      globalcors:
-        corsConfigurations:
-          '[/**]':
-            allowedOrigins: "*"
-            allowedMethods:
-              - GET
-              - POST
-              - PUT
-              - DELETE
-              - OPTIONS
-
+          uri: http://frontend:3000 
 logging:
   level:
     org.springframework.cloud.gateway: DEBUG
