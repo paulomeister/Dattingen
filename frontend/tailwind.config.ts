@@ -1,4 +1,3 @@
-//TODO arreglar esto
 import animatePlugin from "tailwindcss-animate"
 import type { Config } from "tailwindcss"
 
@@ -9,7 +8,6 @@ const config = {
     "./components/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
-    "*.{js,ts,jsx,tsx,mdx}",
   ],
   prefix: "",
   theme: {
@@ -63,7 +61,15 @@ const config = {
       },
     },
   },
-  plugins: ["tailwindcss-animate"],
+  // Optimizar los plugins para mejorar el rendimiento
+  plugins: [animatePlugin],
+  // Habilitar JIT (Just-In-Time) para compilación más rápida
+  future: {
+    hoverOnlyWhenSupported: true,
+    // Optimizaciones adicionales para tailwind
+    cacheRules: true,
+    optimizeUniversalDefaults: true,
+  },
 } satisfies Config
 
 export default config

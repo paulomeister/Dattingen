@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import enTranslations from "@/locales/en.json";
 import esTranslations from "@/locales/es.json";
 import frTranslations from "@/locales/fr.json";
+import { UserDTO } from "@/types/User";
 
 export type Language = "en" | "es" | "fr";
 
@@ -22,11 +23,14 @@ const translations = {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
+
+
   const [language, setLanguageState] = useState<Language>("en");
 
-  // Initialize from localStorage when component mounts
   useEffect(() => {
-    const savedLanguage = localStorage.getItem("language") as Language;
+    const user: UserDTO | null = JSON.parse(localStorage.getItem("user") || "null")
+
+    const savedLanguage = user?.language as Language;
     if (savedLanguage && ["en", "es", "fr"].includes(savedLanguage)) {
       setLanguageState(savedLanguage);
     }
@@ -37,7 +41,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     try {
       const keys = key.split(".");
       let result = translations[language];
-      
+
       // Navigate through the nested objects
       for (const k of keys) {
         if (result[k] === undefined) {
@@ -46,7 +50,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         }
         result = result[k];
       }
-      
+
       return result;
     } catch (error) {
       console.error(`Error translating key: ${key}`, error);

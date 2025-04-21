@@ -8,19 +8,14 @@ import { RoleSelector } from "./RoleSelector";
 import { LanguageSelector } from "./LanguageSelector";
 import { User } from "@/types/User";
 import { useLanguage } from "@/lib/LanguageContext";
-import { environment } from "@/env/environment.dev";
-import { useAuth } from "@/lib/AuthContext";
-
+import { useRegister } from "@/hooks/useRegister";
+import { toast } from "react-hot-toast";
 
 export function RegisterForm() {
-
   // Language
-  
-  const { t } = useLanguage()
+  const { t } = useLanguage();
 
   // Component State
-
-  const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState<User>({
     _id: null,
     username: "",
@@ -31,36 +26,23 @@ export function RegisterForm() {
     language: "en",
     bussinessId: null,
   });
+  
   const handleChange = (field: keyof User, value: string) => {
     setUser((prev) => ({ ...prev, [field]: value }));
   };
 
-  // Authentication
+  // Registration hook
+  const { registerUser, isLoading } = useRegister();
 
-  const { setAuthUser, token } = useAuth();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    
     try {
-      const res = await fetch(`http://localhost:8090/users/api/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token && { Authorization: `Bearer ${token}` }), // opcional
-        },
-        body: JSON.stringify(user),
-      });
-
-      if (!res.ok) throw new Error("Error registering the user");
-
-      const newUser = await res.json();
-      setAuthUser(newUser); // actualizamos el usuario en contexto
-      // Podés redirigir o mostrar mensaje de éxito
+      await registerUser(user);
+      toast.success(t("auth.register.successMessage"));
     } catch (err) {
       console.error("Error:", err);
-      // mostrar feedback visual
-    } finally {
-      setIsLoading(false);
+      toast.error(t("auth.register.errorMessage"));
     }
   };
 

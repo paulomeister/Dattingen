@@ -1,23 +1,38 @@
 // /lib/AuthContext.tsx
 "use client"
-import { createContext, useContext, useState } from "react";
-import { User } from "@/types/User";
+import { createContext, useContext, useState, useEffect } from "react"; // Importa useEffect
+import { UserDTO } from "@/types/User";
 
 type AuthContextType = {
-    user: User | null;
+    user: UserDTO | null;
     token: string | null;
-    setAuthUser: (user: User | null) => void;
+    isLoggedIn: boolean;
+    setAuthUser: (user: UserDTO | null) => void;
     setToken: (token: string | null) => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-    const [user, setAuthUser] = useState<User | null>(null);
-    const [token, setToken] = useState<string | null>(null);
+    // Inicializa el estado a null o un valor por defecto que no dependa del navegador
+    const [user, setAuthUser] = useState<UserDTO | null>(null);
+    const [token, setToken] = useState<string | null>(null); // Asumiendo que el token tampoco está en localStorage inicialmente aquí
 
+    useEffect(() => {
+
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
+            try {
+                setAuthUser(JSON.parse(storedUser));
+            } catch (e) {
+                console.error("Error parsing user from localStorage:", e);
+                localStorage.removeItem("user"); // Limpiar datos corruptos
+            }
+        }
+
+    }, []);
     return (
-        <AuthContext.Provider value={{ user, token, setAuthUser, setToken }}>
+        <AuthContext.Provider value={{ user, token, isLoggedIn: !!user, setAuthUser, setToken }}>
             {children}
         </AuthContext.Provider>
     );

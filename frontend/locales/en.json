@@ -1,4 +1,11 @@
 {
+  "navbar":{
+    "links":{
+      "home": "Home",
+      "rulesets": "Rulesets",
+      "myAudits"  : "My Audits"
+    }
+  },
   "auth": {
     "tabs": {
       "title": "ACME Audit System",
@@ -38,7 +45,9 @@
         "role": "Role",
         "coordinator": "Coordinator",
         "auditor": "Auditor"
-      }
+      },
+      "successMessage": "Registration successful!",
+      "errorMessage": "Registration failed. Please try again."
     }
   },
   "rulesets": {},

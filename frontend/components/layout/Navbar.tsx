@@ -1,23 +1,24 @@
+"use client";
 import Link from "next/link";
-
 import Image from "next/image";
-import LanguageDropdown from "./LanguageDropdown";
-import UserDropdown from "./UserDropdown";
+import Dropdowns from "./Dropdowns";
+import { useLanguage } from "@/lib/LanguageContext";
 
 export function Navbar() {
-  //TODO: Implement authentication logic
-  const isLoggedIn = false; // Replace with actual authentication logic
+
+  const { t } = useLanguage()
+
   const navigationLinks: any[] = [
     {
-      label: "Home",
+      label: t("navbar.links.home"),
       href: "/",
     },
     {
-      label: "Rulesets",
+      label: t("navbar.links.rulesets"),
       href: "/rulesets",
     },
     {
-      label: "My Audits",
+      label: t("navbar.links.myAudits"),
       href: "/progress",
     },
   ];
@@ -46,19 +47,8 @@ export function Navbar() {
             </Link>
           ))}
         </div>
-
-        <div className="flex items-center justify-center space-x-4 ">
-          <LanguageDropdown />
-          {isLoggedIn ? (
-            <UserDropdown />
-          ) : (
-            <Link
-              href="/auth/login"
-              className="text-sm font-medium text-primary-color transition-colors hover:text-gray-400"
-            >
-              Login
-            </Link>
-          )}
+        <div>
+          <Dropdowns />
         </div>
       </div>
     </nav>

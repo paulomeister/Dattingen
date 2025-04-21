@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "@/components/layout/Navbar";
+import { Navbar } from "../components/layout/Navbar";
 import { LanguageProvider } from "@/lib/LanguageContext";
-import { ViewTransitions } from "next-view-transitions";
-import { AuthProvider } from "@/lib/AuthContext";
+import { AuthProvider } from "@/lib/AuthContext"; 
+import { Toaster } from "react-hot-toast";
 
 export const montserrat = Inter({
   subsets: ["latin"]
@@ -28,6 +28,7 @@ export default function RootLayout({
           <LanguageProvider>
             <Navbar />
             <main className="flex-grow py-20">{children}</main>
+            <Toaster position="top-right" />
           </LanguageProvider>
         </AuthProvider>
       </body>

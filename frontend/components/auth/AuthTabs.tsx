@@ -11,6 +11,7 @@ export function AuthTabs() {
   const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState("login");
 
+
   return (
     <div className="w-full max-w-md">
       <div className="mb-6 text-center">

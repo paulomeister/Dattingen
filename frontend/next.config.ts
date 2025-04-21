@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  // Habilitar la opción para mejorar el tiempo de compilación
+  poweredByHeader: false,
+  reactStrictMode: true,
   images: {
     remotePatterns: [
       {
@@ -17,13 +20,17 @@ const nextConfig: NextConfig = {
     ],
   },
   webpack: (config, { isServer }) => {
-    // Configuración para habilitar el polling en entornos de desarrollo
+    // Optimizaciones para el tiempo de compilación
     if (!isServer) {
+      // Ajustar la configuración de watchOptions para mejorar el rendimiento
       config.watchOptions = {
-        poll: 1000, // Comprueba cambios cada 1000ms (1 segundo)
-        aggregateTimeout: 300, // Espera 300ms después del último cambio antes de reconstruir
+        aggregateTimeout: 400, // Espera entre cambios para reducir compilaciones excesivas
+        ignored: ['**/node_modules', '**/.next'],
       };
     }
+
+    // Añadir caché para acelerar las compilaciones
+    config.cache = true;
 
     return config;
   },

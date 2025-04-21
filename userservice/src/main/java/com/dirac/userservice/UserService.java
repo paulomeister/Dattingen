@@ -154,6 +154,7 @@ public class UserService {
         userDTO.set_id(userModel.get_id());
         userDTO.setUsername(userModel.getUsername());
         userDTO.setName(userModel.getName());
+        userDTO.setRole(userModel.getRole());
         userDTO.setLanguage(userModel.getLanguage());
         userDTO.setBussinessId(userModel.getBusinessId());
         return userDTO;

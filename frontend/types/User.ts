@@ -1,13 +1,11 @@
 import { RoleEnum } from "./RoleEnum";
 
 // Define user model to match Java model
-export interface User {
+export interface UserDTO {
   _id: string | null;
-  username: string;
-  name: string;
-  email: string;
-  password: string;
-  language: string;
   role: RoleEnum;
   bussinessId: string | null;
+  language: string;
+  name: string;
+  username: string;
 }
