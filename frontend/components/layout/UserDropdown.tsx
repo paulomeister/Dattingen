@@ -10,27 +10,12 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { User } from "lucide-react";
-import { RoleEnum } from "@/types/RoleEnum";
 import { useAuth } from "@/lib/AuthContext";
+import { getUserImage } from "@/lib/utils";
 const UserDropdown = () => {
 
-  const { user } = useAuth()
+  const { user, logout } = useAuth()
 
-  //TODO ! Cambiar lenguaje
-  const getUserImage = (role: RoleEnum | undefined): string => {
-    switch (role) {
-      case "InternalAuditor":
-        return "/images/avatars/internal_auditor.png";
-      case "Coordinator":
-        return "/images/avatars/coordinator.png";
-      case "ExternalAuditor":
-        return "/images/avatars/external_auditor.png";
-      case "Admin":
-        return "/images/avatars/admin.png";
-      default:
-        return "/images/avatars/default.png";
-    }
-  }
 
 
   return (
@@ -56,7 +41,10 @@ const UserDropdown = () => {
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="cursor-pointer hover:bg-primary-color hover:text-white 
-          transition-colors duration-100 ease-in-out">
+          transition-colors duration-100 ease-in-out"
+
+          onClick={logout}
+        >
           <LogOut className="mr-2 h-4 w-4" />
           <span >Logout</span>
         </DropdownMenuItem>

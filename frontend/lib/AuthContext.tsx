@@ -9,6 +9,7 @@ type AuthContextType = {
     isLoggedIn: boolean;
     setAuthUser: (user: UserDTO | null) => void;
     setToken: (token: string | null) => void;
+    logout: () => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -17,6 +18,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // Inicializa el estado a null o un valor por defecto que no dependa del navegador
     const [user, setAuthUser] = useState<UserDTO | null>(null);
     const [token, setToken] = useState<string | null>(null); // Asumiendo que el token tampoco está en localStorage inicialmente aquí
+
+    function logout() {
+        setAuthUser(null);
+        setToken(null);
+        localStorage.removeItem("user"); // Limpiar datos del usuario
+    }
 
     useEffect(() => {
 
@@ -32,7 +39,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     }, []);
     return (
-        <AuthContext.Provider value={{ user, token, isLoggedIn: !!user, setAuthUser, setToken }}>
+        <AuthContext.Provider value={{ user, token, isLoggedIn: !!user, setAuthUser, setToken, logout }}>
             {children}
         </AuthContext.Provider>
     );
