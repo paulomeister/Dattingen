@@ -24,9 +24,9 @@ export function RegisterForm() {
     password: "",
     role: "InternalAuditor",
     language: "en",
-    bussinessId: null,
+    businessId: null,
   });
-  
+
   const handleChange = (field: keyof User, value: string) => {
     setUser((prev) => ({ ...prev, [field]: value }));
   };
@@ -36,7 +36,7 @@ export function RegisterForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
       await registerUser(user);
       toast.success(t("auth.register.successMessage"));

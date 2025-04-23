@@ -18,9 +18,9 @@ export const HeroSection = memo(function HeroSection() {
           <strong>You Mean</strong>
         </h1>
         <p className="text-gray-400 text-lg mb-8 max-w-2xl mx-auto">
-          Certify your enterprise with the best practices and standards in the
+          Certify your business with the best practices and standards in the
           world. <br />
-          <strong>Be the best version of your enterprise.</strong>
+          <strong>Be the best version of your business.</strong>
         </p>
         <div className="flex gap-4 justify-center">
           <Button

@@ -47,7 +47,7 @@ public class UserService {
     }
 
     // Crear un nuevo usuario
-    // NOTA: No importa si el usuario se crea sin un bussinessId,
+    // NOTA: No importa si el usuario se crea sin un businessId,
     // ya que el usuario puede ir creando sus credenciales y más adelante
     // asociarse a un negocio.
     // En este caso, el businessId se puede dejar como null.
@@ -57,7 +57,7 @@ public class UserService {
 
         // Validar Correo
         if (userRepository.findByEmail(user.getEmail()) != null) {
-            throw new ResourceAlreadyExistsException("User", "Email:" + user.getUsername());
+            throw new ResourceAlreadyExistsException("User", "Email:" + user.getEmail());
         }
 
         // Validar unicidad
@@ -156,7 +156,7 @@ public class UserService {
         userDTO.setName(userModel.getName());
         userDTO.setRole(userModel.getRole());
         userDTO.setLanguage(userModel.getLanguage());
-        userDTO.setBussinessId(userModel.getBusinessId());
+        userDTO.setBusinessId(userModel.getBusinessId());
         return userDTO;
     }
 }

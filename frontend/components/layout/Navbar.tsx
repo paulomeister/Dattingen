@@ -3,10 +3,11 @@ import Link from "next/link";
 import Image from "next/image";
 import Dropdowns from "./Dropdowns";
 import { useLanguage } from "@/lib/LanguageContext";
+import { useAuth } from "@/lib/AuthContext";
 
 export function Navbar() {
-
-  const { t } = useLanguage()
+  const { t } = useLanguage();
+  const { user } = useAuth();
 
   const navigationLinks: any[] = [
     {
@@ -21,6 +22,13 @@ export function Navbar() {
       label: t("navbar.links.myAudits"),
       href: "/progress",
     },
+    // Only show the My Business link if the user has a businessId
+    ...(user?.businessId ? [
+      {
+        label: t("navbar.links.myBusiness") || "My Business",
+        href: `/business/${user.businessId}`,
+      }
+    ] : []),
   ];
   return (
     <nav className="fixed flex items-center justify-center top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-md ">

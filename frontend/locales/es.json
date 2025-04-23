@@ -31,5 +31,24 @@
   "rulesets": {},
   "statistics": {},
   "user": {},
-  "components": {}
+  "components": {},
+  "business": {
+    "creation": {
+      "title": "Crear Empresa",
+      "subtitle": "Como Coordinador, necesitas configurar tu empresa para continuar.",
+      "logoUpload": "Logotipo de la Empresa",
+      "uploadHint": "Sube una imagen cuadrada para mejores resultados. Tamaño máximo 2MB.",
+      "uploadLabel": "Subir logotipo",
+      "name": "Nombre de la Empresa",
+      "nameplaceholder": "Ingresa el nombre de tu empresa",
+      "activity": "Actividad Empresarial",
+      "activityplaceholder": "Describe las actividades principales de tu empresa",
+      "submitButton": "Crear Empresa",
+      "submitting": "Creando...",
+      "successMessage": "Empresa creada exitosamente!",
+      "errorMessage": "Error al crear la empresa",
+      "logoSuccessMessage": "Logotipo subido exitosamente!",
+      "logoErrorMessage": "Error al subir el logotipo"
+    }
+  }
 }

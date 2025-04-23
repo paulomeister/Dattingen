@@ -34,13 +34,13 @@ const ProfileDetailsSection = ({ user }: ProfileDetailsSectionProps) => {
             </div>
 
             <div className="space-y-4">
-                {user.bussinessId && (
+                {user.businessId && (
                     <div className="flex items-center gap-2 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg shadow-sm">
                         <div className="p-2 bg-primary-color rounded-full">
                             <Building className="h-5 w-5 text-white" />
                         </div>
                         <span className="text-gray-700 dark:text-gray-300">
-                            Business ID: <span className="font-semibold">{user.bussinessId}</span>
+                            Business ID: <span className="font-semibold">{user.businessId}</span>
                         </span>
                     </div>
                 )}

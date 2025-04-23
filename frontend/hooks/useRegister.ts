@@ -1,13 +1,15 @@
 import { useState } from "react";
-import { User } from "@/types/User";
+import { User, UserDTO } from "@/types/User";
 import { useAuth } from "@/lib/AuthContext";
 import { environment } from "@/env/environment.dev";
 import { ResponseDTO } from "@/types/ResponseDTO";
+import { useRouter } from "next/navigation";
 
 export const useRegister = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { setAuthUser, token } = useAuth();
+  const router = useRouter();
 
   const registerUser = async (user: User) => {
     setIsLoading(true);
@@ -27,18 +29,30 @@ export const useRegister = () => {
         throw new Error("Failed to register user");
       }
 
-      const newUser: ResponseDTO<User> = await res.json();
-      
+      const resDTO: ResponseDTO<UserDTO> = await res.json();
+
+      if (resDTO.status in [400, 401, 403]) {
+        throw new Error(resDTO.message);
+      }
+
+      const newUser = resDTO.data as UserDTO;
       // Save user to localStorage
-      localStorage.setItem('user', JSON.stringify(newUser.data));
-      
+      localStorage.setItem("user", JSON.stringify(newUser));
+
       // Update auth context
-      setAuthUser(newUser.data);
-      
-      return newUser.data;
+      setAuthUser(newUser);
+
+      // Redirect Coordinator role users to business creation page
+      if (resDTO.status === 200 && newUser.role === "Coordinator") {
+        router.push("/business/create");
+      }
+
+      return newUser;
     } catch (err) {
       console.error("Error:", err);
-      setError(err instanceof Error ? err.message : "An unknown error occurred");
+      setError(
+        err instanceof Error ? err.message : "An unknown error occurred"
+      );
       throw err;
     } finally {
       setIsLoading(false);
@@ -48,6 +62,6 @@ export const useRegister = () => {
   return {
     registerUser,
     isLoading,
-    error
+    error,
   };
 };

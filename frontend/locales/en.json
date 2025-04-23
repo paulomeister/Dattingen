@@ -1,9 +1,9 @@
 {
-  "navbar":{
-    "links":{
+  "navbar": {
+    "links": {
       "home": "Home",
       "rulesets": "Rulesets",
-      "myAudits"  : "My Audits"
+      "myAudits": "My Audits"
     }
   },
   "auth": {
@@ -48,6 +48,16 @@
       },
       "successMessage": "Registration successful!",
       "errorMessage": "Registration failed. Please try again."
+    }
+  },
+  "business": {
+    "create": {
+      "title": "Create Company",
+      "subtitle": "As a Coordinator, you need to set up your company to continue.",
+      "name": "Company Name",
+      "namePlaceholder": "Enter your company name",
+      "activity": "Business Activity",
+      "activityPlaceholder": "Describe the main activities of your company"
     }
   },
   "rulesets": {},
