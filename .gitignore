@@ -1,14 +1,24 @@
-.env
-.env.*
-*.env
+# --- Node ---
+**/node_modules/
+**/.next/
+**/.turbo/
 
+# --- Maven ---
+**/target/
+**/.mvn/wrapper/maven-wrapper.jar
 
-HELP.md
-target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+# --- Docker ---
+**/*.log
+**/.env
+**/docker-volume/
+**/.docker/
 
+# --- IDE & OS ---
+**/.idea/
+**/.vscode/
+**/*.iml
+.DS_Store
+Thumbs.db
 ### STS ###
 .apt_generated
 .classpath

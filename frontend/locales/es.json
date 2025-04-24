@@ -1,0 +1,54 @@
+{
+  "auth": {
+    "tabs": {
+      "title": "Sistema de Auditorías ACME",
+      "subtitle": "Login or create an account to continue",
+      "login": "Login",
+      "register": "Register"
+    },
+    "login": {
+      "title": "Login",
+      "email": "Email",
+      "password": "Password",
+      "rememberMe": "Remember Me",
+      "loginButton": "Login",
+      "forgotPasswordLink": "Forgot Password?",
+      "registerLink": "Register"
+    },
+    "register": {
+      "username": "Usuario",
+      "usernameplaceholder": "Escoge un Usuario",
+      "fullName": "Usuario",
+      "fullNameplaceholder": "Escoge un Usuario",
+      "email": "Correo",
+      "emailplaceholder": "Escoge un Correo",
+      "password": "Contraseña",
+      "passwordplaceholder": "Escoge una Contraseña",
+      "confirmPassword": "Confirmar Contraseña",
+      "confirmPasswordplaceholder": "Confirma la Contraseña"
+    }
+  },
+  "rulesets": {},
+  "statistics": {},
+  "user": {},
+  "components": {},
+  "business": {
+    "creation": {
+      "title": "Crear Empresa",
+      "subtitle": "Como Coordinador, necesitas configurar tu empresa para continuar.",
+      "logoUpload": "Logotipo de la Empresa",
+      "uploadHint": "Sube una imagen cuadrada para mejores resultados. Tamaño máximo 2MB.",
+      "uploadLabel": "Subir logotipo",
+      "name": "Nombre de la Empresa",
+      "nameplaceholder": "Ingresa el nombre de tu empresa",
+      "activity": "Actividad Empresarial",
+      "activityplaceholder": "Describe las actividades principales de tu empresa",
+      "submitButton": "Crear Empresa",
+      "submitting": "Creando...",
+      "successMessage": "Empresa creada exitosamente!",
+      "errorMessage": "Error al crear la empresa",
+      "logoSuccessMessage": "Logotipo subido exitosamente!",
+      "logoErrorMessage": "Error al subir el logotipo"
+    }
+  }
+}

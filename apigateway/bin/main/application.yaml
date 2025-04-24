@@ -1,0 +1,64 @@
+server:
+  port: 8090
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:3000" # Esto está bien para tu navegador en el anfitrión
+            allowCredentials: true
+            allowedHeaders: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - DELETE
+              - PUT
+              - OPTIONS
+
+      routes:
+        # --- Servicios Backend ---
+        - id: users-service
+          predicates:
+            - Path=/users/**
+          filters:
+            - RewritePath=/users(?<segment>/.*), /${segment}
+          uri: http://userservice:8083
+
+        - id: businesses-service
+          predicates:
+            - Path=/businesses/**
+          filters:
+            - RewritePath=/businesses(?<segment>/.*), /${segment}
+          uri: http://businessservice:8080 
+
+        - id: audits-service
+          predicates:
+            - Path=/audits/**
+          filters:
+            - RewritePath=/audits(?<segment>/.*), /${segment}
+          uri: http://auditprocessservice:8081 
+
+        - id: rulesets-service
+          predicates:
+            - Path=/rulesets/**
+          filters:
+            - RewritePath=/rulesets(?<segment>/.*), /${segment}
+          uri: http://rulesetservice:8082
+
+        # --- Frontend ---
+        - id: frontend
+          predicates:
+            - Path=/frontend/**
+          filters:
+            - RewritePath=/frontend(?<segment>/.*), /${segment}
+          uri: http://frontend:3000 
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG

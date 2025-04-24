@@ -9,7 +9,7 @@ import com.dirac.businessservice.Model.BusinessModel;
 import com.dirac.businessservice.Service.BusinessService;
 
 @RestController
-@RequestMapping("/api/business")
+@RequestMapping("/api/")
 public class BusinessController {
 
     @Autowired

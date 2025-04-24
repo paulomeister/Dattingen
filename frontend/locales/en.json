@@ -1,0 +1,67 @@
+{
+  "navbar": {
+    "links": {
+      "home": "Home",
+      "rulesets": "Rulesets",
+      "myAudits": "My Audits"
+    }
+  },
+  "auth": {
+    "tabs": {
+      "title": "ACME Audit System",
+      "subtitle": "Login or create an account to continue",
+      "login": "Login",
+      "register": "Register"
+    },
+    "login": {
+      "title": "Login",
+      "email": "Email",
+      "password": "Password",
+      "rememberMe": "Remember Me",
+      "loginButton": "Login",
+      "forgotPasswordLink": "Forgot Password?",
+      "registerLink": "Register"
+    },
+    "register": {
+      "title": "Register",
+      "registerButton": "Register!",
+      "username": "User",
+      "usernamePlaceholder": "jsanchez08",
+      "fullName": "Your Name",
+      "fullNamePlaceholder": "Juan Andrés Sánchez",
+      "email": "Correo",
+      "emailPlaceholder": "Pick a Email",
+      "password": "Password",
+      "passwordPlaceholder": "Choose a Password",
+      "confirmPassword": "Confirm the Password",
+      "confirmPasswordPlaceholder": "Confirm the Password",
+      "languages": {
+        "language": "Language",
+        "english": "English",
+        "spanish": "Spanish",
+        "french": "French"
+      },
+      "roles": {
+        "role": "Role",
+        "coordinator": "Coordinator",
+        "auditor": "Auditor"
+      },
+      "successMessage": "Registration successful!",
+      "errorMessage": "Registration failed. Please try again."
+    }
+  },
+  "business": {
+    "create": {
+      "title": "Create Company",
+      "subtitle": "As a Coordinator, you need to set up your company to continue.",
+      "name": "Company Name",
+      "namePlaceholder": "Enter your company name",
+      "activity": "Business Activity",
+      "activityPlaceholder": "Describe the main activities of your company"
+    }
+  },
+  "rulesets": {},
+  "statistics": {},
+  "user": {},
+  "components": {}
+}

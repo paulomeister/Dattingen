@@ -12,19 +12,19 @@ public class BusinessService {
 
     @Autowired
     private BusinessRepository businessRepository;
-
-    public BusinessModel getBusinessById(String businessId) {
-        return businessRepository.findByBusinessId(businessId)
-                .orElseThrow(() -> new BusinessNotFoundException("Business with ID " + businessId + " not found."));
+    
+    public BusinessModel getBusinessById(String _id) {
+        return businessRepository.findById(_id)
+                .orElseThrow(() -> new BusinessNotFoundException("Business with ID " + _id + " not found."));
     }
 
     public BusinessModel saveBusiness(BusinessModel businessModel) {
         return businessRepository.save(businessModel);
     }
 
-    public BusinessModel updateBusiness(String businessId, BusinessModel businessModel) {
-        BusinessModel existingBusiness = businessRepository.findByBusinessId(businessId)
-                .orElseThrow(() -> new BusinessNotFoundException("Business with ID " + businessId + " not found."));
+    public BusinessModel updateBusiness(String _id, BusinessModel businessModel) {
+        BusinessModel existingBusiness = businessRepository.findById(_id)
+                .orElseThrow(() -> new BusinessNotFoundException("Business with ID " + _id + " not found."));
         // Update fields
         existingBusiness.setName(businessModel.getName());
         existingBusiness.setActivity(businessModel.getActivity());
@@ -33,9 +33,9 @@ public class BusinessService {
         return businessRepository.save(existingBusiness);
     }
 
-    public void deleteBusiness(String businessId) {
-        BusinessModel existingBusiness = businessRepository.findByBusinessId(businessId)
-                .orElseThrow(() -> new BusinessNotFoundException("Business with ID " + businessId + " not found."));
+    public void deleteBusiness(String _id) {
+        BusinessModel existingBusiness = businessRepository.findById(_id)
+                .orElseThrow(() -> new BusinessNotFoundException("Business with ID " + _id + " not found."));
         businessRepository.delete(existingBusiness);
     }
 }

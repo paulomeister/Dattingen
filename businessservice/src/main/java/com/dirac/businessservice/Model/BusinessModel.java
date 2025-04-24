@@ -17,7 +17,6 @@ public class BusinessModel {
 
   @Id
   private String _id;
-  private String businessId;
   private String name;
   private String activity;
   private ArrayList<AsociateModel> associates;
