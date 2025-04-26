@@ -3,6 +3,7 @@ import Link from "next/link";
 
 const RulesetsPage = () => {
   //TODO If user's role is admin, then Create Normatives shouldn't even appear
+
   return (
     <div>
       <div></div>

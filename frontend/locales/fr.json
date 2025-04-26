@@ -1,31 +1,113 @@
 {
+  "navbar": {
+    "links": {
+      "home": "Accueil",
+      "rulesets": "Ensembles de Règles",
+      "myAudits": "Mes Audits",
+      "enterprises": "Entreprises",
+      "myEnterprises": "Mes Entreprises"
+    },
+    "userDropdown": {
+      "title": "Mon Compte",
+      "profile": "Profil",
+      "logout": "Déconnexion"
+    }
+  },
   "auth": {
     "tabs": {
-      "title": "ACME Audit System",
-      "subtitle": "Login or create an account to continue",
-      "login": "Login",
-      "register": "Register"
+      "title": "Système d'Audit ACME",
+      "subtitle": "Connectez-vous ou créez un compte pour continuer",
+      "login": "Connexion",
+      "register": "S'inscrire"
     },
     "login": {
-      "title": "Login",
+      "title": "Connexion",
       "email": "Email",
-      "password": "Password",
-      "rememberMe": "Remember Me",
-      "loginButton": "Login",
-      "forgotPasswordLink": "Forgot Password?",
-      "registerLink": "Register"
+      "password": "Mot de Passe",
+      "rememberMe": "Se Souvenir de Moi",
+      "loginButton": "Connexion",
+      "forgotPasswordLink": "Mot de Passe Oublié?",
+      "registerLink": "S'inscrire"
     },
     "register": {
-      "title": "Register",
+      "title": "S'inscrire",
+      "registerButton": "S'inscrire!",
+      "username": "Nom d'Utilisateur",
+      "usernamePlaceholder": "jsanchez08",
+      "fullName": "Nom Complet",
+      "fullNamePlaceholder": "Juan Andrés Sánchez",
       "email": "Email",
-      "password": "Password",
-      "confirmPassword": "Confirm Password",
-      "registerButton": "Register",
-      "loginLink": "Login"
+      "emailPlaceholder": "Choisissez un email",
+      "password": "Mot de Passe",
+      "passwordPlaceholder": "Choisissez un mot de passe",
+      "confirmPassword": "Confirmer le Mot de Passe",
+      "confirmPasswordPlaceholder": "Confirmez le mot de passe",
+      "languages": {
+        "language": "Langue",
+        "english": "Anglais",
+        "spanish": "Espagnol",
+        "french": "Français"
+      },
+      "roles": {
+        "role": "Rôle",
+        "coordinator": "Coordinateur",
+        "auditor": "Auditeur"
+      },
+      "successMessage": "Inscription réussie!",
+      "errorMessage": "Échec de l'inscription. Veuillez réessayer."
+    }
+  },
+  "business": {
+    "page": {
+      "search": "ACME Inc",
+      "clear": "Effacer",
+      "retry": "Réessayer plus tard...",
+      "error": {
+        "fetch": "Erreur lors de la récupération des entreprises. Veuillez réessayer."
+      },
+      "emptyTitle": "Aucune entreprise trouvée"
+    },
+    "create": {
+      "title": "Créer une Entreprise",
+      "subtitle": "En tant que Coordinateur, vous devez configurer votre entreprise pour continuer.",
+      "name": "Nom de l'Entreprise",
+      "namePlaceholder": "Entrez le nom de votre entreprise",
+      "activity": "Activité Commerciale",
+      "activityPlaceholder": "Décrivez les principales activités de votre entreprise",
+      "success": "Entreprise créée avec succès!",
+      "error": "Erreur lors de la création de l'entreprise. Veuillez réessayer."
+    },
+    "associates": {
+      "title": "UTILISATEURS",
+      "empty": "Aucun utilisateur associé à cette entreprise"
     }
   },
   "rulesets": {},
   "statistics": {},
-  "user": {},
-  "components": {}
+  "user": {
+    "profile": {
+      "delete": "Supprimer le Compte",
+      "deleting": "Suppression du Compte...",
+      "edit": "Modifier le Profil",
+      "confirmDeletion": "Confirmer la Suppression du Compte",
+      "deleteConfirmationMessage": "Cette action ne peut pas être annulée. Elle supprimera définitivement votre compte et vos données de nos serveurs.",
+      "confirmationQuestion": "Êtes-vous sûr de vouloir supprimer votre compte?",
+      "cancel": "Annuler",
+      "success": "Utilisateur supprimé avec succès!",
+      "error": "Échec de la suppression de l'utilisateur. Veuillez réessayer."
+    }
+  },
+  "components": {},
+  "common": {
+    "cancel": "Annuler"
+  },
+  "home": {
+    "hero": {
+      "title": "Montrez au Monde Ce Que",
+      "titleBold": "Vous Signifiez",
+      "description": "Certifiez votre entreprise avec les meilleures pratiques et normes du monde.",
+      "descriptionBold": "Soyez la meilleure version de votre entreprise.",
+      "startButton": "Commencer!"
+    }
+  }
 }

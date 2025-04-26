@@ -3,12 +3,15 @@
 import { UsersIcon } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { UserDTO } from "@/types/User";
+import { useLanguage } from "@/lib/LanguageContext";
 
 interface BusinessAssociatesProps {
   associates: UserDTO[];
 }
 
 export default function BusinessAssociates({ associates }: BusinessAssociatesProps) {
+  const { t } = useLanguage();
+  
   const getInitials = (name: string) => {
     return name
       .split(' ')
@@ -21,13 +24,13 @@ export default function BusinessAssociates({ associates }: BusinessAssociatesPro
     <div className="h-full flex flex-col">
       <div className="flex items-center gap-2 mb-4">
         <UsersIcon size={24} className="text-primary-color" />
-        <h2 className="text-2xl font-bold text-primary-color">USERS</h2>
+        <h2 className="text-2xl font-bold text-primary-color">{t("business.associates.title")}</h2>
       </div>
 
       {associates.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-full text-gray-500">
           <UsersIcon size={48} className="mb-2 opacity-50" />
-          <p>No users associated with this business</p>
+          <p>{t("business.associates.empty")}</p>
         </div>
       ) : (
         <div className="flex-1 overflow-y-auto pr-2" style={{ maxHeight: "calc(100% - 40px)" }}>

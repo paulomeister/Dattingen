@@ -29,10 +29,24 @@ public class UserController {
         return ResponseEntity.ok(new ResponseDTO<>(200, "Users retrieved successfully", users));
     }
 
+    // Buscar usuario por username exacto
     @GetMapping("/search")
     public ResponseEntity<ResponseDTO<UserDTO>> getUserByUsername(@RequestParam String username) {
         UserModel user = userService.getUserByUsername(username);
         return ResponseEntity.ok(new ResponseDTO<>(200, "User Found", userService.toUserDTO(user)));
+    }
+    
+    // Nuevo endpoint: Buscar usuarios por nombre o username (búsqueda parcial)
+    @GetMapping("/search/users")
+    public ResponseEntity<ResponseDTO<List<UserDTO>>> searchUsers(@RequestParam String q) {
+        List<UserModel> users = userService.searchUsers(q);
+        List<UserDTO> userDTOs = users.stream()
+                .map(userService::toUserDTO)
+                .collect(Collectors.toList());
+                
+        return ResponseEntity.ok(new ResponseDTO<>(200, 
+                "Found " + userDTOs.size() + " users matching: " + q, 
+                userDTOs));
     }
 
     // Obtener usuario por ID

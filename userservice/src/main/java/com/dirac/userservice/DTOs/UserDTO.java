@@ -1,6 +1,6 @@
 package com.dirac.userservice.DTOs;
 
-import com.dirac.userservice.enums.RoleEnum;
+import com.dirac.userservice.Enums.RoleEnum;
 
 import lombok.Data;
 

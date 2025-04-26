@@ -1,6 +1,7 @@
+"use client"
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Settings, LogOut } from "lucide-react";
+import { LogOut, UserRoundCog } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,11 +13,23 @@ import {
 import { User } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
 import { getUserImage } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import { useLanguage } from "@/lib/LanguageContext";
+
+
 const UserDropdown = () => {
 
+  const router = useRouter();
   const { user, logout } = useAuth()
+  const { t } = useLanguage();
 
+  const navigateToProfile = (username: string) => {
+    router.push(`/user/profile/${username}`);
+  };
 
+  const navigateToAdmin = () => {
+    router.push("/admin/create-user");
+  }
 
   return (
     <DropdownMenu>
@@ -27,17 +40,29 @@ const UserDropdown = () => {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuLabel>{
+          t("navbar.userDropdown.title")
+        }</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="cursor-pointer hover:bg-primary-color hover:text-white 
-          transition-colors duration-100 ease-in-out">
+          transition-colors duration-100 ease-in-out"
+          onClick={() => navigateToProfile(user!.username)}
+
+        >
           <User className="mr-2 h-4 w-4" />
-          <span >Profile</span>
+          <span >{
+            t("navbar.userDropdown.profile")
+          }</span>
         </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer hover:bg-primary-color hover:text-white 
-          transition-colors duration-100 ease-in-out">
-          <Settings className="mr-2 h-4 w-4" />
-          <span >Settings</span>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem className="cursor-pointer hover:bg-primary-color text-primary-color
+          transition-colors duration-100 ease-in-out"
+          onClick={navigateToAdmin}
+        >
+          <UserRoundCog className="mr-2 h-4 w-4" />
+          <span >{
+            t("navbar.userDropdown.admin")
+          }</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="cursor-pointer hover:bg-primary-color hover:text-white 
@@ -46,7 +71,9 @@ const UserDropdown = () => {
           onClick={logout}
         >
           <LogOut className="mr-2 h-4 w-4" />
-          <span >Logout</span>
+          <span >{
+            t("navbar.userDropdown.logout")
+          }</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

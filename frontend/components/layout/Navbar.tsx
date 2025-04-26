@@ -4,6 +4,7 @@ import Image from "next/image";
 import Dropdowns from "./Dropdowns";
 import { useLanguage } from "@/lib/LanguageContext";
 import { useAuth } from "@/lib/AuthContext";
+import { environment } from "@/env/environment.dev";
 
 export function Navbar() {
   const { t } = useLanguage();
@@ -22,10 +23,15 @@ export function Navbar() {
       label: t("navbar.links.myAudits"),
       href: "/progress",
     },
-    // Only show the My Business link if the user has a businessId
-    ...(user?.businessId ? [
+    {
+      label: t("navbar.links.business"),
+      href: "/Businesses",
+    },
+    // Solo mostrar el enlace My Business si el usuario tiene un businessId
+    // y ese businessId NO es el de ACME
+    ...(user?.businessId && ! user?.businessId.includes(environment.ACMEBUSINESS.slice(0,10)) ? [
       {
-        label: t("navbar.links.myBusiness") || "My Business",
+        label: t("navbar.links.myBusiness"),
         href: `/business/${user.businessId}`,
       }
     ] : []),

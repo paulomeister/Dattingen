@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "devTwo": "next dev -p 3001",
     "dev:turbo": "next dev --turbo",
     "dev:fast": "NODE_OPTIONS='--max-old-space-size=4096' NEXT_TURBO=true next dev",
     "build": "next build",

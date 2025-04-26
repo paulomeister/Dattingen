@@ -6,7 +6,7 @@ import { UserDTO } from "@/types/User";
 type AuthContextType = {
     user: UserDTO | null;
     token: string | null;
-    isLoggedIn: boolean;
+    isLoggedIn: boolean; // !
     setAuthUser: (user: UserDTO | null) => void;
     setToken: (token: string | null) => void;
     logout: () => void;
@@ -22,16 +22,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     function logout() {
         setAuthUser(null);
         setToken(null);
+        // ! Usa localStorage
         localStorage.removeItem("user"); // Limpiar datos del usuario
     }
 
     useEffect(() => {
-
+        // ! Usa localStorage
         const storedUser = localStorage.getItem("user");
         if (storedUser) {
             try {
                 setAuthUser(JSON.parse(storedUser));
             } catch (e) {
+                // ! Usa localStorage
+
                 console.error("Error parsing user from localStorage:", e);
                 localStorage.removeItem("user"); // Limpiar datos corruptos
             }

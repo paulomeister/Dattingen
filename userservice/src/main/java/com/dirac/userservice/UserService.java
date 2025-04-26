@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.dirac.commons.exceptions.*;
 import com.dirac.userservice.DTOs.UserDTO;
-import com.dirac.userservice.enums.RoleEnum;
+import com.dirac.userservice.Enums.RoleEnum;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -35,6 +35,21 @@ public class UserService {
             throw new ResourceNotFoundException("User with username", username);
         }
         return user;
+    }
+    
+    // Nuevo método: Buscar usuarios por nombre o username
+    public List<UserModel> searchUsers(String searchTerm) {
+        if (searchTerm == null || searchTerm.trim().isEmpty()) {
+            throw new BadRequestException("Search term cannot be empty");
+        }
+        
+        List<UserModel> users = userRepository.findByUsernameOrNameContainingIgnoreCase(searchTerm);
+        
+        if (users.isEmpty()) {
+            throw new ResourceNotFoundException("Users matching search term", searchTerm);
+        }
+        
+        return users;
     }
 
     // Obtener usuarios por Business
@@ -131,9 +146,9 @@ public class UserService {
 
         UserModel user = userRepository.findById(_id)
                 .orElseThrow(() -> new ResourceNotFoundException("User", _id));
-        
+
         // Validar que el rol no sea ni Admin ni AuditorInterno
-        if (user.getRole() == RoleEnum.Admin || user.getRole() == RoleEnum.InternalAuditor) {
+        if (!user.getRole().equals(RoleEnum.ExternalAuditor)) {
             throw new BadRequestException("Cannot delete user with role: " + user.getRole());
         }
 
@@ -144,7 +159,7 @@ public class UserService {
             // Ir al servicio de negocio y eliminar la asociación
             // businessService.removeUserFromBusiness(user.getBusinessId(), _id);
         }
-                
+
         userRepository.deleteById(_id);
     }
 
