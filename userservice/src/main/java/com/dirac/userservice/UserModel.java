@@ -3,7 +3,7 @@ package com.dirac.userservice;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.dirac.userservice.enums.RoleEnum;
+import com.dirac.userservice.Enums.RoleEnum;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.dirac.commons.exceptions.*;
 import com.dirac.userservice.DTOs.UserDTO;
-import com.dirac.userservice.enums.RoleEnum;
+import com.dirac.userservice.Enums.RoleEnum;
 
 import java.util.EnumSet;
 import java.util.List;
