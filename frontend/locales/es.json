@@ -1,54 +1,113 @@
 {
+  "navbar": {
+    "links": {
+      "home": "Inicio",
+      "rulesets": "Normativas",
+      "myAudits": "Mis Auditorías",
+      "enterprises": "Empresas",
+      "myEnterprises": "Mis Empresas"
+    },
+    "userDropdown": {
+      "title": "Mi Cuenta",
+      "profile": "Perfil",
+      "logout": "Cerrar Sesión"
+    }
+  },
   "auth": {
     "tabs": {
-      "title": "Sistema de Auditorías ACME",
-      "subtitle": "Login or create an account to continue",
-      "login": "Login",
-      "register": "Register"
+      "title": "Sistema de Auditoría ACME",
+      "subtitle": "Inicia sesión o crea una cuenta para continuar",
+      "login": "Iniciar Sesión",
+      "register": "Registrarse"
     },
     "login": {
-      "title": "Login",
-      "email": "Email",
-      "password": "Password",
-      "rememberMe": "Remember Me",
-      "loginButton": "Login",
-      "forgotPasswordLink": "Forgot Password?",
-      "registerLink": "Register"
+      "title": "Iniciar Sesión",
+      "email": "Correo Electrónico",
+      "password": "Contraseña",
+      "rememberMe": "Recordarme",
+      "loginButton": "Iniciar Sesión",
+      "forgotPasswordLink": "¿Olvidaste tu Contraseña?",
+      "registerLink": "Registrarse"
     },
     "register": {
-      "username": "Usuario",
-      "usernameplaceholder": "Escoge un Usuario",
-      "fullName": "Usuario",
-      "fullNameplaceholder": "Escoge un Usuario",
-      "email": "Correo",
-      "emailplaceholder": "Escoge un Correo",
+      "title": "Registrarse",
+      "registerButton": "¡Registrarse!",
+      "username": "Nombre de Usuario",
+      "usernamePlaceholder": "jsanchez08",
+      "fullName": "Nombre Completo",
+      "fullNamePlaceholder": "Juan Andrés Sánchez",
+      "email": "Correo Electrónico",
+      "emailPlaceholder": "Elige un correo electrónico",
       "password": "Contraseña",
-      "passwordplaceholder": "Escoge una Contraseña",
+      "passwordPlaceholder": "Elige una contraseña",
       "confirmPassword": "Confirmar Contraseña",
-      "confirmPasswordplaceholder": "Confirma la Contraseña"
+      "confirmPasswordPlaceholder": "Confirma la contraseña",
+      "languages": {
+        "language": "Idioma",
+        "english": "Inglés",
+        "spanish": "Español",
+        "french": "Francés"
+      },
+      "roles": {
+        "role": "Rol",
+        "coordinator": "Coordinador",
+        "auditor": "Auditor"
+      },
+      "successMessage": "¡Registro exitoso!",
+      "errorMessage": "Error en el registro. Por favor, inténtalo de nuevo."
+    }
+  },
+  "business": {
+    "page": {
+      "search": "ACME Inc",
+      "clear": "Limpiar",
+      "retry": "Reintentar más tarde...",
+      "error": {
+        "fetch": "Error al obtener empresas. Por favor, inténtalo de nuevo."
+      },
+      "emptyTitle": "No se encontraron empresas"
+    },
+    "create": {
+      "title": "Crear Empresa",
+      "subtitle": "Como Coordinador, necesitas configurar tu empresa para continuar.",
+      "name": "Nombre de la Empresa",
+      "namePlaceholder": "Ingresa el nombre de tu empresa",
+      "activity": "Actividad Empresarial",
+      "activityPlaceholder": "Describe las principales actividades de tu empresa",
+      "success": "¡Empresa creada con éxito!",
+      "error": "Error al crear la empresa. Por favor, inténtalo de nuevo."
+    },
+    "associates": {
+      "title": "USUARIOS",
+      "empty": "No hay usuarios asociados a esta empresa"
     }
   },
   "rulesets": {},
   "statistics": {},
-  "user": {},
+  "user": {
+    "profile": {
+      "delete": "Eliminar Cuenta",
+      "deleting": "Eliminando Cuenta...",
+      "edit": "Editar Perfil",
+      "confirmDeletion": "Confirmar Eliminación de Cuenta",
+      "deleteConfirmationMessage": "Esta acción no se puede deshacer. Eliminará permanentemente tu cuenta y tus datos de nuestros servidores.",
+      "confirmationQuestion": "¿Estás seguro de que deseas eliminar tu cuenta?",
+      "cancel": "Cancelar",
+      "success": "¡Usuario eliminado con éxito!",
+      "error": "Error al eliminar el usuario. Por favor, inténtalo de nuevo."
+    }
+  },
   "components": {},
-  "business": {
-    "creation": {
-      "title": "Crear Empresa",
-      "subtitle": "Como Coordinador, necesitas configurar tu empresa para continuar.",
-      "logoUpload": "Logotipo de la Empresa",
-      "uploadHint": "Sube una imagen cuadrada para mejores resultados. Tamaño máximo 2MB.",
-      "uploadLabel": "Subir logotipo",
-      "name": "Nombre de la Empresa",
-      "nameplaceholder": "Ingresa el nombre de tu empresa",
-      "activity": "Actividad Empresarial",
-      "activityplaceholder": "Describe las actividades principales de tu empresa",
-      "submitButton": "Crear Empresa",
-      "submitting": "Creando...",
-      "successMessage": "Empresa creada exitosamente!",
-      "errorMessage": "Error al crear la empresa",
-      "logoSuccessMessage": "Logotipo subido exitosamente!",
-      "logoErrorMessage": "Error al subir el logotipo"
+  "common": {
+    "cancel": "Cancelar"
+  },
+  "home": {
+    "hero": {
+      "title": "Muestra al Mundo Lo Que",
+      "titleBold": "Significas",
+      "description": "Certifica tu empresa con las mejores prácticas y estándares del mundo.",
+      "descriptionBold": "Sé la mejor versión de tu empresa.",
+      "startButton": "¡Comenzar!"
     }
   }
 }

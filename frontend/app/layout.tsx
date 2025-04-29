@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "../components/layout/Navbar";
 import { LanguageProvider } from "@/lib/LanguageContext";
-import { AuthProvider } from "@/lib/AuthContext"; 
+import { AuthProvider } from "@/lib/AuthContext";
 import { Toaster } from "react-hot-toast";
 
 export const montserrat = Inter({
@@ -24,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={montserrat.className}>
       <body className="min-h-screen flex flex-col">
-        <AuthProvider> 
+        <AuthProvider>
           <LanguageProvider>
             <Navbar />
             <main className="flex-grow py-20">{children}</main>

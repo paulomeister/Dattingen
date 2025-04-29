@@ -12,5 +12,4 @@ import lombok.NoArgsConstructor;
 public class AsociateModel {
   private String _id;
   private String role;
-  private String authId;
 }

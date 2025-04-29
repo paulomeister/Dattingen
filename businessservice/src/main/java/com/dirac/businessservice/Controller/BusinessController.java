@@ -8,12 +8,20 @@ import com.dirac.businessservice.DTOs.ResponseDTO;
 import com.dirac.businessservice.Model.BusinessModel;
 import com.dirac.businessservice.Service.BusinessService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/")
 public class BusinessController {
 
     @Autowired
     private BusinessService businessService;
+
+    @GetMapping("/")
+    public ResponseEntity<ResponseDTO<List<BusinessModel>>> getAllBusinesses() {
+        List<BusinessModel> businesses = businessService.findAllBusinesses();
+        return ResponseEntity.ok(new ResponseDTO<>(200, "Top 20 businesses retrieved successfully.", businesses));
+    }
 
     @GetMapping("/{businessId}")
     public ResponseEntity<ResponseDTO<BusinessModel>> getBusinessById(@PathVariable String businessId) {
@@ -38,5 +46,12 @@ public class BusinessController {
     public ResponseEntity<ResponseDTO<String>> deleteBusiness(@PathVariable String businessId) {
         businessService.deleteBusiness(businessId);
         return ResponseEntity.ok(new ResponseDTO<>(200, "Business deleted successfully.", businessId));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<ResponseDTO<List<BusinessModel>>> searchBusinesses(
+            @RequestParam(required = false) String name) {
+        List<BusinessModel> businesses = businessService.findBusinessesByName(name);
+        return ResponseEntity.ok(new ResponseDTO<>(200, "Businesses retrieved successfully.", businesses));
     }
 }

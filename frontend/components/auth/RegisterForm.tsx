@@ -6,15 +6,16 @@ import { Button } from "@/components/ui/button";
 import { UserInput } from "./UserInput";
 import { RoleSelector } from "./RoleSelector";
 import { LanguageSelector } from "./LanguageSelector";
-import { User } from "@/types/User";
+import { User, UserDTO } from "@/types/User";
 import { useLanguage } from "@/lib/LanguageContext";
 import { useRegister } from "@/hooks/useRegister";
 import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export function RegisterForm() {
   // Language
   const { t } = useLanguage();
-
+  const router = useRouter();
   // Component State
   const [user, setUser] = useState<User>({
     _id: null,
@@ -38,7 +39,15 @@ export function RegisterForm() {
     e.preventDefault();
 
     try {
-      await registerUser(user);
+      const newUser: UserDTO = await registerUser(user);
+
+      if (newUser.role === "Coordinator") {
+        router.push("/business/create");
+      } else {
+        router.push("/");
+
+      }
+
       toast.success(t("auth.register.successMessage"));
     } catch (err) {
       console.error("Error:", err);

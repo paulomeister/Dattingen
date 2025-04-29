@@ -3,11 +3,12 @@ import { Audit } from "./Audit";
 export type AssociateRole = "Coordinator" | "InternalAuditor";
 
 export interface Associate {
-  userId: string;
+  _id: string;
   role: AssociateRole;
 }
 
 export interface Business {
+  _id: string | null;
   name: string;
   activity: string;
   associates: Associate[];

@@ -15,7 +15,7 @@ const Dropdowns = () => {
                 <UserDropdown />
             ) : (
                 <Link
-                    href="/auth/login"
+                    href="/auth/"
                     className="text-sm font-medium text-primary-color transition-colors hover:text-gray-400"
                 >
                     Login

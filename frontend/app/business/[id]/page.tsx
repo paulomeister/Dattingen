@@ -17,7 +17,6 @@ export const metadata: Metadata = {
 // This is a React Server Component that fetches the data
 export default async function BusinessPage({ params }: BusinessPageProps) {
     const { id } = await params;
-    // TODO esperar a que estén los métodos para probar esto!!
 
     // Server-side API request to fetch business data
     const response = await fetch(
@@ -32,9 +31,7 @@ export default async function BusinessPage({ params }: BusinessPageProps) {
 
     // Handle errors
     if (!response.ok) {
-
-        console.log(`Failed to fetch business data: ${response.statusText}`);
-
+        console.error(`Failed to fetch business data: ${response.statusText}`);
     }
 
     const data = await response.json();
