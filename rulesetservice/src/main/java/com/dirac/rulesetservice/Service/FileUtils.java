@@ -97,7 +97,7 @@ public class FileUtils {
     public void deleteFileFromAzureStorage(String filePath, String fileName){
         log.info("Deleting file named: " + fileName + " from " + filePath);
         azureStorageClient.getBlobClient(filePath + File.separator + fileName).getBlockBlobClient().deleteIfExists();
-        log.info("File downloaded successfully from Azure File Storage");
+        log.info("File deleted successfully from Azure File Storage");
     }
 
     /**
