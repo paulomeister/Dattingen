@@ -3,11 +3,10 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import enTranslations from "@/locales/en.json";
 import esTranslations from "@/locales/es.json";
-import frTranslations from "@/locales/fr.json";
 import { UserDTO } from "@/types/User";
 import { environment } from "@/env/environment.dev";
 
-export type Language = "en" | "es" | "fr";
+export type Language = "en" | "es" ;
 
 type LanguageContextType = {
   language: Language;
@@ -19,7 +18,7 @@ type LanguageContextType = {
 const translations = {
   en: enTranslations,
   es: esTranslations,
-  fr: frTranslations
+
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -33,21 +32,21 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     const user: UserDTO | null = JSON.parse(localStorage.getItem("user") || "null");
 
     // First priority: User's saved preference from profile
-    if (user?.language && ["en", "es", "fr"].includes(user.language as string)) {
+    if (user?.language && ["en", "es"].includes(user.language as string)) {
       setLanguageState(user.language as Language);
       return;
     }
 
     // Second priority: Previously saved language in localStorage
     const savedLanguage = localStorage.getItem("language") as Language;
-    if (savedLanguage && ["en", "es", "fr"].includes(savedLanguage)) {
+    if (savedLanguage && ["en", "es"].includes(savedLanguage)) {
       setLanguageState(savedLanguage);
       return;
     }
 
     //Third priority: Browser language
     const browserLanguage = navigator.language.split('-')[0];
-    if (["en", "es", "fr"].includes(browserLanguage)) {
+    if (["en", "es"].includes(browserLanguage)) {
       setLanguageState(browserLanguage as Language);
       return;
     }

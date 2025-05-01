@@ -35,7 +35,7 @@ const ProfileEditForm = ({ user }: ProfileEditFormProps) => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: user.name,
-      language: user.language as "en" | "es" | "fr",
+      language: user.language as "en" | "es",
     },
   })
 
@@ -122,7 +122,6 @@ const ProfileEditForm = ({ user }: ProfileEditFormProps) => {
                   <SelectContent>
                     <SelectItem value="en">English</SelectItem>
                     <SelectItem value="es">Spanish</SelectItem>
-                    <SelectItem value="fr">French</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage className="text-red-500 text-xs" />

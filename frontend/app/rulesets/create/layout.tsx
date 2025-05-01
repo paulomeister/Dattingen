@@ -6,9 +6,13 @@ const CreateLayout = ({
   return (
     <div className="flex items-center justify-center">
       <SidebarProvider>
+        {/* Este componente: */}
         <NormativesSidebar />
         <SidebarTrigger className="hover:cursor-pointer" />
-        <div className="flex items-center justify-center">{children}</div>
+        <div className="mx-auto my-auto w-full">
+          {children}
+
+        </div>
       </SidebarProvider>
     </div>
   );

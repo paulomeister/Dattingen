@@ -1,21 +1,26 @@
-import React from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
+  SidebarFooter,
 } from "../ui/sidebar";
 import { Compulsoriness, Criterion, CycleStageEnum } from "@/types/Criterion";
-import CompulAccordion from "./CompulAccordion";
-import CriterionAccordion from "./CriterionAccordion";
+import { Button } from "../ui/button";
+import { Plus, Download } from "lucide-react";
+
+// Importar los componentes modulares que creamos
+import SidebarHeaderStats from "./sidebar/SidebarHeader";
+import CompulsorinessSection from "./sidebar/CompulsorinenessSection";
+import CriterionsSection from "./sidebar/CriterionsSection";
 
 const NormativesSidebar = () => {
-  const items: {
+  // TODO Quitar estos datos estáticos por llamada de una API
+  const [items, setItems] = useState<{
     Compulsoriness: Compulsoriness[];
     Criterions: Criterion[];
-  } = {
+  }>({
     Compulsoriness: [
       {
         id: "1",
@@ -52,41 +57,66 @@ const NormativesSidebar = () => {
         ],
       },
     ],
+  });
+
+  // Simulamos carga de datos inicial con un pequeño delay para mejor UX
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simula una carga de datos desde API
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Función para añadir un nuevo término (placeholder)
+  const handleAddTerm = () => {
+    // TODO: Implementar lógica real con API
+    alert("Esta función permitiría agregar nuevos términos desde la UI");
+  };
+
+  // Función para descargar ruleset (placeholder)
+  const handleDownload = () => {
+    // TODO: Implementar lógica real con API
+    alert("Esta función permitiría exportar el ruleset completo");
   };
 
   return (
-    <div>
-      <Sidebar>
-        <SidebarContent className="mt-16">
-          {Object.keys(items).map((key) => (
-            <SidebarGroup key={key}>
-              <SidebarGroupLabel className="text-xl  text-black">
-                {key}
-              </SidebarGroupLabel>
-              <hr className=" h-0.5 border-t-0 bg-neutral-300 dark:bg-white/10" />
+    <Sidebar collapsible="offcanvas" variant="floating">
+      {/* Encabezado con estadísticas */}
+      <SidebarHeaderStats
+        compulsoriness={items.Compulsoriness}
+        criterions={items.Criterions}
+      />
 
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {key === "Compulsoriness"
-                    ? items["Compulsoriness"].map((compulsoriness, index) => (
-                        <CompulAccordion
-                          key={index}
-                          compulsoriness={compulsoriness}
-                        />
-                      ))
-                    : items["Criterions"].map((criterion) => (
-                        <CriterionAccordion
-                          key={criterion.controlId}
-                          criterion={criterion}
-                        />
-                      ))}
-                </SidebarMenu>
-              </SidebarGroupContent>
+      {/* Contenido principal con scroll */}
+      <SidebarContent className="px-1">
+        {loading ? (
+          // Estado de carga
+          <div className="flex flex-col space-y-4 p-4">
+            <div className="h-6 bg-tertiary-color/10 rounded animate-pulse w-2/3"></div>
+            <div className="h-10 bg-tertiary-color/10 rounded animate-pulse"></div>
+            <div className="h-10 bg-tertiary-color/10 rounded animate-pulse"></div>
+          </div>
+        ) : (
+          <>
+            {/* Sección de términos de obligatoriedad */}
+            <SidebarGroup className="mb-6">
+              <CompulsorinessSection items={items.Compulsoriness} />
             </SidebarGroup>
-          ))}
-        </SidebarContent>
-      </Sidebar>
-    </div>
+
+            {/* Sección de criterios */}
+            <SidebarGroup>
+              <CriterionsSection items={items.Criterions} />
+            </SidebarGroup>
+          </>
+        )}
+      </SidebarContent>
+
+
+    </Sidebar>
   );
 };
 
