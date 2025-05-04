@@ -7,16 +7,46 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { environment } from "@/env/environment.dev";
 import { Ruleset } from "@/types/Ruleset";
+import { useRouter } from "next/navigation";
 
 interface RulesetCreatorProps {
     rulesetId: string | string[]; // Recibe el rulesetId como prop
 }
 
 const RulesetCreator = ({ rulesetId }: RulesetCreatorProps) => {
+
     const [isCreating, setIsCreating] = useState<boolean>(false);
     const [selectedText, setSelectedText] = useState<string>("");
     const [ruleset, setRuleset] = useState<Ruleset | null>(null);
     const [fileUrl, setFileUrl] = useState<string | null>(null);
+
+    const router = useRouter()
+    useEffect(() => {
+        async function getFileUrl(): Promise<void> {
+            const fileName: string = ruleset!.fileName; // Recibo del AzureResponse el atributo fileName
+            // Mandamos a buscar el archivo a backend por su nmbre
+            const fileData = await fetch(`${environment.API_URL}/rulesets/api/downloadFile/${fileName}`);
+
+            const fileRes = await fileData.blob();
+
+            const fileObject = new File([fileRes], fileName, { type: "application/pdf" });
+            setFileUrl(URL.createObjectURL(fileObject)); // Envía el blob (desde el cliente) al visor
+        }
+
+        if (ruleset) {
+
+            const currentStatus = ruleset.status.toLowerCase();
+
+            // Si ya ha sido publicado, entonces no se puede editar
+            if (currentStatus === "published" || ruleset.status.toLowerCase() === "publicado") {
+                router.push(`/rulesets/get/${rulesetId}`);
+            } else {
+                getFileUrl();
+            }
+
+        }
+    }, [ruleset])
+
     // UseEffect para obtener la data del ruleset
     useEffect(() => {
         const fetchRulesetData = async () => {
@@ -27,17 +57,6 @@ const RulesetCreator = ({ rulesetId }: RulesetCreatorProps) => {
                 }
                 const ruleset: Ruleset = await res.json();
                 setRuleset(ruleset);
-
-                const fileName: string = ruleset?.fileName; // Recibo del AzureResponse el atributo fileName
-
-                // Mandamos a buscar el archivo a backend por su nmbre
-                const fileData = await fetch(`${environment.API_URL}/rulesets/api/downloadFile/${fileName}`);
-
-                // Esto estará bien?
-                const fileRes = await fileData.blob();
-
-                const fileObject = new File([fileRes], fileName, { type: "application/pdf" });
-                setFileUrl(URL.createObjectURL(fileObject)); // Funcionaba antes con el objectUrl
 
             } catch (e) {
                 console.error("Error on RulesetCreator:", e);
@@ -84,7 +103,7 @@ const RulesetCreator = ({ rulesetId }: RulesetCreatorProps) => {
                         </Button>
                     </div>
                     <div className="p-4 overflow-auto h-[calc(100%-4rem)]">
-                        <Viewer fileUrl={fileUrl} onTextSelection={handleTextSelection} />
+                        <Viewer fileUrl={fileUrl!} onTextSelection={handleTextSelection} />
                     </div>
                 </CardContent>
             </Card>

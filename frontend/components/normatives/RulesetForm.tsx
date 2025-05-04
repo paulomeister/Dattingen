@@ -6,13 +6,19 @@ import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "../ui/select";
-import {  Ruleset } from "@/types/Ruleset";
+import { Ruleset } from "@/types/Ruleset";
+import { useAuth } from "@/lib/AuthContext";
 
 interface Props {
     onSave: (data: Ruleset) => void;
 }
 
 export default function RulesetForm({ onSave }: Props) {
+
+
+    const { user } = useAuth()
+
+
     const { register, handleSubmit, formState: { errors } } = useForm<Ruleset>({
         defaultValues: {
             version: "",
@@ -74,8 +80,7 @@ export default function RulesetForm({ onSave }: Props) {
                             <SelectValue placeholder="Select status" />
                         </SelectTrigger>
                         <SelectContent className="bg-white">
-                            <SelectItem className="bg-white" value="draft">Draft</SelectItem>
-                            <SelectItem className="bg-white" value="published">Published</SelectItem>
+                            <SelectItem className="bg-white" value={user?.language === "es" ? "borrador" : "draft"}>{user?.language === "es" ? "Borrador" : "Draft"}</SelectItem>
                         </SelectContent>
                     </Select>
                     {errors.status && <p className="text-sm text-red-500">{errors.status.message}</p>}
