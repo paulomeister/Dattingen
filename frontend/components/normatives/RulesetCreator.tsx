@@ -15,9 +15,8 @@ interface RulesetCreatorProps {
 const RulesetCreator = ({ rulesetId }: RulesetCreatorProps) => {
     const [isCreating, setIsCreating] = useState<boolean>(false);
     const [selectedText, setSelectedText] = useState<string>("");
-    const [file, setFile] = useState<string | null>(null);
     const [ruleset, setRuleset] = useState<Ruleset | null>(null);
-
+    const [fileUrl, setFileUrl] = useState<string | null>(null);
     // UseEffect para obtener la data del ruleset
     useEffect(() => {
         const fetchRulesetData = async () => {
@@ -26,11 +25,20 @@ const RulesetCreator = ({ rulesetId }: RulesetCreatorProps) => {
                 if (!res.ok) {
                     throw new Error("Failed to fetch ruleset data");
                 }
-                const rulesetData = await res.json();
-                setRuleset(rulesetData);
+                const ruleset: Ruleset = await res.json();
+                setRuleset(ruleset);
 
-                // Aquí usamos directamente la URL del archivo del ruleset
-                setFile(rulesetData.link); // Asignamos la URL directamente al estado `file`
+                const fileName: string = ruleset?.fileName; // Recibo del AzureResponse el atributo fileName
+
+                // Mandamos a buscar el archivo a backend por su nmbre
+                const fileData = await fetch(`${environment.API_URL}/rulesets/api/downloadFile/${fileName}`);
+
+                // Esto estará bien?
+                const fileRes = await fileData.blob();
+
+                const fileObject = new File([fileRes], fileName, { type: "application/pdf" });
+                setFileUrl(URL.createObjectURL(fileObject)); // Funcionaba antes con el objectUrl
+
             } catch (e) {
                 console.error("Error on RulesetCreator:", e);
             }
@@ -76,7 +84,7 @@ const RulesetCreator = ({ rulesetId }: RulesetCreatorProps) => {
                         </Button>
                     </div>
                     <div className="p-4 overflow-auto h-[calc(100%-4rem)]">
-                        <Viewer file={file} onTextSelection={handleTextSelection} />
+                        <Viewer fileUrl={fileUrl} onTextSelection={handleTextSelection} />
                     </div>
                 </CardContent>
             </Card>

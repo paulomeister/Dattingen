@@ -24,6 +24,6 @@ export interface Ruleset {
   organization: string;
   publishingDate: Date;
   status: string;
-  fileUrl:string;
+  fileName:string;
   controls: Control[];
 }

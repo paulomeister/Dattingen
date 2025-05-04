@@ -23,7 +23,7 @@ public class RulesetModel {
     private String version;
     private String name;
     private String organization;
-    private String fileUrl;
+    private String fileName;
     private Date publishingDate;
     private String status;
     private List<Control> controls;

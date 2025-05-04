@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.dirac.rulesetservice.DTO.ResponseAzure;
 import com.dirac.rulesetservice.Model.RulesetModel;
 import com.dirac.rulesetservice.Model.RulesetModel.ComplianceLevel;
 import com.dirac.rulesetservice.Model.RulesetModel.Control;
@@ -31,7 +32,7 @@ public class RulesetController {
     private RulesetService rulesetService;
 
     @PostMapping(value = "/uploadFile")
-    public String uploadFile(@RequestPart MultipartFile file) {
+    public ResponseAzure uploadFile(@RequestPart MultipartFile file) {
         return fileUtils.uploadFileInAzureStorage(file);
     }
 

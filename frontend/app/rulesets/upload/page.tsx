@@ -51,9 +51,11 @@ export default function CreateNormativesPage() {
           method: "POST",
           body: formData,
         });
-  
 
-        const fileName = await uploadResponse.text(); // Suponemos que el nombre del archivo es el texto retornado
+
+        const data = await uploadResponse.json(); // Suponemos que el nombre del archivo es el texto retornado
+
+        const fileName = data.fileName;
 
         // Ahora, usamos los datos del formulario para completar el ruleset
         const completeRulesetData = {
