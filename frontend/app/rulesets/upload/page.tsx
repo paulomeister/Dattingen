@@ -32,9 +32,14 @@ export default function CreateNormativesPage() {
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault()
     const file = e.dataTransfer.files[0]
-    if (file && file.type === "application/pdf") {
-      setUploadedFile(file)
-      setDrawerOpen(false)
+    if (file) {
+      if (file.type === "application/pdf") {
+        setUploadedFile(file)
+        setErrorMessage(null) // Clear any previous error
+        setDrawerOpen(false)
+      } else {
+        setErrorMessage(t("Only PDF files are allowed.")) // Set error message
+      }
     }
   }
 
