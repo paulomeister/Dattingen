@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { environment } from "@/env/environment.dev"; // Asumiendo que tienes esto para las URLs de tu API
 import { Control, useForm } from "react-hook-form";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -6,10 +7,11 @@ import { BookOpen, Save, Trash2, AlertTriangle } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../button";
+import { useAuth } from "@/lib/AuthContext";
 
 interface Props {
   criterion?: Control;
-  onSave: (data: Control) => void; // Cambié el tipo a `Control`
+  onSave: (data: Control) => void;
   onDelete?: (controlId: string) => void;
   selectedText?: string;
 }
@@ -20,18 +22,34 @@ export default function CriterionForm({
   onDelete,
   selectedText,
 }: Props) {
+  const { user } = useAuth();
   const [compulsoriness, setCompulsoriness] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [cycleStageOptions, setCycleStageOptions] = useState<string[]>([]); // Nueva variable de estado para las opciones de ciclo
+
   const { register, handleSubmit, setValue, formState: { errors } } = useForm<Control>({
     defaultValues: criterion ?? {
-      controlId: "", // Asegúrate de inicializarlo correctamente
+      controlId: "",
       title: "",
       description: selectedText ?? "",
-      suitability: "", // Asegúrate de manejarlo correctamente
+      suitability: "",
       cycleStage: "",
-      compulsoriness: "", // Deja compulsoriness como string
+      compulsoriness: "",
     },
   });
+
+  /*
+   * Hay que añadir la funcionalidad de que cuando se le da a "Save Criterion" se muestre en el sidebar el control que se ha creado.
+    * y luego, que haya un botón (en el RulesetCreator) para darle a "Guardar" y que ese botón envíe automáticamente todos los Controles
+   * guardados en el sidebar a la API. (No se puede hacer desde aquí porque no tenemos acceso al sidebar)
+  */
+
+
+
+  useEffect(() => {
+    fetchCompulsoriness(); // Llama a la función para obtener los términos de compulsoriedad
+    setCycleStageOptions(getCycleStageOptions()); // Actualiza las opciones de ciclo según el idioma del usuario
+  }, [user?.language]); // Se ejecutará cuando el idioma cambie
 
   const onSubmit = async (data: Control) => {
     setIsSubmitting(true);
@@ -52,11 +70,18 @@ export default function CriterionForm({
       setCompulsoriness(data);
     } catch (error) {
       console.error("Error al obtener los términos de compulsoriedad:", error);
-    } finally {
-      setLoading(false);  // Finaliza el estado de carga
     }
   };
-  //TODO MEJORANDOOO
+
+  // Función para obtener las opciones de "Cycle Stage" según el idioma del usuario
+  const getCycleStageOptions = () => {
+    if (user?.language === "es") {
+      return ["P", "H", "V", "A"];
+    } else if (user?.language === "en") {
+      return ["P", "D", "C", "A"];
+    }
+    return []; // Opciones predeterminadas
+  };
 
   function updateTitleFromSelection(): void {
     if (selectedText) setValue("title", selectedText);
@@ -105,8 +130,8 @@ export default function CriterionForm({
             <SelectTrigger className="border-tertiary-color/30 focus:border-primary-color/50 focus:ring-primary-color/20 transition-all">
               <SelectValue placeholder="Select suitability" />
             </SelectTrigger>
-            <SelectContent>{
-              compulsoriness.map((suitability) => (
+            <SelectContent>
+              {compulsoriness.map((suitability) => (
                 <SelectItem key={suitability} value={suitability}>
                   {suitability}
                 </SelectItem>
@@ -124,24 +149,17 @@ export default function CriterionForm({
         <div className="space-y-2">
           <Label htmlFor="cycleStage" className="text-sm font-medium text-gray-700">Cycle Stage</Label>
           <Select {...register("cycleStage", { required: "Cycle stage is required" })}>
-            <SelectTrigger className={`border-tertiary-color/30 focus:border-primary-color/50 focus:ring-primary-color/20 transition-all
-                           ${errors.cycleStage ? "border-red-300 focus:border-red-500 focus:ring-red-200" : ""}`}>
+            <SelectTrigger className="border-tertiary-color/30 focus:border-primary-color/50 focus:ring-primary-color/20 transition-all">
               <SelectValue placeholder="Select cycle stage" />
             </SelectTrigger>
             <SelectContent>
-              {Object.values(CycleStageEnum).map((stage) => (
+              {cycleStageOptions.map((stage) => (
                 <SelectItem key={stage} value={stage}>
                   {stage}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
-          {errors.cycleStage && (
-            <p className="text-sm text-red-500 flex items-center gap-1 mt-1">
-              <AlertTriangle size={14} />
-              {errors.cycleStage.message}
-            </p>
-          )}
         </div>
 
         <div className="space-y-2">
@@ -159,6 +177,7 @@ export default function CriterionForm({
           <Button
             type="submit"
             disabled={isSubmitting}
+            onClick={() => handleSubmit(onSubmit)}
             className="bg-primary-color hover:bg-primary-color/90 text-white flex items-center gap-2"
           >
             <Save size={16} />
