@@ -25,7 +25,7 @@ export function Navbar() {
     },
     {
       label: t("navbar.links.business"),
-      href: "/Businesses",
+      href: "/business",
     },
     // Solo mostrar el enlace My Business si el usuario tiene un businessId
     // y ese businessId NO es el de ACME

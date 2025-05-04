@@ -8,6 +8,7 @@ import {
 } from "../ui/accordion";
 import { Compulsoriness } from "@/types/Criterion";
 import CompulsorinessForm from "./CompulsorinessForm";
+import { AlertCircle } from "lucide-react";
 
 const CompulAccordion = ({
   compulsoriness,
@@ -15,31 +16,31 @@ const CompulAccordion = ({
   compulsoriness: Compulsoriness;
 }) => {
   const onSave = (data: Compulsoriness) => {
+    // TODO: Implementar guardado real con API
     alert("guardar TERMINO");
   };
 
   const onDelete = (criterionId: string) => {
+    // TODO: Implementar eliminación real con API
     alert("eliminar TÉRMINO!!!");
   };
 
   return (
-    <Accordion type="single" collapsible>
-      <AccordionItem value="item-1">
+    <Accordion type="single" collapsible className="border-0">
+      <AccordionItem value="item-1" className="border-0 mb-1">
         <AccordionTrigger
-          className="hover:cursor-pointer text-transparent inline-flex p-0 m-0
-        bg-clip-text bg-gradient-to-r from-sky-400 to-blue-500 text-md"
+          className="bg-secondary-color/5 hover:bg-secondary-color/10 py-2 px-3 rounded-lg transition-colors
+                     text-sm font-medium text-gray-700 hover:no-underline flex items-center gap-2"
         >
-          T.{" "}
-          <span className="italic text-blue-500 inline p-0 m-0">
-            {compulsoriness.term}
-          </span>
+          <AlertCircle size={16} className="text-secondary-color" />
+          <span className="font-medium">{compulsoriness.term}</span>
         </AccordionTrigger>
-        <AccordionContent>
+        <AccordionContent className="pt-3 px-1">
           <CompulsorinessForm
             compulsoriness={compulsoriness}
             onSave={onSave}
             onDelete={onDelete}
-          ></CompulsorinessForm>
+          />
         </AccordionContent>
       </AccordionItem>
     </Accordion>
