@@ -4,97 +4,85 @@ import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
-  SidebarFooter,
 } from "../ui/sidebar";
-import { Compulsoriness, Criterion, CycleStageEnum } from "@/types/Criterion";
-import { Button } from "../ui/button";
-import { Plus, Download } from "lucide-react";
-
-// Importar los componentes modulares que creamos
 import SidebarHeaderStats from "./sidebar/SidebarHeader";
-import CompulsorinessSection from "./sidebar/CompulsorinenessSection";
 import CriterionsSection from "./sidebar/CriterionsSection";
+import { environment } from "@/env/environment.dev";
+import { useAuth } from "@/lib/AuthContext";
+import { Control, Ruleset } from "@/types/Ruleset";
+import { useParams } from "next/navigation";
 
-const NormativesSidebar = () => {
-  // TODO Quitar estos datos estáticos por llamada de una API
-  const [items, setItems] = useState<{
-    Compulsoriness: Compulsoriness[];
-    Criterions: Criterion[];
-  }>({
-    Compulsoriness: [
-      {
-        id: "1",
-        term: "Must",
-      },
-      {
-        id: "2",
-        term: "Should",
-      },
-    ],
-    Criterions: [
-      {
-        controlId: "1",
-        title: "Is it accessible?",
-        description: "This is the description",
-        cycleStage: CycleStageEnum.P,
-        compulsoriness: [
-          {
-            id: "1",
-            term: "Must",
-          },
-        ],
-      },
-      {
-        controlId: "2",
-        title: "Is it true",
-        description: "This is the description",
-        cycleStage: CycleStageEnum.D,
-        compulsoriness: [
-          {
-            id: "1",
-            term: "Must",
-          },
-        ],
-      },
-    ],
-  });
+interface NormativesSidebarProps {
+  rulesetId?: string; // Opcional: si se pasa directamente como prop
+}
 
-  // Simulamos carga de datos inicial con un pequeño delay para mejor UX
+const NormativesSidebar = ({ rulesetId: propRulesetId }: NormativesSidebarProps) => {
+  const params = useParams();
+  const { user } = useAuth();
+
+  // Obtener el rulesetId de los parámetros de URL o de los props
+  const rulesetId = propRulesetId || (params?.rulesetId as string);
+
+  // Estados para compulsoriness y criterions
+  const [compulsoriness, setCompulsoriness] = useState<string[]>([]);
+  const [criterions, setCriterions] = useState<Control[]>([]);
+  const [ruleset, setRuleset] = useState<Ruleset | null>(null);
+
+  // Estado de carga
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // Simula una carga de datos desde API
-    const timer = setTimeout(() => {
+  // Lógica para obtener los términos de compulsoriedad
+  const fetchCompulsoriness = async () => {
+    try {
+      const isSpanish = user?.language === "es";
+      const res = await fetch(`${environment.API_URL}/rulesets/api/ListCompulsoriness${isSpanish ? "/es" : ""}`);
+      const data = await res.json();
+      setCompulsoriness(data);  // Actualizar el estado con los datos obtenidos
+    } catch (error) {
+      console.error("Error al obtener los términos de compulsoriedad:", error);
+    } finally {
+      setLoading(false);  // Finaliza el estado de carga
+    }
+  };
+
+  const fetchRuleset = async () => {
+    if (!rulesetId) {
+      console.error("No se encontró un ID de ruleset válido");
       setLoading(false);
-    }, 500);
+      return;
+    }
 
-    return () => clearTimeout(timer);
-  }, []);
+    try {
+      const res = await fetch(`${environment.API_URL}/rulesets/api/findbyid/${rulesetId}`);
+      const data = await res.json();
+      setRuleset(data);  // Actualizar el estado con los datos obtenidos
+      setCriterions(data.controls || []);  // Actualizar los criterios, con fallback a array vacío
+    } catch (e) {
+      console.error("Error at Normatives Sidebar", e);
+    } finally {
+      setLoading(false);
+    }
+  }
 
-  // Función para añadir un nuevo término (placeholder)
-  const handleAddTerm = () => {
-    // TODO: Implementar lógica real con API
-    alert("Esta función permitiría agregar nuevos términos desde la UI");
-  };
-
-  // Función para descargar ruleset (placeholder)
-  const handleDownload = () => {
-    // TODO: Implementar lógica real con API
-    alert("Esta función permitiría exportar el ruleset completo");
-  };
+  // Llamada a la API cuando el componente se monta o cuando cambia el rulesetId
+  useEffect(() => {
+    fetchCompulsoriness();
+    if (rulesetId) {
+      fetchRuleset();
+    }
+  }, [rulesetId, user?.language]);
 
   return (
     <Sidebar collapsible="offcanvas" variant="floating">
       {/* Encabezado con estadísticas */}
       <SidebarHeaderStats
-        compulsoriness={items.Compulsoriness}
-        criterions={items.Criterions}
+        compulsoriness={compulsoriness}
+        criterions={criterions}
       />
 
       {/* Contenido principal con scroll */}
       <SidebarContent className="px-1">
         {loading ? (
-          // Estado de carga
           <div className="flex flex-col space-y-4 p-4">
             <div className="h-6 bg-tertiary-color/10 rounded animate-pulse w-2/3"></div>
             <div className="h-10 bg-tertiary-color/10 rounded animate-pulse"></div>
@@ -102,20 +90,13 @@ const NormativesSidebar = () => {
           </div>
         ) : (
           <>
-            {/* Sección de términos de obligatoriedad */}
-            <SidebarGroup className="mb-6">
-              <CompulsorinessSection items={items.Compulsoriness} />
-            </SidebarGroup>
 
-            {/* Sección de criterios */}
             <SidebarGroup>
-              <CriterionsSection items={items.Criterions} />
+              <CriterionsSection items={criterions} />
             </SidebarGroup>
           </>
         )}
       </SidebarContent>
-
-
     </Sidebar>
   );
 };

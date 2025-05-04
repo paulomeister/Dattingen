@@ -1,6 +1,7 @@
 package com.dirac.rulesetservice.Service;
 
 import com.dirac.rulesetservice.Model.RulesetModel;
+import com.dirac.rulesetservice.Model.RulesetModel.ComplianceLevel;
 import com.dirac.rulesetservice.Model.RulesetModel.Control;
 import com.dirac.rulesetservice.Model.RulesetModel.PHVAPhase;
 import com.dirac.rulesetservice.Repository.RulesetRepository;
@@ -31,6 +32,14 @@ public class RulesetService {
         return rulesetRepository.findById(id);
     }
 
+    public List<String> getAllCompulsoriness() {
+        return ComplianceLevel.getAllInEnglish();
+    }
+
+    public List<String> getAllCompulsorinessInSpanish() {
+        return ComplianceLevel.getAllInSpanish();
+    }
+
     // Update
     public RulesetModel updateRuleset(RulesetModel ruleset) {
         if (rulesetRepository.existsById(ruleset.get_id())) {
@@ -46,26 +55,26 @@ public class RulesetService {
 
     public RulesetModel addControl(String rulesetId, Control control) {
         RulesetModel ruleset = getRulesetById(rulesetId)
-            .orElseThrow(() -> new RuntimeException("Ruleset not found"));
-        
+                .orElseThrow(() -> new RuntimeException("Ruleset not found"));
+
         // Validar fase PHVA
         if (control.getCycleStage() == null) {
             throw new IllegalArgumentException("PHVA phase is required");
         }
-        
+
         // Validar nivel de obligatoriedad
         if (control.getCompulsoriness() == null) {
             throw new IllegalArgumentException("Compliance level is required");
         }
-        
+
         ruleset.getControls().add(control);
         return rulesetRepository.save(ruleset);
     }
 
     public List<Control> findControlsByPhase(PHVAPhase phase) {
         return rulesetRepository.findAll().stream()
-            .flatMap(ruleset -> ruleset.getControls().stream())
-            .filter(control -> control.getCycleStage() == phase)
-            .collect(Collectors.toList());
+                .flatMap(ruleset -> ruleset.getControls().stream())
+                .filter(control -> control.getCycleStage() == phase)
+                .collect(Collectors.toList());
     }
 }

@@ -1,25 +1,17 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { Criterion, CycleStageEnum, SuitabilityEnum } from "@/types/Criterion";
-import { Button } from "../ui/button";
+import { Control, useForm } from "react-hook-form";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { BookOpen, Save, Trash2, AlertTriangle } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Textarea } from "../ui/textarea";
+import { Button } from "../button";
 
 interface Props {
-  criterion?: Criterion;
-  onSave: (data: DataForm) => void;
-  onDelete?: (criterionId: string) => void;
+  criterion?: Control;
+  onSave: (data: Control) => void; // Cambié el tipo a `Control`
+  onDelete?: (controlId: string) => void;
   selectedText?: string;
-}
-
-interface DataForm {
-  title: string;
-  description: string;
-  cycleStage: CycleStageEnum;
-  suitabilities: SuitabilityEnum[];
 }
 
 export default function CriterionForm({
@@ -28,27 +20,43 @@ export default function CriterionForm({
   onDelete,
   selectedText,
 }: Props) {
+  const [compulsoriness, setCompulsoriness] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm<DataForm>({
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm<Control>({
     defaultValues: criterion ?? {
+      controlId: "", // Asegúrate de inicializarlo correctamente
       title: "",
       description: selectedText ?? "",
-      suitabilities: [],
-      cycleStage: "" as CycleStageEnum,
+      suitability: "", // Asegúrate de manejarlo correctamente
+      cycleStage: "",
+      compulsoriness: "", // Deja compulsoriness como string
     },
   });
 
-  const onSubmit = async (data: DataForm) => {
-    // TODO: Implementar integración con API para guardar el criterio
+  const onSubmit = async (data: Control) => {
     setIsSubmitting(true);
     try {
-      await onSave(data);
+      await onSave(data); // Enviamos el control directamente
     } catch (error) {
-      console.error("Error al guardar el criterio:", error);
+      console.error("Error al guardar el control:", error);
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  const fetchCompulsoriness = async () => {
+    try {
+      const isSpanish = user?.language === "es";
+      const res = await fetch(`${environment.API_URL}/rulesets/api/ListCompulsoriness${isSpanish ? "/es" : ""}`);
+      const data = await res.json();
+      setCompulsoriness(data);
+    } catch (error) {
+      console.error("Error al obtener los términos de compulsoriedad:", error);
+    } finally {
+      setLoading(false);  // Finaliza el estado de carga
+    }
+  };
+  //TODO MEJORANDOOO
 
   function updateTitleFromSelection(): void {
     if (selectedText) setValue("title", selectedText);
@@ -82,7 +90,7 @@ export default function CriterionForm({
           {selectedText && (
             <Button
               type="button"
-              variant="ghost" 
+              variant="ghost"
               className="text-xs text-secondary-color hover:text-secondary-color hover:bg-secondary-color/10 px-2 py-1 h-auto"
               onClick={updateTitleFromSelection}
             >
@@ -93,22 +101,22 @@ export default function CriterionForm({
 
         <div className="space-y-2">
           <Label htmlFor="suitability" className="text-sm font-medium text-gray-700">Suitability</Label>
-          <Select {...register("suitabilities")}>
+          <Select {...register("suitability")}>
             <SelectTrigger className="border-tertiary-color/30 focus:border-primary-color/50 focus:ring-primary-color/20 transition-all">
               <SelectValue placeholder="Select suitability" />
             </SelectTrigger>
-            <SelectContent>
-              {Object.values(SuitabilityEnum).map((suitability) => (
+            <SelectContent>{
+              compulsoriness.map((suitability) => (
                 <SelectItem key={suitability} value={suitability}>
                   {suitability}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
-          {errors.suitabilities && (
+          {errors.suitability && (
             <p className="text-sm text-red-500 flex items-center gap-1 mt-1">
               <AlertTriangle size={14} />
-              {errors.suitabilities.message}
+              {errors.suitability.message}
             </p>
           )}
         </div>

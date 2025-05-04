@@ -6,14 +6,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../ui/accordion";
-import { Compulsoriness } from "@/types/Criterion";
 import CompulsorinessForm from "./CompulsorinessForm";
 import { AlertCircle } from "lucide-react";
 
 const CompulAccordion = ({
   compulsoriness,
 }: {
-  compulsoriness: Compulsoriness;
+  compulsoriness: string;
 }) => {
   const onSave = (data: Compulsoriness) => {
     // TODO: Implementar guardado real con API
@@ -33,7 +32,7 @@ const CompulAccordion = ({
                      text-sm font-medium text-gray-700 hover:no-underline flex items-center gap-2"
         >
           <AlertCircle size={16} className="text-secondary-color" />
-          <span className="font-medium">{compulsoriness.term}</span>
+          <span className="font-medium">{compulsoriness}</span>
         </AccordionTrigger>
         <AccordionContent className="pt-3 px-1">
           <CompulsorinessForm

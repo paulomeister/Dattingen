@@ -2,9 +2,8 @@
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
-import { X, CheckCircle, AlertCircle, BookOpen } from "lucide-react";
+import { X, CheckCircle, BookOpen } from "lucide-react";
 import CriterionForm from "./CriterionForm";
-import CompulsorinessForm from "./CompulsorinessForm";
 
 const CreateNormativeItem = ({
   onClose,
@@ -13,13 +12,12 @@ const CreateNormativeItem = ({
   onClose: () => void;
   selectedText: string;
 }) => {
-  const [selectedForm, setSelectedForm] = useState<
-    "Criterion" | "Compulsoriness" | null
-  >(null);
-  
+  // Estado para gestionar el formulario seleccionado
+  const [selectedForm, setSelectedForm] = useState<"Criterion" | null>(null);
+
   // Añadimos estado para la animación de entrada/salida
   const [isExiting, setIsExiting] = useState(false);
-  
+
   // Función mejorada para cerrar con animación
   const handleClose = () => {
     setIsExiting(true);
@@ -44,7 +42,7 @@ const CreateNormativeItem = ({
             <X size={20} />
           </Button>
         </CardHeader>
-        
+
         {/* Contenedor con scroll */}
         <div className="overflow-y-auto max-h-[calc(90vh-4rem)]">
           <CardContent className="p-5">
@@ -54,13 +52,13 @@ const CreateNormativeItem = ({
                 <p className="text-sm italic text-gray-700 break-words">{selectedText}</p>
               </div>
             )}
-            
+
             {!selectedForm ? (
               <div className="grid grid-cols-1 gap-4">
                 <p className="text-gray-600 mb-2">What type of rule do you want to create?</p>
                 <Button
                   className="bg-primary-color hover:bg-primary-color/90 text-white shadow-md flex items-center justify-start gap-3 p-4 h-auto"
-                  onClick={() => setSelectedForm("Criterion")}
+                  onClick={() => setSelectedForm("Criterion")} // Solo permite crear Criterion
                 >
                   <CheckCircle size={20} />
                   <div className="text-left">
@@ -68,35 +66,18 @@ const CreateNormativeItem = ({
                     <p className="text-xs text-white/80 font-light">Create evaluation criteria for audits</p>
                   </div>
                 </Button>
-                <Button
-                  className="bg-secondary-color hover:bg-secondary-color/90 text-white shadow-md flex items-center justify-start gap-3 p-4 h-auto"
-                  onClick={() => setSelectedForm("Compulsoriness")}
-                >
-                  <AlertCircle size={20} />
-                  <div className="text-left">
-                    <p className="font-medium">Compulsoriness</p>
-                    <p className="text-xs text-white/80 font-light">Define mandatory compliance requirements</p>
-                  </div>
-                </Button>
               </div>
-            ) : selectedForm === "Criterion" ? (
+            ) : (
               <div className="animate-in fade-in-0 zoom-in-95 duration-300">
                 <div className="flex items-center gap-2 mb-4 text-primary-color">
                   <BookOpen size={18} />
                   <h3 className="font-medium">Create Criterion</h3>
                 </div>
+                {/* Solo renderiza CriterionForm */}
                 <CriterionForm
                   onSave={() => setSelectedForm(null)}
                   selectedText={selectedText}
                 />
-              </div>
-            ) : (
-              <div className="animate-in fade-in-0 zoom-in-95 duration-300">
-                <div className="flex items-center gap-2 mb-4 text-secondary-color">
-                  <AlertCircle size={18} />
-                  <h3 className="font-medium">Create Term of Obligatoriety</h3>
-                </div>
-                <CompulsorinessForm onSave={() => setSelectedForm(null)} />
               </div>
             )}
           </CardContent>

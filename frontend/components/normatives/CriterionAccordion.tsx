@@ -6,33 +6,12 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../ui/accordion";
-import { Criterion, CycleStageEnum, SuitabilityEnum } from "@/types/Criterion";
 import CriterionForm from "./CriterionForm";
-import { BookOpen, ClipboardCheck, SearchCheck } from "lucide-react";
 
-// Interfaz para los datos del formulario que coincida con CriterionForm
-interface DataForm {
-  title: string;
-  description: string;
-  cycleStage: CycleStageEnum;
-  suitabilities: SuitabilityEnum[]; // Tipo específico en lugar de any[]
-}
-
-// Función para determinar el icono según la etapa del ciclo
-const getCycleStageIcon = (cycleStage: CycleStageEnum) => {
-  switch (cycleStage) {
-    case CycleStageEnum.P:
-      return <ClipboardCheck size={16} className="text-primary-color" />;
-    case CycleStageEnum.D:
-      return <SearchCheck size={16} className="text-primary-color" />;
-    default:
-      return <BookOpen size={16} className="text-primary-color" />;
-  }
-};
 
 const CriterionAccordion = ({ criterion }: { criterion: Criterion }) => {
   // Actualizada para manejar la interfaz DataForm y usar los parámetros
-  const onSave = (_data: DataForm) => {
+  const onSave = () => {
     // TODO: Implementar guardado real con API
     // En un caso real, usaríamos _data para enviar al backend
     console.log("Guardando criterio");
@@ -54,7 +33,6 @@ const CriterionAccordion = ({ criterion }: { criterion: Criterion }) => {
                      text-sm font-medium text-gray-700 hover:no-underline flex items-center"
         >
           <div className="flex items-center gap-2 overflow-hidden">
-            {getCycleStageIcon(criterion.cycleStage)}
             <span className="text-xs text-primary-color mr-1">C{criterion.controlId}.</span>
             <span className="truncate">{criterion.title}</span>
           </div>
