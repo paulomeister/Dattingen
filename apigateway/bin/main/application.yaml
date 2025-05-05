@@ -12,7 +12,7 @@ spring:
       globalcors:
         corsConfigurations:
           '[/**]':
-            allowedOrigins: "http://localhost:3000" # Esto está bien para tu navegador en el anfitrión
+            allowedOrigins: "http://localhost:3000" 
             allowCredentials: true
             allowedHeaders: "*"
             allowedMethods:
@@ -24,13 +24,7 @@ spring:
 
       routes:
         # --- Servicios Backend ---
-        - id: users-service
-          predicates:
-            - Path=/users/**
-          filters:
-            - RewritePath=/users(?<segment>/.*), /${segment}
-          uri: http://userservice:8083
-
+        
         - id: businesses-service
           predicates:
             - Path=/businesses/**
@@ -51,6 +45,20 @@ spring:
           filters:
             - RewritePath=/rulesets(?<segment>/.*), /${segment}
           uri: http://rulesetservice:8082
+
+          - id: users-service
+          predicates:
+            - Path=/users/**
+          filters:
+            - RewritePath=/users(?<segment>/.*), /${segment}
+          uri: http://userservice:8083
+
+          - id: security-service
+          predicates:
+            - Path=/security/**
+          filters:
+            - RewritePath=/security(?<segment>/.*), /${segment}
+          uri: http://securityservice:8084
 
         # --- Frontend ---
         - id: frontend
