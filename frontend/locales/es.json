@@ -193,7 +193,11 @@
     },
     "criterionAccordion": {
       "errorNotFound": "Error: No se encontró el control a actualizar.",
-      "errorDelete": "Error al eliminar el criterio, por favor intenta de nuevo."
+      "errorDelete": "Error al eliminar el criterio, por favor intenta de nuevo.",
+      "criterionPrefix": "C",
+      "saveSuccess": "¡Criterio guardado exitosamente!",
+      "saveError": "Error al guardar el criterio. Por favor, intenta de nuevo.",
+      "deleteSuccess": "¡Criterio eliminado exitosamente!"
     },
     "criterionForm": {
       "edit": "Editar Criterio",

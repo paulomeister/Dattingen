@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { updateRuleset } from "@/lib/utils";
 import FinishRulesetButton from "./FinishRulesetButton";
 import { useLanguage } from "@/lib/LanguageContext";
+import { toast } from "react-hot-toast";
 
 interface RulesetCreatorProps {
     rulesetId: string | string[]; // Recibe el rulesetId como prop
@@ -152,10 +153,10 @@ const RulesetCreator = ({ rulesetId, onUpdateSuccess }: RulesetCreatorProps) => 
                 onUpdateSuccess();
             }
 
-            alert(t('rulesets.creator.success.save'));
+            toast.success(t('rulesets.creator.success.save'));
         } catch (error) {
             console.error('Error saving ruleset:', error);
-            alert(t('rulesets.creator.error.save'));
+            toast.error(t('rulesets.creator.error.save'));
         }
     };
 
@@ -191,11 +192,11 @@ const RulesetCreator = ({ rulesetId, onUpdateSuccess }: RulesetCreatorProps) => 
             const publishData = await publishResponse.json();
             console.log("Ruleset publicado:", publishData.message);
 
-            alert(t('rulesets.creator.success.publish'));
+            toast.success(t('rulesets.creator.success.publish'));
             router.push(`/rulesets/get/${rulesetId}`);
         } catch (error) {
             console.error('Error publishing ruleset:', error);
-            alert(t('rulesets.creator.error.publish'));
+            toast.error(t('rulesets.creator.error.publish'));
         }
     };
 

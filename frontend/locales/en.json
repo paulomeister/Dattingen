@@ -271,7 +271,11 @@
     },
     "criterionAccordion": {
       "errorNotFound": "Error: Control to update not found.",
-      "errorDelete": "Error deleting criterion, please try again."
+      "errorDelete": "Error deleting criterion, please try again.",
+      "criterionPrefix": "C",
+      "saveSuccess": "Criterion saved successfully!",
+      "saveError": "Error saving criterion. Please try again.",
+      "deleteSuccess": "Criterion deleted successfully!"
     },
     "criterionForm": {
       "edit": "Edit Criterion",
