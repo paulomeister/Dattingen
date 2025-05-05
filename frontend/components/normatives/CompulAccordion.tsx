@@ -8,6 +8,7 @@ import {
 } from "../ui/accordion";
 import { Compulsoriness } from "@/types/Criterion";
 import CompulsorinessForm from "./CompulsorinessForm";
+import { toast } from "react-hot-toast";
 
 const CompulAccordion = ({
   compulsoriness,
@@ -15,11 +16,11 @@ const CompulAccordion = ({
   compulsoriness: Compulsoriness;
 }) => {
   const onSave = (data: Compulsoriness) => {
-    alert("guardar TERMINO");
+    toast.success("Término guardado correctamente");
   };
 
   const onDelete = (criterionId: string) => {
-    alert("eliminar TÉRMINO!!!");
+    toast.success("Término eliminado correctamente");
   };
 
   return (

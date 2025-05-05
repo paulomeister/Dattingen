@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Compulsoriness } from "@/types/Criterion";
+import { toast } from "react-hot-toast";
 
 interface CompulsorinessFormProps {
   compulsoriness?: Compulsoriness;
@@ -18,7 +19,7 @@ const CompulsorinessForm: React.FC<CompulsorinessFormProps> = ({
   const [term, setTerm] = useState(compulsoriness?.term || "");
 
   const handleSubmit = () => {
-    if (!term.trim()) return alert("Term cannot be empty");
+    if (!term.trim()) return toast.error("Term cannot be empty");
     onSave({ id: compulsoriness?.id || crypto.randomUUID(), term });
   };
 

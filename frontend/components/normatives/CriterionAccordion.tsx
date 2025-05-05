@@ -9,14 +9,15 @@ import {
 } from "../ui/accordion";
 import { Criterion } from "@/types/Criterion";
 import CriterionForm from "./CriterionForm";
+import { toast } from "react-hot-toast";
 
 const CriterionAccordion = ({ criterion }: { criterion: Criterion }) => {
-  const onSave = (data: Criterion) => {
-    alert("guardar CRITERIO");
+  const onSave = () => {
+    toast.success("Criterio guardado correctamente");
   };
 
-  const onDelete = (criterionId: string) => {
-    alert("eliminar CRITERIO!!!");
+  const onDelete = () => {
+    toast.success("Criterio eliminado correctamente");
   };
 
   return (

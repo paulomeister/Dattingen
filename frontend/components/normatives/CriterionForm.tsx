@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { Criterion, CycleStageEnum, SuitabilityEnum } from "@/types/Criterion";
 import { Button } from "../ui/button";
+import { toast } from "react-hot-toast";
 
 interface Props {
   criterion?: Criterion;
@@ -36,8 +37,7 @@ export default function CriterionForm({
   };
 
   function cambiar(): void {
-    alert("Selected text:", selectedText);
-
+    toast.success("Texto seleccionado: " + (selectedText || ""));
     if (selectedText) setValue("title", selectedText);
   }
 
