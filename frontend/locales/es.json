@@ -17,30 +17,30 @@
     "tabs": {
       "title": "Sistema de Auditoría ACME",
       "subtitle": "Inicia sesión o crea una cuenta para continuar",
-      "login": "Iniciar Sesión",
+      "login": "Iniciar sesión",
       "register": "Registrarse"
     },
     "login": {
-      "title": "Iniciar Sesión",
-      "email": "Correo Electrónico",
+      "title": "Iniciar sesión",
+      "email": "Correo electrónico",
       "password": "Contraseña",
       "rememberMe": "Recordarme",
-      "loginButton": "Iniciar Sesión",
-      "forgotPasswordLink": "¿Olvidaste tu Contraseña?",
+      "loginButton": "Iniciar sesión",
+      "forgotPasswordLink": "¿Olvidaste tu contraseña?",
       "registerLink": "Registrarse"
     },
     "register": {
-      "title": "Registrarse",
+      "title": "Registro",
       "registerButton": "¡Registrarse!",
-      "username": "Nombre de Usuario",
+      "username": "Nombre de usuario",
       "usernamePlaceholder": "jsanchez08",
-      "fullName": "Nombre Completo",
+      "fullName": "Tu nombre",
       "fullNamePlaceholder": "Juan Andrés Sánchez",
-      "email": "Correo Electrónico",
+      "email": "Correo",
       "emailPlaceholder": "Elige un correo electrónico",
       "password": "Contraseña",
       "passwordPlaceholder": "Elige una contraseña",
-      "confirmPassword": "Confirmar Contraseña",
+      "confirmPassword": "Confirmar la contraseña",
       "confirmPasswordPlaceholder": "Confirma la contraseña",
       "languages": {
         "language": "Idioma",
@@ -54,7 +54,7 @@
         "auditor": "Auditor"
       },
       "successMessage": "¡Registro exitoso!",
-      "errorMessage": "Error en el registro. Por favor, inténtalo de nuevo."
+      "errorMessage": "Error en el registro. Por favor intenta de nuevo."
     }
   },
   "business": {
@@ -63,7 +63,7 @@
       "clear": "Limpiar",
       "retry": "Reintentar más tarde...",
       "error": {
-        "fetch": "Error al obtener empresas. Por favor, inténtalo de nuevo."
+        "fetch": "Error al obtener empresas. Por favor intenta de nuevo."
       },
       "emptyTitle": "No se encontraron empresas"
     },
@@ -72,17 +72,53 @@
       "subtitle": "Como Coordinador, necesitas configurar tu empresa para continuar.",
       "name": "Nombre de la Empresa",
       "namePlaceholder": "Ingresa el nombre de tu empresa",
-      "activity": "Actividad Empresarial",
-      "activityPlaceholder": "Describe las principales actividades de tu empresa",
-      "success": "¡Empresa creada con éxito!",
-      "error": "Error al crear la empresa. Por favor, inténtalo de nuevo."
+      "activity": "Actividad de la Empresa",
+      "activityPlaceholder": "Describe las actividades principales de tu empresa",
+      "success": "¡Empresa creada exitosamente!",
+      "error": "Error al crear la empresa. Por favor intenta de nuevo."
     },
     "associates": {
       "title": "USUARIOS",
-      "empty": "No hay usuarios asociados a esta empresa"
+      "empty": "No hay usuarios asociados con esta empresa"
     }
   },
-  "rulesets": {},
+  "rulesets": {
+    "rulesets": "Conjuntos de Normas",
+    "paragraph": "Encuentra y gestiona los conjuntos de normas que necesitas para auditar.",
+    "paragraph2": "Elige una opción a continuación para comenzar.",
+    "createRuleset": "Crear un Conjunto de Normas",
+    "descriptionCreate": "Construye un conjunto de normas desde cero, define criterios y crea tu propia base de auditoría personalizada.",
+    "browseRulesets": "Explorar Conjuntos de Normas",
+    "descriptionBrowse": "Accede a nuestra lista completa de estándares internacionales, marcos de trabajo y guías de cumplimiento listos para ser auditados.",
+    "clickToBrowse": "La mayoría de usuarios comienzan aquí 🔍",
+    "upload": {
+      "title": "Subir Normativas",
+      "subtitle": "Comienza con los pergaminos del futuro",
+      "description": "¡Sube un documento de un conjunto de normas certificado y haz magia!",
+      "nothingUploaded": "Todavía no se ha subido nada :(",
+      "buttonOpenDrawer": "Subir Conjunto de Normas",
+      "drawerTitle": "Selecciona el Archivo Requerido",
+      "requirementsTitle": "¡REQUISITOS!",
+      "onlyPdf": "Solo Archivo PDF",
+      "editable": "Archivo Editable",
+      "dragFile": "Arrastra AQUÍ tu archivo.",
+      "confirmTitle": "¿Estás seguro de que usarás este archivo?",
+      "yes": "¡Sí!",
+      "no": "No",
+      "done": "Hecho",
+      "cancel": "Cancelar",
+      "goBack": "Volver"
+    },
+    "create": {},
+    "list": {
+      "title": "¡Busca los Conjuntos de Normas más Populares!",
+      "noRulesets": "No se encontró ningún Conjunto de Normas que coincida con tus criterios de búsqueda.",
+      "itemList":{
+        "rollIn": "¡Iniciar!"
+      },
+      "backHome": "Volver al Inicio"
+    }
+  },
   "statistics": {},
   "user": {
     "profile": {

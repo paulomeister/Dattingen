@@ -83,7 +83,43 @@
       "empty": "No users associated with this business"
     }
   },
-  "rulesets": {},
+  "rulesets": {
+    "rulesets": "Rulesets",
+    "paragraph": "Find and manage the rulesets you need to audit.",
+    "paragraph2": "Choose an option below to get started.",
+    "createRuleset": "Create a Ruleset",
+    "descriptionCreate": "  Build a ruleset from scratch, define criterions and make your own custom audit base.",
+    "browseRulesets": "Browse Rulesets",
+    "descriptionBrowse": "Access our complete list of international standards, frameworks, and compliance guides ready to be audited.",
+    "clickToBrowse": "Most users start here 🔍",
+    "upload": {
+      "title": "Upload Normatives",
+      "subtitle": "Start with the scrolls of the future",
+      "description": "Upload a document of a Certified Ruleset and make magic!",
+      "nothingUploaded": "Anything uploaded yet :(",
+      "buttonOpenDrawer": "Upload Ruleset",
+      "drawerTitle": "Select the Required File",
+      "requirementsTitle": "REQUIREMENTS!",
+      "onlyPdf": "PDF File Only",
+      "editable": "Editable File",
+      "dragFile": "Drag HERE your file.",
+      "confirmTitle": "Are you sure you'll use this file?",
+      "yes": "Yes!",
+      "no": "No",
+      "done": "Done",
+      "cancel": "Cancel",
+      "goBack": "Go Back"
+    },
+    "create": {},
+    "list": {
+      "title":"Search the Most Trending Rulesets!",
+      "noRulesets": "Any Ruleset was found matching your search criteria.",
+      "itemList":{
+        "rollIn": "Roll In!"
+      },
+      "backHome": "Back to Home"
+    }
+  },
   "statistics": {},
   "admin": {
     "createUser": {

@@ -31,9 +31,6 @@ export function LanguageSelector({ value, onChange }: LanguageSelectorProps) {
                     <SelectItem value="es">
                         {t("auth.register.languages.spanish")}
                     </SelectItem>
-                    <SelectItem value="fr">
-                        {t("auth.register.languages.french")}
-                    </SelectItem>
                 </SelectContent>
             </Select>
         </div>

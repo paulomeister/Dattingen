@@ -43,6 +43,14 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
+:root {
+  --primary-color: #6f2dbd;
+  --secondary-color: #a663cc;
+  --tertiary-color: #b298dc;
+  --contrast-color: #b8d0eb;
+  --contrast-2-color: #b9faf8;
+}
+
 @theme {
   --color-primary-color: #6f2dbd;
   --color-secondary-color: #a663cc;
