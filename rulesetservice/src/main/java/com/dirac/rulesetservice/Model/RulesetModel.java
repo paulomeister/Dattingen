@@ -50,6 +50,7 @@ public class RulesetModel {
 
 
     public enum ComplianceLevel {
+        SHALL("deberá"),
         MUST("debe"),
         SHOULD("podrá"),
         MAY("puede");

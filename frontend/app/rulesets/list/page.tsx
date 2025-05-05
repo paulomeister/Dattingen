@@ -17,9 +17,6 @@ import { Ruleset } from "@/types/Ruleset"
 import { useLanguage } from "@/lib/LanguageContext"
 import { environment } from "@/env/environment.dev"
 
-//! Esto se quita
-// Muestra los datos de normativas
-
 export default function ListNormatives() {
 
   const { t } = useLanguage()
@@ -27,6 +24,21 @@ export default function ListNormatives() {
   const [searchQuery, setSearchQuery] = useState("")
   const [searchField, setSearchField] = useState("name")
   const [filteredNormatives, setFilteredNormatives] = useState<Ruleset[]>([])
+
+
+  useEffect(() => {
+    const getNormatives = async () => {
+      try {
+        const response = await fetch(`${environment.API_URL}/rulesets/api/ListAll`)
+        const data = await response.json()
+        console.log("Normatives data:", data)
+        setNormatives(data)
+      } catch (error) {
+        console.error("Error fetching normatives:", error)
+      }
+    }
+    getNormatives()
+  }, [])
 
   // Filtrar normativas basado en búsqueda y campo
   useEffect(() => {
@@ -57,18 +69,6 @@ export default function ListNormatives() {
     setFilteredNormatives(filtered)
   }, [searchQuery, searchField])
 
-  useEffect(() => {
-    const getNormatives = async () => {
-      try {
-        const response = await fetch(`${environment.API_URL}/rulesets/api/ListAll`)
-        const data = await response.json()
-        setNormatives(data)
-      } catch (error) {
-        console.error("Error fetching normatives:", error)
-      }
-    }
-    getNormatives()
-  }, [])
 
 
   return (
