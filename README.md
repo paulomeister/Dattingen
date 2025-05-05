@@ -88,10 +88,10 @@ Contributions are welcome. Please open an issue or pull request for suggestions 
 
 **Authors:**  
 
-Herrera Vallejo, Sergio Andrés
-Delgado Jurado, Jean Paul
-Aqil Tezna, Yusef Gabriel
-Samboní, Etienne Santiago
+- Herrera Vallejo, Sergio Andrés
+- Delgado Jurado, Jean Paul
+- Aqil Tezna, Yusef Gabriel
+- Samboní, Etienne Santiago
 
 **IT Project – ACME Inc.**  
 Santiago de Cali, Colombia – March 2025
