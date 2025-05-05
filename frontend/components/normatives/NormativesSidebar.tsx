@@ -46,7 +46,7 @@ const NormativesSidebar = forwardRef<NormativesSidebarRef, NormativesSidebarProp
     }
   }));
 
-  // Lógica para obtener los términos de compulsoriedad
+  // Lógica para obtener los términos de Obligatoriedad
   const fetchCompulsoriness = async () => {
     try {
       const isSpanish = user?.language === "es";
@@ -54,7 +54,7 @@ const NormativesSidebar = forwardRef<NormativesSidebarRef, NormativesSidebarProp
       const data = await res.json();
       setCompulsoriness(data);  // Actualizar el estado con los datos obtenidos
     } catch (error) {
-      console.error("Error al obtener los términos de compulsoriedad:", error);
+      console.error("Error al obtener los términos de Obligatoriedad:", error);
     } finally {
       setLoading(false);  // Finaliza el estado de carga
     }

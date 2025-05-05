@@ -8,6 +8,7 @@ import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { useAuth } from "@/lib/AuthContext";
 import { Control as RulesetControl, PHVAPhase, Ruleset } from "@/types/Ruleset";
+import { useLanguage } from "@/lib/LanguageContext";
 
 interface Props {
   ruleset: Ruleset | null,
@@ -24,6 +25,7 @@ export default function CriterionForm({
   selectedText,
 }: Props) {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [compulsoriness, setCompulsoriness] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cycleStageOptions, setCycleStageOptions] = useState<string[]>([]);
@@ -54,17 +56,17 @@ export default function CriterionForm({
     let isValid = true;
 
     if (!formData.title) {
-      newErrors.title = "Title is required";
+      newErrors.title = t('normatives.criterionForm.errorTitle');
       isValid = false;
     }
 
     if (!formData.cycleStage) {
-      newErrors.cycleStage = "Cycle stage is required";
+      newErrors.cycleStage = t('normatives.criterionForm.errorCycleStage');
       isValid = false;
     }
 
     if (!formData.compulsoriness) {
-      newErrors.compulsoriness = "Compulsoriness is required";
+      newErrors.compulsoriness = t('normatives.criterionForm.errorCompulsoriness');
       isValid = false;
     }
 
@@ -94,7 +96,7 @@ export default function CriterionForm({
       const data = await res.json();
       setCompulsoriness(data);
     } catch (error) {
-      console.error("Error al obtener los términos de compulsoriedad:", error);
+      console.error("Error al obtener los términos de Obligatoriedad:", error);
     }
   };
 
@@ -112,19 +114,19 @@ export default function CriterionForm({
       <div className="flex items-center gap-2 mb-2">
         <BookOpen size={18} className="text-primary-color" />
         <h2 className="text-lg font-semibold text-primary-color">
-          {criterion ? "Edit Criterion" : "Create Criterion"}
+          {criterion ? t('normatives.criterionForm.edit') : t('normatives.criterionForm.create')}
         </h2>
       </div>
 
       <form onSubmit={onSubmit} className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="title" className="text-sm font-medium text-gray-700">Title</Label>
+          <Label htmlFor="title" className="text-sm font-medium text-gray-700">{t('normatives.criterionForm.title')}</Label>
           <Input
             id="title"
             name="title"
             value={formData.title}
             onChange={handleChange}
-            placeholder="Enter criterion title"
+            placeholder={t('normatives.criterionForm.titlePlaceholder')}
             className={`border-tertiary-color/30 focus:border-primary-color/50 focus:ring-primary-color/20 transition-all
                        ${errors.title ? "border-red-300 focus:border-red-500 focus:ring-red-200" : ""}`}
           />
@@ -138,7 +140,7 @@ export default function CriterionForm({
 
         <div className="space-y-2">
           <Label htmlFor="compulsoriness" className="text-sm font-medium text-gray-700">
-            Compulsoriness
+            {t('normatives.criterionForm.compulsoriness')}
           </Label>
           <Select
             value={formData.compulsoriness}
@@ -147,7 +149,7 @@ export default function CriterionForm({
             }
           >
             <SelectTrigger className="border-tertiary-color/30 focus:border-primary-color/50 focus:ring-primary-color/20 transition-all">
-              <SelectValue placeholder="Select compulsoriness" />
+              <SelectValue placeholder={t('normatives.criterionForm.compulsorinessPlaceholder')} />
             </SelectTrigger>
             <SelectContent>
               {compulsoriness.map((term) => (
@@ -167,7 +169,7 @@ export default function CriterionForm({
 
         <div className="space-y-2">
           <Label htmlFor="cycleStage" className="text-sm font-medium text-gray-700">
-            Cycle Stage
+            {t('normatives.criterionForm.cycleStage')}
           </Label>
           <Select
             value={formData.cycleStage}
@@ -176,7 +178,7 @@ export default function CriterionForm({
             }
           >
             <SelectTrigger className="border-tertiary-color/30 focus:border-primary-color/50 focus:ring-primary-color/20 transition-all">
-              <SelectValue placeholder="Select cycle stage" />
+              <SelectValue placeholder={t('normatives.criterionForm.cycleStagePlaceholder')} />
             </SelectTrigger>
             <SelectContent>
               {cycleStageOptions.map((stage) => (
@@ -195,13 +197,13 @@ export default function CriterionForm({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="description" className="text-sm font-medium text-gray-700">Description</Label>
+          <Label htmlFor="description" className="text-sm font-medium text-gray-700">{t('normatives.criterionForm.description')}</Label>
           <Textarea
             name="description"
             value={formData.description}
             onChange={handleChange}
             rows={4}
-            placeholder="Enter criterion description"
+            placeholder={t('normatives.criterionForm.descriptionPlaceholder')}
             className="border-tertiary-color/30 focus:border-primary-color/50 focus:ring-primary-color/20 transition-all resize-none"
           />
         </div>
@@ -213,7 +215,7 @@ export default function CriterionForm({
             className="bg-primary-color hover:bg-primary-color/90 text-white flex items-center gap-2"
           >
             <Save size={16} />
-            {isSubmitting ? "Saving..." : "Save Criterion"}
+            {isSubmitting ? t('normatives.criterionForm.saving') : t('normatives.criterionForm.save')}
           </Button>
           {criterion && onDelete && (
             <Button
@@ -223,7 +225,7 @@ export default function CriterionForm({
               className="border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700 flex items-center gap-2"
             >
               <Trash2 size={16} />
-              Delete
+              {t('normatives.criterionForm.delete')}
             </Button>
           )}
         </div>

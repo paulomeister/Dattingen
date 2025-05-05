@@ -10,6 +10,7 @@ import { Ruleset, Control } from "@/types/Ruleset";
 import { useRouter } from "next/navigation";
 import { updateRuleset } from "@/lib/utils";
 import FinishRulesetButton from "./FinishRulesetButton";
+import { useLanguage } from "@/lib/LanguageContext";
 
 interface RulesetCreatorProps {
     rulesetId: string | string[]; // Recibe el rulesetId como prop
@@ -17,6 +18,7 @@ interface RulesetCreatorProps {
 }
 
 const RulesetCreator = ({ rulesetId, onUpdateSuccess }: RulesetCreatorProps) => {
+    const { t } = useLanguage();
     const [isCreating, setIsCreating] = useState<boolean>(false);
     const [selectedText, setSelectedText] = useState<string>("");
     const [ruleset, setRuleset] = useState<Ruleset | null>(null);
@@ -132,32 +134,28 @@ const RulesetCreator = ({ rulesetId, onUpdateSuccess }: RulesetCreatorProps) => 
         if (!ruleset || !rulesetId) return;
 
         try {
-            // Crear una copia actualizada del ruleset con los controles actualizados
             const updatedRuleset = {
                 ...ruleset,
                 controls: controls
             };
 
-            // Enviar al backend
             const response = await updateRuleset(rulesetId as string, updatedRuleset);
 
             if (!response.ok) {
                 throw new Error('Failed to update ruleset');
             }
 
-            // Actualizar el estado local con la respuesta
             const updatedData = await response.json();
             setRuleset(updatedData);
 
-            // Notificar al padre que la actualización fue exitosa
             if (onUpdateSuccess) {
                 onUpdateSuccess();
             }
 
-            alert('Ruleset saved successfully!');
+            alert(t('rulesets.creator.success.save'));
         } catch (error) {
             console.error('Error saving ruleset:', error);
-            alert('Failed to save ruleset. Please try again.');
+            alert(t('rulesets.creator.error.save'));
         }
     };
 
@@ -166,13 +164,11 @@ const RulesetCreator = ({ rulesetId, onUpdateSuccess }: RulesetCreatorProps) => 
         if (!ruleset || !rulesetId) return;
 
         try {
-            // Primero guardamos cualquier cambio pendiente en los controles
             const updatedRuleset = {
                 ...ruleset,
                 controls: controls
             };
 
-            // Guardar cambios pendientes
             await fetch(`${environment.API_URL}/rulesets/api/update/${rulesetId}`, {
                 method: 'PUT',
                 headers: {
@@ -181,7 +177,6 @@ const RulesetCreator = ({ rulesetId, onUpdateSuccess }: RulesetCreatorProps) => 
                 body: JSON.stringify(updatedRuleset),
             });
 
-            // Usar el nuevo endpoint específico para publicar
             const publishResponse = await fetch(`${environment.API_URL}/rulesets/api/publish/${rulesetId}`, {
                 method: 'PUT',
                 headers: {
@@ -196,11 +191,11 @@ const RulesetCreator = ({ rulesetId, onUpdateSuccess }: RulesetCreatorProps) => 
             const publishData = await publishResponse.json();
             console.log("Ruleset publicado:", publishData.message);
 
-            // Redirigir a la página de visualización 
+            alert(t('rulesets.creator.success.publish'));
             router.push(`/rulesets/get/${rulesetId}`);
         } catch (error) {
             console.error('Error publishing ruleset:', error);
-            alert('Failed to publish ruleset. Please try again.');
+            alert(t('rulesets.creator.error.publish'));
         }
     };
 
@@ -209,14 +204,14 @@ const RulesetCreator = ({ rulesetId, onUpdateSuccess }: RulesetCreatorProps) => 
             <Card className="overflow-hidden h-100vh shadow-lg border-tertiary-color/20">
                 <CardContent className="p-0 h-full">
                     <div className="bg-contrast-color/10 border-b border-tertiary-color/20 p-4 flex justify-between items-center">
-                        <h3 className="font-medium text-primary-color">Document Viewer</h3>
+                        <h3 className="font-medium text-primary-color">{t('rulesets.creator.documentViewer')}</h3>
                         <div className="flex gap-2">
                             <Button
                                 onClick={saveAllControls}
                                 size="sm"
                                 className="bg-primary-color hover:bg-primary-color/90 text-white"
                             >
-                                Save Ruleset
+                                {t('rulesets.creator.saveRuleset')}
                             </Button>
                             <Button
                                 onClick={openDialog}
@@ -224,7 +219,7 @@ const RulesetCreator = ({ rulesetId, onUpdateSuccess }: RulesetCreatorProps) => 
                                 size="sm"
                                 className="bg-contrast-2-color/10 hover:bg-contrast-2-color/30 text-primary-color border-tertiary-color/30"
                             >
-                                <Plus size={16} className="mr-1" /> Add Rule
+                                <Plus size={16} className="mr-1" /> {t('rulesets.creator.addRule')}
                             </Button>
                         </div>
                     </div>
@@ -238,7 +233,7 @@ const RulesetCreator = ({ rulesetId, onUpdateSuccess }: RulesetCreatorProps) => 
             <div className="flex justify-center mt-6 mb-12">
                 <FinishRulesetButton 
                     rulesetId={rulesetId}
-                    rulesetName={ruleset?.name || "esta normativa"}
+                    rulesetName={ruleset?.name || t('rulesets.creator.thisRuleset')}
                     onFinish={handleFinishRuleset}
                 />
             </div>

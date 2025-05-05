@@ -136,6 +136,24 @@
         "retry": "Please try again later or contact support if the problem persists."
       },
       "loading": "Loading ruleset details..."
+    },
+    "creator": {
+      "documentViewer": "Document Viewer",
+      "saveRuleset": "Save Ruleset",
+      "addRule": "Add Rule",
+      "finishRuleset": "Finish Ruleset",
+      "confirmFinish": "Are you sure you want to finish this ruleset?",
+      "confirmFinishDescription": "This action will publish the ruleset and make it available for audits. This action cannot be undone.",
+      "confirm": "Confirm",
+      "cancel": "Cancel",
+      "success": {
+        "save": "Ruleset saved successfully!",
+        "publish": "Ruleset published successfully!"
+      },
+      "error": {
+        "save": "Failed to save ruleset. Please try again.",
+        "publish": "Failed to publish ruleset. Please try again."
+      }
     }
   },
   "statistics": {},
@@ -231,7 +249,8 @@
   },
   "components": {},
   "common": {
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "warning": "Warning"
   },
   "home": {
     "hero": {
@@ -240,6 +259,37 @@
       "description": "Certify your business with the best practices and standards in the world.",
       "descriptionBold": "Be the best version of your business.",
       "startButton": "Start!"
+    }
+  },
+  "normatives": {
+    "sidebar": {
+      "ruleset": "Ruleset",
+      "terms": "Terms",
+      "criteria": "Criteria",
+      "criterions": "Criterions",
+      "noCriterions": "No criterions defined yet"
+    },
+    "criterionAccordion": {
+      "errorNotFound": "Error: Control to update not found.",
+      "errorDelete": "Error deleting criterion, please try again."
+    },
+    "criterionForm": {
+      "edit": "Edit Criterion",
+      "create": "Create Criterion",
+      "title": "Title",
+      "titlePlaceholder": "Enter criterion title",
+      "description": "Description",
+      "descriptionPlaceholder": "Enter criterion description",
+      "compulsoriness": "Compulsoriness",
+      "compulsorinessPlaceholder": "Select compulsoriness",
+      "cycleStage": "Cycle Stage",
+      "cycleStagePlaceholder": "Select cycle stage",
+      "save": "Save Criterion",
+      "saving": "Saving...",
+      "delete": "Delete",
+      "errorTitle": "Title is required",
+      "errorCompulsoriness": "Compulsoriness is required",
+      "errorCycleStage": "Cycle stage is required"
     }
   }
 }

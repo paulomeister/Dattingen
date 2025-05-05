@@ -10,9 +10,11 @@ import CriterionForm from "./CriterionForm";
 import { Control, PHVAPhase, Ruleset } from "@/types/Ruleset";
 import { ClipboardCheck, ClipboardEdit, Beaker, ClipboardList } from "lucide-react";
 import { updateRuleset } from "@/lib/utils";
+import { useLanguage } from "@/lib/LanguageContext";
 
 // Componente para mostrar un criterio en un acordeón
 const CriterionAccordion = ({ criterion, ruleset }: { criterion: Control, ruleset: Ruleset | null }) => {
+  const { t } = useLanguage();
   const getCycleStageIcon = (stage: PHVAPhase) => {
     switch (stage) {
       case PHVAPhase.PLAN:
@@ -39,7 +41,7 @@ const CriterionAccordion = ({ criterion, ruleset }: { criterion: Control, rulese
 
       if (index === -1) {
         // Si no existe el control, mostrar error
-        alert("Error: No se encontró el control a actualizar");
+        alert(t('normatives.criterionAccordion.errorNotFound'));
         return;
       }
 
@@ -75,7 +77,7 @@ const CriterionAccordion = ({ criterion, ruleset }: { criterion: Control, rulese
       window.location.reload();
     } catch (error) {
       console.error("Error al eliminar el criterio:", error);
-      alert("Error al eliminar el criterio, por favor intenta de nuevo.");
+      alert(t('normatives.criterionAccordion.errorDelete'));
     }
   };
 
