@@ -1,4 +1,4 @@
-# ACME Audit – README.md
+# ACME Audit – README
 
 ## Project Overview
 
