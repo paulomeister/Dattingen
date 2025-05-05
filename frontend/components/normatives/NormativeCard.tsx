@@ -22,7 +22,7 @@ export function NormativeCard({ normative }: NormativeCardProps) {
       <CardHeader className="p-4 m-0 pb-2 bg-primary-color/5">
         <h3 className="text-2xl font-bold text-primary-color">{normative.name}</h3>
         <div className="flex flex-col text-sm text-muted-foreground">
-          <span>{normative.version}</span>
+          <span> Version:  {normative.version}</span>
         </div>
       </CardHeader>
       <CardContent className="p-4 pt-3">
@@ -33,7 +33,6 @@ export function NormativeCard({ normative }: NormativeCardProps) {
         <p className="mb-2 text-xs">
           <span className="font-semibold">Org:</span> {normative.organization}
         </p>
-        <p className="text-xs text-muted-foreground line-clamp-3">{normative.publishingDate.toString()}</p>
       </CardContent>
       <CardFooter className="p-4 pt-0">
         <Button
