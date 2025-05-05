@@ -82,14 +82,15 @@ Contributions are welcome. Please open an issue or pull request for suggestions 
 
 ## License
 
-> *License to be defined by the development team.*
+> This project is licensed under the terms of the [GNU General Public License v3.0](LICENSE).
 
 ---
 
 **Authors:**  
-Aqil Tezna, Yusef Gabriel  
-Delgado, Jean Paul  
-Herrera Vallejo, Sergio Andrés  
+
+Herrera Vallejo, Sergio Andrés
+Delgado Jurado, Jean Paul
+Aqil Tezna, Yusef Gabriel
 Samboní, Etienne Santiago
 
 **IT Project – ACME Inc.**  
