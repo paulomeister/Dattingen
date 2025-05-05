@@ -99,6 +99,36 @@ public class RulesetController {
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    /**
+     * Publica un Ruleset cambiando su estado a "published"
+     * 
+     * @param id ID del Ruleset a publicar
+     * @return Respuesta con mensaje de éxito y el Ruleset actualizado
+     */
+    @PutMapping("/publish/{id}")
+    public ResponseEntity<?> publishRuleset(@PathVariable String id) {
+        log.info("Publishing ruleset with id: {}", id);
+        try {
+            RulesetModel published = rulesetService.publishRuleset(id);
+            
+            return ResponseEntity
+                    .ok()
+                    .body(Map.of(
+                            "message", "Ruleset publicado exitosamente",
+                            "ruleset", published));
+        } catch (RuntimeException e) {
+            log.error("Error publishing ruleset: {}", e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            log.error("Unexpected error publishing ruleset: {}", e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Error al publicar ruleset: " + e.getMessage()));
+        }
+    }
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteRuleset(@PathVariable String id) {
         log.info("Deleting ruleset with id: {}", id);

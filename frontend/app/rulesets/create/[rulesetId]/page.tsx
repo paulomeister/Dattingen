@@ -2,13 +2,17 @@
 
 import React from "react";
 import RulesetCreator from "@/components/normatives/RulesetCreator";
-import { useParams } from "next/navigation";  // Usamos useParams para obtener parámetros de la URL
+import { useParams } from "next/navigation";
 
-export default function CreateNormativeItemPage() {
+interface CreateNormativeItemPageProps {
+  onUpdateSuccess?: () => void; // Nueva prop para recibir el callback
+}
+
+export default function CreateNormativeItemPage({ onUpdateSuccess }: CreateNormativeItemPageProps) {
   const params = useParams();
   
   // Aseguramos que rulesetId está disponible en la URL
-  const rulesetId = params?.rulesetId;
+  const rulesetId = params?.rulesetId as string;
 
   if (!rulesetId) {
     return <p>Error: rulesetId not found in URL</p>;
@@ -22,8 +26,11 @@ export default function CreateNormativeItemPage() {
           <p className="text-white/80 mt-2">Upload and annotate documents to create custom audit rulesets</p>
         </div>
         <div className="p-4">
-          {/* Pasamos rulesetId al componente RulesetCreator */}
-          <RulesetCreator rulesetId={rulesetId} />
+          {/* Pasamos rulesetId y onUpdateSuccess al componente RulesetCreator */}
+          <RulesetCreator 
+            rulesetId={rulesetId} 
+            onUpdateSuccess={onUpdateSuccess} 
+          />
         </div>
       </div>
     </div>

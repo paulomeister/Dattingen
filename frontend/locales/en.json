@@ -118,6 +118,24 @@
         "rollIn": "Roll In!"
       },
       "backHome": "Back to Home"
+    },
+    "details": {
+      "join": "Join!",
+      "organization": "Organization:",
+      "published": "Published:",
+      "version": "Version:",
+      "status": "Status:",
+      "controls": "Controls",
+      "noControls": "No controls available",
+      "noControlsDesc": "This ruleset doesn't have any controls defined.",
+      "aboutTitle": "About this ruleset",
+      "aboutDesc": "This ruleset was created to establish standards and compliance criteria for audits. It contains {count} controls across different phases of the PHVA cycle.",
+      "joinButton": "Join this ruleset",
+      "error": {
+        "title": "Error Loading Ruleset",
+        "retry": "Please try again later or contact support if the problem persists."
+      },
+      "loading": "Loading ruleset details..."
     }
   },
   "statistics": {},

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useImperativeHandle, forwardRef, useRef } from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -16,7 +16,12 @@ interface NormativesSidebarProps {
   rulesetId?: string; // Opcional: si se pasa directamente como prop
 }
 
-const NormativesSidebar = ({ rulesetId: propRulesetId }: NormativesSidebarProps) => {
+// Define una interfaz para el ref del sidebar
+export interface NormativesSidebarRef {
+  refreshSidebar: () => void;
+}
+
+const NormativesSidebar = forwardRef<NormativesSidebarRef, NormativesSidebarProps>(({ rulesetId: propRulesetId }, ref) => {
   const params = useParams();
   const { user } = useAuth();
 
@@ -30,6 +35,16 @@ const NormativesSidebar = ({ rulesetId: propRulesetId }: NormativesSidebarProps)
 
   // Estado de carga
   const [loading, setLoading] = useState(true);
+  
+  // Contador de actualizaciones para forzar la recarga
+  const [updateCounter, setUpdateCounter] = useState(0);
+
+  // Exponer la función refreshSidebar a través del ref
+  useImperativeHandle(ref, () => ({
+    refreshSidebar: () => {
+      setUpdateCounter(prev => prev + 1); // Incrementar el contador para forzar una actualización
+    }
+  }));
 
   // Lógica para obtener los términos de compulsoriedad
   const fetchCompulsoriness = async () => {
@@ -53,10 +68,16 @@ const NormativesSidebar = ({ rulesetId: propRulesetId }: NormativesSidebarProps)
     }
 
     try {
-      const res = await fetch(`${environment.API_URL}/rulesets/api/findbyid/${rulesetId}`);
+      // Añadir un parámetro timestamp para evitar caché
+      const timestamp = new Date().getTime();
+      const res = await fetch(`${environment.API_URL}/rulesets/api/findbyid/${rulesetId}?t=${timestamp}`);
       const data = await res.json();
       setRuleset(data);  // Actualizar el estado con los datos obtenidos
-      setCriterions(data.controls || []);  // Actualizar los criterios, con fallback a array vacío
+      if (data.controls) {
+        setCriterions(data.controls);  // Actualizar los criterios con los controles del ruleset
+      } else {
+        setCriterions([]);  // Inicializar como array vacío si no hay controles
+      }
     } catch (e) {
       console.error("Error at Normatives Sidebar", e);
     } finally {
@@ -64,13 +85,13 @@ const NormativesSidebar = ({ rulesetId: propRulesetId }: NormativesSidebarProps)
     }
   }
 
-  // Llamada a la API cuando el componente se monta o cuando cambia el rulesetId
+  // Llamada a la API cuando el componente se monta o cuando cambia el rulesetId o updateCounter
   useEffect(() => {
     fetchCompulsoriness();
     if (rulesetId) {
       fetchRuleset();
     }
-  }, [rulesetId, user?.language]);
+  }, [rulesetId, user?.language, updateCounter]);
 
   return (
     <Sidebar collapsible="offcanvas" variant="floating">
@@ -90,15 +111,17 @@ const NormativesSidebar = ({ rulesetId: propRulesetId }: NormativesSidebarProps)
           </div>
         ) : (
           <>
-
             <SidebarGroup>
-              <CriterionsSection items={criterions} />
+              <CriterionsSection items={criterions} ruleset={ruleset}/>
             </SidebarGroup>
           </>
         )}
       </SidebarContent>
     </Sidebar>
   );
-};
+});
+
+// Nombre para mostrar en las herramientas de desarrollo React
+NormativesSidebar.displayName = "NormativesSidebar";
 
 export default NormativesSidebar;

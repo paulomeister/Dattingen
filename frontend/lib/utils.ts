@@ -66,3 +66,19 @@ export async function fetchRulesetData(
     return null; // Devolver null si hay algún error
   }
 }
+
+export async function updateRuleset(
+  rulesetId: string,
+  updatedRuleset: Ruleset
+): Promise<Response> {
+  return await fetch(
+    `${environment.API_URL}/rulesets/api/update/${rulesetId}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedRuleset),
+    }
+  );
+}

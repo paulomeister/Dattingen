@@ -1,5 +1,4 @@
 "use client"
-
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -14,7 +13,6 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 
-// Define the Ruleset interface if not already imported from types
 import { Ruleset } from "@/types/Ruleset"
 import { useLanguage } from "@/lib/LanguageContext"
 import { environment } from "@/env/environment.dev"
@@ -99,7 +97,7 @@ export default function ListNormatives() {
               >
                 <CarouselContent className="py-4">
                   {filteredNormatives.map((normative) => (
-                    <CarouselItem key={normative.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/3 pl-4">
+                    <CarouselItem key={normative._id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/3 pl-4">
                       <div className="p-1">
                         <NormativeCard normative={normative} />
                       </div>
@@ -108,10 +106,10 @@ export default function ListNormatives() {
                 </CarouselContent>
                 <div className="flex items-center justify-center gap-2 mt-4">
                   <CarouselPrevious
-                    className="relative static transform-none border-primary border-opacity-20 text-primary"
+                    className="relative  transform-none border-primary border-opacity-20 text-primary"
                   />
                   <CarouselNext
-                    className="relative static transform-none border-primary border-opacity-20 text-primary"
+                    className="relative  transform-none border-primary border-opacity-20 text-primary"
                   />
                 </div>
               </Carousel>

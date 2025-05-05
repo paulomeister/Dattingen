@@ -117,6 +117,24 @@
         "rollIn": "¡Iniciar!"
       },
       "backHome": "Volver al Inicio"
+    },
+    "details": {
+      "join": "¡Unirme!",
+      "organization": "Organización:",
+      "published": "Publicado:",
+      "version": "Versión:",
+      "status": "Estado:",
+      "controls": "Controles",
+      "noControls": "No hay controles disponibles",
+      "noControlsDesc": "Este conjunto de normas no tiene controles definidos.",
+      "aboutTitle": "Acerca de este conjunto de normas",
+      "aboutDesc": "Este conjunto de normas fue creado para establecer estándares y criterios de cumplimiento para auditorías. Contiene {count} controles en diferentes fases del ciclo PHVA.",
+      "joinButton": "Unirse a este conjunto de normas",
+      "error": {
+        "title": "Error al cargar el conjunto de normas",
+        "retry": "Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste."
+      },
+      "loading": "Cargando detalles del conjunto de normas..."
     }
   },
   "statistics": {},

@@ -2,11 +2,11 @@
 import React from "react";
 import { SidebarHeader } from "../../ui/sidebar";
 import { LucideClipboardList, Book } from "lucide-react";
-import { Compulsoriness, Criterion } from "@/types/Criterion";
+import { Control } from "@/types/Ruleset";
 
 interface SidebarHeaderStatsProps {
-  compulsoriness: Compulsoriness[];
-  criterions: Criterion[];
+  compulsoriness: string[];
+  criterions: Control[];
 }
 
 const SidebarHeaderStats = ({ compulsoriness, criterions }: SidebarHeaderStatsProps) => {

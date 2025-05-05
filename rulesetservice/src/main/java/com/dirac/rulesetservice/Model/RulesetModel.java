@@ -47,6 +47,8 @@ public class RulesetModel {
         ACT
     }
 
+
+
     public enum ComplianceLevel {
         MUST("debe"),
         SHOULD("podrá"),
@@ -80,3 +82,4 @@ public class RulesetModel {
     }
 
 }
+

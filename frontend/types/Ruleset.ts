@@ -3,7 +3,7 @@ export interface Control {
   controlId: string;
   title: string;
   description: string;
-  suitability: string;
+  suitability?: string;
   cycleStage: PHVAPhase;
   compulsoriness: string; //! Se deja como string para evitar problemas de serialización
 }

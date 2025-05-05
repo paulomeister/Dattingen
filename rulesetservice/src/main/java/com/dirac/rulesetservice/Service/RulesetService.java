@@ -48,6 +48,24 @@ public class RulesetService {
         return null;
     }
 
+    /**
+     * Publica un Ruleset cambiando su estado a "published"
+     * 
+     * @param rulesetId ID del Ruleset que se va a publicar
+     * @return El Ruleset actualizado, o null si no existe
+     * @throws RuntimeException si el Ruleset no existe
+     */
+    public RulesetModel publishRuleset(String rulesetId) {
+        RulesetModel ruleset = getRulesetById(rulesetId)
+                .orElseThrow(() -> new RuntimeException("Ruleset not found with id: " + rulesetId));
+        
+        // Actualizar el estado a "published"
+        ruleset.setStatus("published");
+        
+        // Guardar y devolver el Ruleset actualizado
+        return rulesetRepository.save(ruleset);
+    }
+
     // Delete
     public void deleteRuleset(String id) {
         rulesetRepository.deleteById(id);

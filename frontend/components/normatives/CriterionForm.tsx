@@ -1,17 +1,18 @@
-import { useEffect, useState } from "react";
-import { environment } from "@/env/environment.dev"; // Asumiendo que tienes esto para las URLs de tu API
-import { Control, useForm } from "react-hook-form";
+import { useState, useEffect } from "react";
+import { environment } from "@/env/environment.dev";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { BookOpen, Save, Trash2, AlertTriangle } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Textarea } from "../ui/textarea";
-import { Button } from "../button";
+import { Button } from "../ui/button";
 import { useAuth } from "@/lib/AuthContext";
+import { Control as RulesetControl, PHVAPhase, Ruleset } from "@/types/Ruleset";
 
 interface Props {
-  criterion?: Control;
-  onSave: (data: Control) => void;
+  ruleset: Ruleset | null,
+  criterion?: RulesetControl;
+  onSave: (data: RulesetControl) => void;
   onDelete?: (controlId: string) => void;
   selectedText?: string;
 }
@@ -25,36 +26,60 @@ export default function CriterionForm({
   const { user } = useAuth();
   const [compulsoriness, setCompulsoriness] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [cycleStageOptions, setCycleStageOptions] = useState<string[]>([]); // Nueva variable de estado para las opciones de ciclo
+  const [cycleStageOptions, setCycleStageOptions] = useState<string[]>([]);
 
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm<Control>({
-    defaultValues: criterion ?? {
-      controlId: "",
-      title: "",
-      description: selectedText ?? "",
-      suitability: "",
-      cycleStage: "",
-      compulsoriness: "",
-    },
+  // Estado para los valores del formulario
+  const [formData, setFormData] = useState<RulesetControl>({
+    controlId: criterion?.controlId || "",
+    title: criterion?.title || "",
+    description: criterion?.description || selectedText || "",
+    cycleStage: criterion?.cycleStage || PHVAPhase.PLAN,
+    compulsoriness: criterion?.compulsoriness || "",
   });
 
-  /*
-   * Hay que añadir la funcionalidad de que cuando se le da a "Save Criterion" se muestre en el sidebar el control que se ha creado.
-    * y luego, que haya un botón (en el RulesetCreator) para darle a "Guardar" y que ese botón envíe automáticamente todos los Controles
-   * guardados en el sidebar a la API. (No se puede hacer desde aquí porque no tenemos acceso al sidebar)
-  */
-
-
+  const [errors, setErrors] = useState({
+    title: "",
+    compulsoriness: "",
+    cycleStage: "",
+  });
 
   useEffect(() => {
-    fetchCompulsoriness(); // Llama a la función para obtener los términos de compulsoriedad
-    setCycleStageOptions(getCycleStageOptions()); // Actualiza las opciones de ciclo según el idioma del usuario
-  }, [user?.language]); // Se ejecutará cuando el idioma cambie
+    fetchCompulsoriness();
+    setCycleStageOptions(Object.values(PHVAPhase));
+  }, [user?.language]);
 
-  const onSubmit = async (data: Control) => {
+  // Validación de los campos antes de enviar
+  const validateForm = () => {
+    const newErrors = { title: "", compulsoriness: "", cycleStage: "" };
+    let isValid = true;
+
+    if (!formData.title) {
+      newErrors.title = "Title is required";
+      isValid = false;
+    }
+
+    if (!formData.cycleStage) {
+      newErrors.cycleStage = "Cycle stage is required";
+      isValid = false;
+    }
+
+    if (!formData.compulsoriness) {
+      newErrors.compulsoriness = "Compulsoriness is required";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
+  const onSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!validateForm()) return;
+
     setIsSubmitting(true);
     try {
-      await onSave(data); // Enviamos el control directamente
+      console.log("Form Data:", formData); // Verifica los datos
+      await onSave(formData);
     } catch (error) {
       console.error("Error al guardar el control:", error);
     } finally {
@@ -73,19 +98,14 @@ export default function CriterionForm({
     }
   };
 
-  // Función para obtener las opciones de "Cycle Stage" según el idioma del usuario
-  const getCycleStageOptions = () => {
-    if (user?.language === "es") {
-      return ["P", "H", "V", "A"];
-    } else if (user?.language === "en") {
-      return ["P", "D", "C", "A"];
-    }
-    return []; // Opciones predeterminadas
+  // Actualizar el estado del formulario cuando el valor cambia
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
-
-  function updateTitleFromSelection(): void {
-    if (selectedText) setValue("title", selectedText);
-  }
 
   return (
     <div className="space-y-4 bg-white rounded-lg">
@@ -96,12 +116,14 @@ export default function CriterionForm({
         </h2>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={onSubmit} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="title" className="text-sm font-medium text-gray-700">Title</Label>
           <Input
             id="title"
-            {...register("title", { required: "Title is required" })}
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
             placeholder="Enter criterion title"
             className={`border-tertiary-color/30 focus:border-primary-color/50 focus:ring-primary-color/20 transition-all
                        ${errors.title ? "border-red-300 focus:border-red-500 focus:ring-red-200" : ""}`}
@@ -109,46 +131,50 @@ export default function CriterionForm({
           {errors.title && (
             <p className="text-sm text-red-500 flex items-center gap-1 mt-1">
               <AlertTriangle size={14} />
-              {errors.title.message}
+              {errors.title}
             </p>
-          )}
-          {selectedText && (
-            <Button
-              type="button"
-              variant="ghost"
-              className="text-xs text-secondary-color hover:text-secondary-color hover:bg-secondary-color/10 px-2 py-1 h-auto"
-              onClick={updateTitleFromSelection}
-            >
-              Use selected text as title
-            </Button>
           )}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="suitability" className="text-sm font-medium text-gray-700">Suitability</Label>
-          <Select {...register("suitability")}>
+          <Label htmlFor="compulsoriness" className="text-sm font-medium text-gray-700">
+            Compulsoriness
+          </Label>
+          <Select
+            value={formData.compulsoriness}
+            onValueChange={(value) =>
+              setFormData((prev) => ({ ...prev, compulsoriness: value }))
+            }
+          >
             <SelectTrigger className="border-tertiary-color/30 focus:border-primary-color/50 focus:ring-primary-color/20 transition-all">
-              <SelectValue placeholder="Select suitability" />
+              <SelectValue placeholder="Select compulsoriness" />
             </SelectTrigger>
             <SelectContent>
-              {compulsoriness.map((suitability) => (
-                <SelectItem key={suitability} value={suitability}>
-                  {suitability}
+              {compulsoriness.map((term) => (
+                <SelectItem key={term} value={term}>
+                  {term}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
-          {errors.suitability && (
+          {errors.compulsoriness && (
             <p className="text-sm text-red-500 flex items-center gap-1 mt-1">
               <AlertTriangle size={14} />
-              {errors.suitability.message}
+              {errors.compulsoriness}
             </p>
           )}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="cycleStage" className="text-sm font-medium text-gray-700">Cycle Stage</Label>
-          <Select {...register("cycleStage", { required: "Cycle stage is required" })}>
+          <Label htmlFor="cycleStage" className="text-sm font-medium text-gray-700">
+            Cycle Stage
+          </Label>
+          <Select
+            value={formData.cycleStage}
+            onValueChange={(value) =>
+              setFormData((prev) => ({ ...prev, cycleStage: value as PHVAPhase }))
+            }
+          >
             <SelectTrigger className="border-tertiary-color/30 focus:border-primary-color/50 focus:ring-primary-color/20 transition-all">
               <SelectValue placeholder="Select cycle stage" />
             </SelectTrigger>
@@ -160,13 +186,20 @@ export default function CriterionForm({
               ))}
             </SelectContent>
           </Select>
+          {errors.cycleStage && (
+            <p className="text-sm text-red-500 flex items-center gap-1 mt-1">
+              <AlertTriangle size={14} />
+              {errors.cycleStage}
+            </p>
+          )}
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="description" className="text-sm font-medium text-gray-700">Description</Label>
           <Textarea
-            id="description"
-            {...register("description")}
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
             rows={4}
             placeholder="Enter criterion description"
             className="border-tertiary-color/30 focus:border-primary-color/50 focus:ring-primary-color/20 transition-all resize-none"
@@ -177,7 +210,6 @@ export default function CriterionForm({
           <Button
             type="submit"
             disabled={isSubmitting}
-            onClick={() => handleSubmit(onSubmit)}
             className="bg-primary-color hover:bg-primary-color/90 text-white flex items-center gap-2"
           >
             <Save size={16} />
