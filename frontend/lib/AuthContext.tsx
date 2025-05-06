@@ -1,12 +1,12 @@
 // /lib/AuthContext.tsx
 "use client"
-import { createContext, useContext, useState, useEffect } from "react"; // Importa useEffect
+import { createContext, useContext, useState, useEffect } from "react";
 import { UserDTO } from "@/types/User";
 
 type AuthContextType = {
     user: UserDTO | null;
     token: string | null;
-    isLoggedIn: boolean; // !
+    isLoggedIn: boolean;
     setAuthUser: (user: UserDTO | null) => void;
     setToken: (token: string | null) => void;
     logout: () => void;
@@ -15,34 +15,35 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-    // Inicializa el estado a null o un valor por defecto que no dependa del navegador
     const [user, setAuthUser] = useState<UserDTO | null>(null);
-    const [token, setToken] = useState<string | null>(null); // Asumiendo que el token tampoco está en localStorage inicialmente aquí
+    const [token, setToken] = useState<string | null>(null);
 
     function logout() {
         setAuthUser(null);
         setToken(null);
-        // ! Usa localStorage
-        localStorage.removeItem("user"); // Limpiar datos del usuario
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
     }
 
     useEffect(() => {
-        // ! Usa localStorage
+        // Recuperar token y usuario del localStorage al iniciar
+        const storedToken = localStorage.getItem("token");
+        if (storedToken) {
+            setToken(storedToken);
+        }
         const storedUser = localStorage.getItem("user");
         if (storedUser) {
             try {
                 setAuthUser(JSON.parse(storedUser));
             } catch (e) {
-                // ! Usa localStorage
-
                 console.error("Error parsing user from localStorage:", e);
-                localStorage.removeItem("user"); // Limpiar datos corruptos
+                localStorage.removeItem("user");
             }
         }
-
     }, []);
+
     return (
-        <AuthContext.Provider value={{ user, token, isLoggedIn: !!user, setAuthUser, setToken, logout }}>
+        <AuthContext.Provider value={{ user, token, isLoggedIn: !!token, setAuthUser, setToken, logout }}>
             {children}
         </AuthContext.Provider>
     );
