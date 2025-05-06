@@ -6,52 +6,65 @@ import { Button } from "@/components/ui/button";
 import { UserInput } from "./UserInput";
 import { RoleSelector } from "./RoleSelector";
 import { LanguageSelector } from "./LanguageSelector";
-import { User, UserDTO } from "@/types/User";
+import { User } from "@/types/User";
 import { useLanguage } from "@/lib/LanguageContext";
-import { useRegister } from "@/hooks/useRegister";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { environment } from "@/env/environment.dev";
 
 export function RegisterForm() {
   // Language
   const { t } = useLanguage();
   const router = useRouter();
   // Component State
-  const [user, setUser] = useState<User>({
-    _id: null,
+  const [user, setUser] = useState({
     username: "",
     name: "",
     email: "",
     password: "",
     role: "InternalAuditor",
     language: "en",
-    businessId: null,
+    securityQuestion: {
+      securityQuestion: "What is your favorite color?",
+      securityAnswer: "blue"
+    }
   });
 
-  const handleChange = (field: keyof User, value: string) => {
+  const handleChange = (field: keyof typeof user, value: string) => {
     setUser((prev) => ({ ...prev, [field]: value }));
   };
 
-  // Registration hook
-  const { registerUser, isLoading } = useRegister();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    setIsLoading(true);
     try {
-      const newUser: UserDTO = await registerUser(user);
+      // Crear el FormData con el campo 'incomingString'
+      const formData = new FormData();
 
-      if (newUser.role === "Coordinator") {
-        router.push("/business/create");
+      console.log(user)
+
+      formData.append('incomingString', JSON.stringify(user));
+      const response = await fetch(`${environment.API_URL}/security/api/signup/`, {
+        method: 'POST',
+        body: formData,
+      });
+      if (response.ok) {
+        toast.success(t("auth.register.successMessage"));
+        if (user.role === "Coordinator") {
+          router.push("/business/create");
+        } else {
+          router.push("/");
+        }
       } else {
-        router.push("/");
-
+        const errorText = await response.text();
+        toast.error(t("auth.register.errorMessage") + (errorText ? `: ${errorText}` : ""));
       }
-
-      toast.success(t("auth.register.successMessage"));
-    } catch (err) {
-      console.error("Error:", err);
+    } catch {
       toast.error(t("auth.register.errorMessage"));
+    } finally {
+      setIsLoading(false);
     }
   };
 
