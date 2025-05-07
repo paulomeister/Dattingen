@@ -5,45 +5,64 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "../ui/accordion";
-import { Criterion, CycleStageEnum, SuitabilityEnum } from "@/types/Criterion";
+} from "@/components/ui/accordion";
 import CriterionForm from "./CriterionForm";
-import { BookOpen, ClipboardCheck, SearchCheck } from "lucide-react";
+import { Control, PHVAPhase, Ruleset } from "@/types/Ruleset";
+import { ClipboardCheck, ClipboardEdit, Beaker, ClipboardList } from "lucide-react";
+import { updateRuleset } from "@/lib/utils";
+import { useLanguage } from "@/lib/LanguageContext";
+import { toast } from "react-hot-toast";
 
-// Interfaz para los datos del formulario que coincida con CriterionForm
-interface DataForm {
-  title: string;
-  description: string;
-  cycleStage: CycleStageEnum;
-  suitabilities: SuitabilityEnum[]; // Tipo específico en lugar de any[]
-}
-
-// Función para determinar el icono según la etapa del ciclo
-const getCycleStageIcon = (cycleStage: CycleStageEnum) => {
-  switch (cycleStage) {
-    case CycleStageEnum.P:
-      return <ClipboardCheck size={16} className="text-primary-color" />;
-    case CycleStageEnum.D:
-      return <SearchCheck size={16} className="text-primary-color" />;
-    default:
-      return <BookOpen size={16} className="text-primary-color" />;
-  }
-};
-
-const CriterionAccordion = ({ criterion }: { criterion: Criterion }) => {
-  // Actualizada para manejar la interfaz DataForm y usar los parámetros
-  const onSave = (_data: DataForm) => {
-    // TODO: Implementar guardado real con API
-    // En un caso real, usaríamos _data para enviar al backend
-    console.log("Guardando criterio");
-    alert("guardar CRITERIO");
+// Componente para mostrar un criterio en un acordeón
+const CriterionAccordion = ({ criterion, ruleset }: { criterion: Control, ruleset: Ruleset | null }) => {
+  const { t } = useLanguage();
+  const getCycleStageIcon = (stage: PHVAPhase) => {
+    switch (stage) {
+      case PHVAPhase.PLAN:
+        return <ClipboardEdit size={16} className="text-blue-500 shrink-0" />;
+      case PHVAPhase.DO:
+        return <ClipboardList size={16} className="text-green-500 shrink-0" />;
+      case PHVAPhase.CHECK:
+        return <Beaker size={16} className="text-yellow-500 shrink-0" />;
+      case PHVAPhase.ACT:
+        return <ClipboardCheck size={16} className="text-red-500 shrink-0" />;
+      default:
+        return <ClipboardEdit size={16} className="text-primary-color shrink-0" />;
+    }
   };
 
-  const onDelete = (_criterionId: string) => {
-    // TODO: Implementar eliminación real con API
-    // En un caso real, usaríamos _criterionId para identificar el elemento a eliminar
-    console.log("Eliminando criterio");
-    alert("eliminar CRITERIO!!!");
+  // Actualizada para manejar la interfaz Control
+  const onSave = async (data: Control) => {
+    if (ruleset) {
+      const index = ruleset.controls.findIndex((control) => control.controlId === data.controlId);
+      if (index === -1) {
+        toast.error(t('normatives.criterionAccordion.errorNotFound'));
+        return;
+      }
+      const updatedRuleset = { ...ruleset };
+      updatedRuleset.controls[index] = data;
+      try {
+        await updateRuleset(updatedRuleset._id as string, updatedRuleset);
+        toast.success(t('normatives.criterionAccordion.saveSuccess'));
+      } catch (exc) {
+        console.error("Error at Control Update", exc);
+        toast.error(t('normatives.criterionAccordion.saveError'));
+      }
+    }
+  };
+
+  const onDelete = async (controlId: string) => {
+    if (!ruleset || !controlId) return;
+    try {
+      const updatedRuleset = { ...ruleset };
+      updatedRuleset.controls = ruleset.controls.filter(control => control.controlId !== controlId);
+      await updateRuleset(ruleset._id as string, updatedRuleset);
+      toast.success(t('normatives.criterionAccordion.deleteSuccess'));
+      window.location.reload();
+    } catch (error) {
+      console.error("Error al eliminar el criterio:", error);
+      toast.error(t('normatives.criterionAccordion.errorDelete'));
+    }
   };
 
   return (
@@ -55,12 +74,13 @@ const CriterionAccordion = ({ criterion }: { criterion: Criterion }) => {
         >
           <div className="flex items-center gap-2 overflow-hidden">
             {getCycleStageIcon(criterion.cycleStage)}
-            <span className="text-xs text-primary-color mr-1">C{criterion.controlId}.</span>
+            <span className="text-xs text-primary-color mr-1">{t('normatives.criterionAccordion.criterionPrefix')}{criterion.controlId}.</span>
             <span className="truncate">{criterion.title}</span>
           </div>
         </AccordionTrigger>
         <AccordionContent className="pt-3 px-1">
           <CriterionForm
+            ruleset={ruleset}
             criterion={criterion}
             onSave={onSave}
             onDelete={() => criterion.controlId && onDelete(criterion.controlId)}

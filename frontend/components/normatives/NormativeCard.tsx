@@ -3,17 +3,16 @@ import { Calendar } from "lucide-react"
 import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Ruleset } from "@/types/Ruleset"
-import { useAuth } from "@/lib/AuthContext"
 import { useLanguage } from "@/lib/LanguageContext"
+import { useRouter } from "next/navigation"
 
 interface NormativeCardProps {
   normative: Ruleset
 }
 
 export function NormativeCard({ normative }: NormativeCardProps) {
-
+  const router = useRouter()
   //TODO Mandar a preguntar al servicio si el coordinador tiene a su empresa metida en cualquiera de estas normativas
-  const { user } = useAuth()
   const { t } = useLanguage()
 
   return (
@@ -23,8 +22,7 @@ export function NormativeCard({ normative }: NormativeCardProps) {
       <CardHeader className="p-4 m-0 pb-2 bg-primary-color/5">
         <h3 className="text-2xl font-bold text-primary-color">{normative.name}</h3>
         <div className="flex flex-col text-sm text-muted-foreground">
-          <span>{normative.version}</span>
-          <span>{normative.criteria}</span>
+          <span> Version:  {normative.version}</span>
         </div>
       </CardHeader>
       <CardContent className="p-4 pt-3">
@@ -35,15 +33,11 @@ export function NormativeCard({ normative }: NormativeCardProps) {
         <p className="mb-2 text-xs">
           <span className="font-semibold">Org:</span> {normative.organization}
         </p>
-        <p className="text-xs text-muted-foreground line-clamp-3">{normative.description}</p>
       </CardContent>
       <CardFooter className="p-4 pt-0">
         <Button
           onClick={() => {
-
-            // TODO Cuando el servicio de Auditoría esté listo, entonces
-            // Deberá de aparecer esta parteFuncionando
-            alert("Roll in to an audit")
+            router.push(`/rulesets/get/${normative._id}`)
           }}
           className="w-full bg-primary-color text-white text-sm font-medium transition-transform hover:scale-105 rounded-md hover:text-secondary-color">
           {t("rulesets.list.itemList.rollIn")}

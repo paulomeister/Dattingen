@@ -130,6 +130,42 @@
         "rollIn": "¡Iniciar!"
       },
       "backHome": "Volver al Inicio"
+    },
+    "details": {
+      "join": "¡Unirme!",
+      "organization": "Organización:",
+      "published": "Publicado:",
+      "version": "Versión:",
+      "status": "Estado:",
+      "controls": "Controles",
+      "noControls": "No hay controles disponibles",
+      "noControlsDesc": "Este conjunto de normas no tiene controles definidos.",
+      "aboutTitle": "Acerca de este conjunto de normas",
+      "aboutDesc": "Este conjunto de normas fue creado para establecer estándares y criterios de cumplimiento para auditorías. Contiene {count} controles en diferentes fases del ciclo PHVA.",
+      "joinButton": "Unirse a este conjunto de normas",
+      "error": {
+        "title": "Error al cargar el conjunto de normas",
+        "retry": "Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste."
+      },
+      "loading": "Cargando detalles del conjunto de normas..."
+    },
+    "creator": {
+      "documentViewer": "Visor de Documentos",
+      "saveRuleset": "Guardar Normativa",
+      "addRule": "Agregar Regla",
+      "finishRuleset": "Finalizar Normativa",
+      "confirmFinish": "¿Estás seguro de que deseas finalizar esta normativa?",
+      "confirmFinishDescription": "Esta acción publicará la normativa y la hará disponible para auditorías. Esta acción no se puede deshacer.",
+      "confirm": "Confirmar",
+      "cancel": "Cancelar",
+      "success": {
+        "save": "¡Normativa guardada exitosamente!",
+        "publish": "¡Normativa publicada exitosamente!"
+      },
+      "error": {
+        "save": "Error al guardar la normativa. Por favor, inténtalo de nuevo.",
+        "publish": "Error al publicar la normativa. Por favor, inténtalo de nuevo."
+      }
     }
   },
   "statistics": {},
@@ -148,7 +184,8 @@
   },
   "components": {},
   "common": {
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "warning": "Atención"
   },
   "home": {
     "hero": {
@@ -157,6 +194,41 @@
       "description": "Certifica tu empresa con las mejores prácticas y estándares del mundo.",
       "descriptionBold": "Sé la mejor versión de tu empresa.",
       "startButton": "¡Comenzar!"
+    }
+  },
+  "normatives": {
+    "sidebar": {
+      "ruleset": "Normativa",
+      "terms": "Términos",
+      "criteria": "Criterios",
+      "criterions": "Criterios",
+      "noCriterions": "Aún no hay criterios definidos"
+    },
+    "criterionAccordion": {
+      "errorNotFound": "Error: No se encontró el control a actualizar.",
+      "errorDelete": "Error al eliminar el criterio, por favor intenta de nuevo.",
+      "criterionPrefix": "C",
+      "saveSuccess": "¡Criterio guardado exitosamente!",
+      "saveError": "Error al guardar el criterio. Por favor, intenta de nuevo.",
+      "deleteSuccess": "¡Criterio eliminado exitosamente!"
+    },
+    "criterionForm": {
+      "edit": "Editar Criterio",
+      "create": "Crear Criterio",
+      "title": "Título",
+      "titlePlaceholder": "Ingresa el título del criterio",
+      "description": "Descripción",
+      "descriptionPlaceholder": "Ingresa la descripción del criterio",
+      "compulsoriness": "Obligatoriedad",
+      "compulsorinessPlaceholder": "Selecciona la Obligatoriedad",
+      "cycleStage": "Fase del Ciclo",
+      "cycleStagePlaceholder": "Selecciona la fase del ciclo",
+      "save": "Guardar Criterio",
+      "saving": "Guardando...",
+      "delete": "Eliminar",
+      "errorTitle": "El título es obligatorio",
+      "errorCompulsoriness": "La Obligatoriedad es obligatoria",
+      "errorCycleStage": "La fase del ciclo es obligatoria"
     }
   }
 }

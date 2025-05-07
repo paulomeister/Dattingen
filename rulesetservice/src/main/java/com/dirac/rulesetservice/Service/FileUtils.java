@@ -7,6 +7,8 @@ import com.azure.storage.blob.models.BlobItem;
 import com.azure.storage.blob.models.ListBlobsOptions;
 import com.azure.storage.blob.sas.BlobSasPermission;
 import com.azure.storage.blob.sas.BlobServiceSasSignatureValues;
+import com.dirac.rulesetservice.DTO.ResponseAzure;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -32,7 +34,7 @@ public class FileUtils {
     @Autowired
     private BlobContainerClient azureStorageClient;
 
-    public String uploadFileInAzureStorage( MultipartFile fileContent)  {
+    public ResponseAzure uploadFileInAzureStorage(MultipartFile fileContent) {
 
         if (fileContent.isEmpty())
             log.error("File content is NULL");
@@ -41,14 +43,21 @@ public class FileUtils {
         String fullFilePath = filePath + File.separator + fileContent.getOriginalFilename();
         try {
             blobClient = azureStorageClient.getBlobClient(fullFilePath);
-            blobClient.getBlockBlobClient().upload(new BufferedInputStream(fileContent.getInputStream()), fileContent.getSize(), true);
+            blobClient.getBlockBlobClient().upload(new BufferedInputStream(fileContent.getInputStream()),
+                    fileContent.getSize(), true);
             log.info(fileContent.getOriginalFilename() + " uploaded successfully into Azure File Storage");
         } catch (IOException e) {
-            log.error("Exception occurred during file upload : " + e.getMessage() + " for " + fileContent.getOriginalFilename());
+            log.error("Exception occurred during file upload : " + e.getMessage() + " for "
+                    + fileContent.getOriginalFilename());
         }
-        return blobClient.getBlobUrl() + "?"
+
+        String fileUrl = blobClient.getBlobUrl() + "?"
                 + blobClient.generateSas(new BlobServiceSasSignatureValues(OffsetDateTime.now().plusDays(30),
                         new BlobSasPermission().setReadPermission(true)).setStartTime(OffsetDateTime.now()));
+        String fileName = blobClient.getBlobName();
+
+        return new ResponseAzure(fileName, fileUrl);
+
     }
 
     public InputStreamResource downloadFile(String fileName) {
@@ -74,11 +83,10 @@ public class FileUtils {
         return new InputStreamResource(inputStream);
     }
 
-
     /**
      * Downloads all files from Azure Folder Storage
      */
-    public void downloadFolderFromAzureStorage(String folderPath, String destinationPath)  {
+    public void downloadFolderFromAzureStorage(String folderPath, String destinationPath) {
         log.info("Downloading all files from folder " + folderPath);
         String[] blobNames;
         for (BlobItem blobItem : azureStorageClient.listBlobs(new ListBlobsOptions().setPrefix(folderPath), null)) {
@@ -94,7 +102,7 @@ public class FileUtils {
     /**
      * Deletes File from Azure Storage
      */
-    public void deleteFileFromAzureStorage(String filePath, String fileName){
+    public void deleteFileFromAzureStorage(String filePath, String fileName) {
         log.info("Deleting file named: " + fileName + " from " + filePath);
         azureStorageClient.getBlobClient(filePath + File.separator + fileName).getBlockBlobClient().deleteIfExists();
         log.info("File deleted successfully from Azure File Storage");
@@ -103,7 +111,7 @@ public class FileUtils {
     /**
      * Calculates Folder size in Azure Storage
      */
-    public long calculateFolderSizeInAzureStorage(String folderPath){
+    public long calculateFolderSizeInAzureStorage(String folderPath) {
         log.info("Calculating folder size of Azure Storage folder : " + folderPath);
         long folderSize = 0;
         for (BlobItem blobItem : azureStorageClient.listBlobs(new ListBlobsOptions().setPrefix(folderPath), null)) {
@@ -117,7 +125,7 @@ public class FileUtils {
     /**
      * Gets the file names in a folder in Azure Storage
      */
-    public List<String> getFileNamesInAzureStorage(String folderPath){
+    public List<String> getFileNamesInAzureStorage(String folderPath) {
         List<String> fileNames = new ArrayList<>();
         String[] blobNames;
         for (BlobItem blobItem : azureStorageClient.listBlobs(new ListBlobsOptions().setPrefix(folderPath), null)) {
