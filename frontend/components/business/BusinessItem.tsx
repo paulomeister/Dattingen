@@ -33,14 +33,14 @@ export default function BusinessItem({ business }: BusinessItemProps) {
                     <div className="flex items-center">
                         <Users className="h-5 w-5 text-secondary-color mr-2" />
                         <span className="text-sm font-medium">
-                            {business.associates.length} {t("enterprises.associates")}
+                            {business.associates.length} {t("business.associates.title")}
                         </span>
                     </div>
 
                     <div className="flex items-center">
                         <FileText className="h-5 w-5 text-secondary-color mr-2" />
                         <span className="text-sm font-medium">
-                            {business.audits.length} {t("enterprises.audits")}
+                            {business.audits.length} {t("business.audits")}
                         </span>
                     </div>
                 </div>

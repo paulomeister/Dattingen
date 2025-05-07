@@ -55,15 +55,19 @@ const UserDropdown = () => {
           }</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="cursor-pointer hover:bg-primary-color text-primary-color
+        {
+          user?.role.toLowerCase() === "admin" && (
+            <DropdownMenuItem className="cursor-pointer hover:bg-primary-color text-primary-color
           transition-colors duration-100 ease-in-out"
-          onClick={navigateToAdmin}
-        >
-          <UserRoundCog className="mr-2 h-4 w-4" />
-          <span >{
-            t("navbar.userDropdown.admin")
-          }</span>
-        </DropdownMenuItem>
+              onClick={navigateToAdmin}
+            >
+              <UserRoundCog className="mr-2 h-4 w-4" />
+              <span >{
+                t("navbar.userDropdown.admin")
+              }</span>
+            </DropdownMenuItem>
+          )
+        }
         <DropdownMenuSeparator />
         <DropdownMenuItem className="cursor-pointer hover:bg-primary-color hover:text-white 
           transition-colors duration-100 ease-in-out"

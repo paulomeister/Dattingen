@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { UserInput } from "./UserInput";
 import { RoleSelector } from "./RoleSelector";
 import { LanguageSelector } from "./LanguageSelector";
-import { User } from "@/types/User";
 import { useLanguage } from "@/lib/LanguageContext";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -17,7 +16,7 @@ export function RegisterForm() {
   // Language
   const { t } = useLanguage();
   const router = useRouter();
-  const { setAuthUser, setToken } = useAuth();
+  const { setToken } = useAuth();
   // Component State
   const [userRegister, setUserRegister] = useState({
     username: "",
@@ -65,7 +64,7 @@ export function RegisterForm() {
       } else {
         const errorText = await response.text();
         console.log(errorText);
-        toast.error(t("auth.register.errorMessage") + (errorText ? `: ${errorText}` : ""));
+        toast.error(t("auth.register.errorMessage"));
       }
     } catch (err) {
       console.log(err);

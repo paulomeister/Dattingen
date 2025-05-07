@@ -4,38 +4,46 @@ import Image from "next/image";
 import Dropdowns from "./Dropdowns";
 import { useLanguage } from "@/lib/LanguageContext";
 import { useAuth } from "@/lib/AuthContext";
-import { environment } from "@/env/environment.dev";
+import React, { useEffect } from "react";
 
 export function Navbar() {
   const { t } = useLanguage();
   const { user } = useAuth();
 
-  const navigationLinks: any[] = [
-    {
-      label: t("navbar.links.home"),
-      href: "/",
-    },
-    {
-      label: t("navbar.links.rulesets"),
-      href: "/rulesets",
-    },
-    {
-      label: t("navbar.links.myAudits"),
-      href: "/progress",
-    },
-    {
-      label: t("navbar.links.business"),
-      href: "/business",
-    },
-    // Solo mostrar el enlace My Business si el usuario tiene un businessId
-    // y ese businessId NO es el de ACME
-    ...(user?.businessId && ! user?.businessId.includes(environment.ACMEBUSINESS.slice(0,10)) ? [
+  const [navigationLinks, setNavigationLinks] = React.useState<unknown[]>([])
+
+  useEffect(() => {
+
+
+    setNavigationLinks([
       {
-        label: t("navbar.links.myBusiness"),
-        href: `/business/${user.businessId}`,
-      }
-    ] : []),
-  ];
+        label: t("navbar.links.home"),
+        href: "/",
+      },
+      {
+        label: t("navbar.links.rulesets"),
+        href: "/rulesets",
+      },
+
+      {
+        label: t("navbar.links.business"),
+        href: "/business",
+      },
+      // Solo mostrar el enlace My Business si el usuario tiene un businessId
+      // y ese businessId NO es el de ACME
+      ...(user?.businessId ? [
+        {
+          label: t("navbar.links.myBusiness"),
+          href: `/business/${user.businessId}`,
+        }
+      ] : []), ...(user ? [
+        {
+          label: t("navbar.links.myAudits"),
+          href: "/progress",
+        },
+      ] : [])
+    ])
+  }, [user])
   return (
     <nav className="fixed flex items-center justify-center top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-md ">
       <div className="container flex h-16 items-center justify-between ">

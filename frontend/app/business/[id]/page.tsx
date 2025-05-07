@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { environment } from "@/env/environment.dev";
 import { Business } from "@/types/Business";
 import BusinessDetail from "@/components/business/BusinessDetail";
+import { useLanguage } from "@/lib/LanguageContext";
 
 type BusinessPageProps = {
     params: {
@@ -39,9 +40,8 @@ export default async function BusinessPage({ params }: BusinessPageProps) {
 
     return (
         <div className="container mx-auto px-4 py-6 mt-20">
-            <h1 className="text-3xl font-bold mb-8">Business Details</h1>
 
-            {/* Pass business data to client component */}
+
             <BusinessDetail business={business} />
         </div>
     );

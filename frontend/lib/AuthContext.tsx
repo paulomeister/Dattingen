@@ -9,6 +9,7 @@ type AuthContextType = {
     isLoggedIn: boolean;
     setAuthUser: (user: UserDTO | null) => void;
     setToken: (token: string | null) => void;
+    loading: boolean;
     logout: () => void;
 };
 
@@ -17,6 +18,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setAuthUser] = useState<UserDTO | null>(null);
     const [token, setToken] = useState<string | null>(null);
+    const [loading, setLoading] = useState(true);
 
     function logout() {
         setAuthUser(null);
@@ -29,35 +31,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         // Guardar token y usuario en localStorage al cambiar
         if (token) {
             localStorage.setItem("token", token);
-        } else {
-            localStorage.removeItem("token");
         }
         if (user) {
             localStorage.setItem("user", JSON.stringify(user));
-        } else {
-            localStorage.removeItem("user");
         }
     }, [token, user]);
 
+
     useEffect(() => {
-        // Recuperar token y usuario del localStorage al iniciar
         const storedToken = localStorage.getItem("token");
-        if (storedToken) {
-            setToken(storedToken);
-        }
         const storedUser = localStorage.getItem("user");
+
+        if (storedToken) setToken(storedToken);
         if (storedUser) {
             try {
                 setAuthUser(JSON.parse(storedUser));
             } catch (e) {
-                console.error("Error parsing user from localStorage:", e);
-                localStorage.removeItem("user");
+                console.error("Error parsing user:", e);
             }
         }
+        setLoading(false); // Terminó de cargar
     }, []);
 
+
     return (
-        <AuthContext.Provider value={{ user, token, isLoggedIn: !!token, setAuthUser, setToken, logout }}>
+        <AuthContext.Provider value={{ user, token, isLoggedIn: !!token, setAuthUser, setToken, logout, loading }}>
             {children}
         </AuthContext.Provider>
     );

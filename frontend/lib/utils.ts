@@ -24,6 +24,23 @@ export const getUserImage = (role: RoleEnum | undefined): string => {
   }
 };
 
+export const getUserRole = (role: string, language: string | undefined): string => {
+  console.log(language)
+
+  switch (role) {
+    case "InternalAuditor":
+      return language === "es" ? "Auditor Interno" : "Internal Auditor";
+    case "Coordinator":
+      return language === "es" ? "Coordinador" : "Coordinator";
+    case "ExternalAuditor":
+      return language === "es" ? "Auditor Externo" : "External Auditor";
+    case "Admin":
+      return language === "es" ? "Administrador" : "Admin";
+    default:
+      return language === "es" ? "Usuario" : "User";
+  }
+};
+
 export async function createUser(
   user: UserDTO,
   token: string | null = null

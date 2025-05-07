@@ -60,6 +60,11 @@
   --color-background: #ffffff;
 }
 
+::selection {
+  background: #b298dc;
+  color: #6f2dbd;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

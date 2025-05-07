@@ -6,24 +6,21 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * This class configures CORS (Cross-Origin Resource Sharing) settings for the
- * application.
- * It allows requests from specific origins and specifies allowed HTTP methods.
- * This is useful only for development purposes.
- * TODO: Remove this class in production.
+ * CORS configuration has been moved to SecurityConfiguration.java to avoid conflicts.
+ * This class is now deprecated and will be removed in a future release.
  */
-@Configuration
+// @Configuration  // Comentado para evitar conflictos de configuración
 public class CorsConfig {
 
-    @Bean
+    // @Bean  // Comentado para evitar conflictos de configuración
     public WebMvcConfigurer webMvcConfigurer() {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOrigins("http://localhost:3000")
-                        .allowedMethods("*")
-                        .allowCredentials(true);
+                        .allowedMethods("*");
+                        // .allowCredentials(true);
             }
         };
     }

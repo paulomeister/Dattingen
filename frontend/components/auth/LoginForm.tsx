@@ -11,59 +11,74 @@ import { useAuth } from "@/lib/AuthContext"
 import { useRouter } from "next/navigation"
 import { toast } from "react-hot-toast"
 import { environment } from "@/env/environment.dev";
+import { useLanguage } from "@/lib/LanguageContext"
+import { ResponseDTO } from "@/types/ResponseDTO"
+import { UserDTO } from "@/types/User"
 
 
 export function LoginForm() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
-  const [email, setEmail] = useState("")
+  const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
-  const [error, setError] = useState("")
-  const { setAuthUser, setToken } = useAuth()
+  const { user, setAuthUser, setToken } = useAuth()
+  const { t } = useLanguage()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
-    setError("")
 
     try {
 
-      const body = new URLSearchParams();
-      body.append('username', email);
-      body.append('password', password);
-
-      const response = await fetch('http://localhost:8084/login', {
+      const response = await fetch(`${environment.API_URL}/security/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username: '<cambiar>', password: '<cambiar>' })
+        body: JSON.stringify({ username, password })
       });
 
-      if (response.ok) {
 
-        console.log(response)
+      const token = response.headers.get('Authorization');
+      if (token) {
 
-        const token = response.headers.get('Authorization');
-        if (token) {
+        try {
+
+          const userResponse: Response = await fetch(`${environment.API_URL}/users/api/search?username=${username}`, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': token
+            }
+          });
+          const response: ResponseDTO<UserDTO> = await userResponse.json();
+          const user = response.data;
           setToken(token);
-          localStorage.setItem('token', token);
-          // Si tu backend retorna el usuario en el body, puedes hacer:
-          // const user = await response.json();
-          // setAuthUser(user);
-          toast.success("¡Inicio de sesión exitoso!");
-          router.push('/');
-        } else {
-          setError('No se recibió token de autenticación');
-          toast.error('No se recibió token de autenticación');
+          setAuthUser(user);
+
+          const isFirstTime = JSON.parse(localStorage.getItem('firstTime')!) === "true";
+
+
+
+          if (user?.role?.toLowerCase() === 'coordinator' && isFirstTime) {
+            localStorage.setItem("firstTime", JSON.stringify("false"));
+            return router.push('/business/create');
+          }
+
+          toast.success(t("auth.login.loginSuccess"));
+
+        } catch (err) {
+          console.error(err)
         }
+
+
+
+        router.push('/');
       } else {
-        setError('Credenciales inválidas');
-        toast.error('Credenciales inválidas');
+        toast.error(t("auth.login.error.invalidCredentials"));
       }
-    } catch (err) {
-      setError('Error en el login');
-      toast.error('Error en el login');
+    } catch (e) {
+      console.error(e)
+      toast.error(t("auth.login.error.serverError"));
     } finally {
       setIsLoading(false)
     }
@@ -74,35 +89,30 @@ export function LoginForm() {
       <form onSubmit={handleSubmit}>
         <CardContent className="pt-6">
           <div className="space-y-4">
-            {error && (
-              <div className="text-red-500 text-sm font-medium">{error}</div>
-            )}
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-primary-color">
-                Email
+              <Label htmlFor="username" className="text-primary-color">
+                {t("auth.login.username")}
               </Label>
               <Input
-                id="email"
-                placeholder="Enter your email"
+                id="Username"
+                placeholder=""
                 required
                 className="border-primary-color focus-visible:ring-primary-color"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
               />
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="password" className="text-primary-color">
-                  Password
+                  {t("auth.login.password")}
+
                 </Label>
-                <a href="#" className="text-sm text-primary-color hover:underline">
-                  Forgot password?
-                </a>
               </div>
               <Input
                 id="password"
                 type="password"
-                placeholder="Enter your password"
+                placeholder="******"
                 required
                 className="border-primary-color focus-visible:ring-primary-color"
                 value={password}

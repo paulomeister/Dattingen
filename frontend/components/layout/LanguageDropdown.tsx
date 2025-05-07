@@ -45,7 +45,6 @@ const LanguageDropdown = () => {
     } else {
       const user: UserDTO = await response.json()
       setAuthUser(user)
-      console.log("Language preference updated successfully");
     }
   }
 

@@ -11,7 +11,6 @@ const RulesetCreator = () => {
     const [isCreating, setIsCreating] = React.useState<boolean>(false);
     const [selectedText, setSelectedText] = React.useState<string>("");
     const [isVisible, setIsVisible] = useState(false);
-    const [activeTab, setActiveTab] = useState<'upload' | 'edit'>('upload');
 
     // Funciones para manejar el diálogo
     function closeDialog(): void {

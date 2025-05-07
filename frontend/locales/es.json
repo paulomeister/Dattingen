@@ -4,12 +4,13 @@
       "home": "Inicio",
       "rulesets": "Normativas",
       "myAudits": "Mis Auditorías",
-      "enterprises": "Empresas",
-      "myEnterprises": "Mis Empresas"
+      "business": "Empresas",
+      "myBusiness": "Mi Empresa"
     },
     "userDropdown": {
       "title": "Mi Cuenta",
       "profile": "Perfil",
+      "admin": "Administrador",
       "logout": "Cerrar Sesión"
     }
   },
@@ -22,12 +23,18 @@
     },
     "login": {
       "title": "Iniciar sesión",
-      "email": "Correo electrónico",
+      "username": "Nombre de usuario",
       "password": "Contraseña",
       "rememberMe": "Recordarme",
       "loginButton": "Iniciar sesión",
+      "loginSuccess": "¡Bienvenido de nuevo!",
       "forgotPasswordLink": "¿Olvidaste tu contraseña?",
-      "registerLink": "Registrarse"
+      "registerLink": "Registrarse",
+      "error": {
+        "invalidCredentials": "Usuario o Contraseña Inválido",
+        "userNotFound": "Error al Iniciar Sesión",
+        "serverError": "Error del Servidor"
+      }
     },
     "register": {
       "title": "Registro",
@@ -59,6 +66,10 @@
   },
   "business": {
     "page": {
+      "activity": "Actividad",
+      "teamSize": "Tamaño del equipo",
+      "auditsCount": "Auditorías realizadas",
+      "title": "Detalles de la empresa",
       "search": "ACME Inc",
       "clear": "Limpiar",
       "retry": "Reintentar más tarde...",
@@ -78,9 +89,11 @@
       "error": "Error al crear la empresa. Por favor intenta de nuevo."
     },
     "associates": {
-      "title": "USUARIOS",
+      "title": "Usuarios Asociados",
       "empty": "No hay usuarios asociados con esta empresa"
-    }
+    },
+    "audits": "Auditorías",
+    "statistics": "Estadísticas"
   },
   "rulesets": {
     "rulesets": "Conjuntos de Normas",
@@ -113,7 +126,7 @@
     "list": {
       "title": "¡Busca los Conjuntos de Normas más Populares!",
       "noRulesets": "No se encontró ningún Conjunto de Normas que coincida con tus criterios de búsqueda.",
-      "itemList":{
+      "itemList": {
         "rollIn": "¡Iniciar!"
       },
       "backHome": "Volver al Inicio"
