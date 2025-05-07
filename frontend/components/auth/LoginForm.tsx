@@ -27,13 +27,23 @@ export function LoginForm() {
     setError("")
 
     try {
-      const response = await fetch(`${environment.API_URL}//login`, {
+
+      const body = new URLSearchParams();
+      body.append('username', email);
+      body.append('password', password);
+
+      const response = await fetch('http://localhost:8084/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: email, password }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username: '<cambiar>', password: '<cambiar>' })
       });
 
       if (response.ok) {
+
+        console.log(response)
+
         const token = response.headers.get('Authorization');
         if (token) {
           setToken(token);
@@ -73,7 +83,6 @@ export function LoginForm() {
               </Label>
               <Input
                 id="email"
-                type="email"
                 placeholder="Enter your email"
                 required
                 className="border-primary-color focus-visible:ring-primary-color"

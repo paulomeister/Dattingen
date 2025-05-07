@@ -11,27 +11,29 @@ import { useLanguage } from "@/lib/LanguageContext";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { environment } from "@/env/environment.dev";
+import { useAuth } from "@/lib/AuthContext";
 
 export function RegisterForm() {
   // Language
   const { t } = useLanguage();
   const router = useRouter();
+  const { setAuthUser, setToken } = useAuth();
   // Component State
-  const [user, setUser] = useState({
+  const [userRegister, setUserRegister] = useState({
     username: "",
     name: "",
     email: "",
+    language: "en",
     password: "",
     role: "InternalAuditor",
-    language: "en",
     securityQuestion: {
       securityQuestion: "What is your favorite color?",
       securityAnswer: "blue"
     }
   });
 
-  const handleChange = (field: keyof typeof user, value: string) => {
-    setUser((prev) => ({ ...prev, [field]: value }));
+  const handleChange = (field: keyof typeof userRegister, value: string) => {
+    setUserRegister((prev) => ({ ...prev, [field]: value }));
   };
 
   const [isLoading, setIsLoading] = useState(false);
@@ -42,26 +44,31 @@ export function RegisterForm() {
     try {
       // Crear el FormData con el campo 'incomingString'
       const formData = new FormData();
-
-      console.log(user)
-
-      formData.append('incomingString', JSON.stringify(user));
-      const response = await fetch(`${environment.API_URL}/security/api/signup/`, {
+      formData.append('incomingString', JSON.stringify(userRegister));
+      const response = await fetch(`${environment.API_URL}/security/api/signup`, {
         method: 'POST',
         body: formData,
       });
       if (response.ok) {
         toast.success(t("auth.register.successMessage"));
-        if (user.role === "Coordinator") {
-          router.push("/business/create");
-        } else {
-          router.push("/");
+
+        // Guardar el token en el localStorage
+        const token = response.headers.get("Authorization")?.split(" ")[1] || null;
+        if (token) {
+          setToken(token);
         }
+
+        if (userRegister.role === "Coordinator") {
+          localStorage.setItem("firstTime", JSON.stringify("true"));
+        }
+        router.push("/auth");
       } else {
         const errorText = await response.text();
+        console.log(errorText);
         toast.error(t("auth.register.errorMessage") + (errorText ? `: ${errorText}` : ""));
       }
-    } catch {
+    } catch (err) {
+      console.log(err);
       toast.error(t("auth.register.errorMessage"));
     } finally {
       setIsLoading(false);
@@ -75,14 +82,14 @@ export function RegisterForm() {
           <UserInput
             id="username"
             label={t("auth.register.username")}
-            value={user.username}
+            value={userRegister.username}
             onChange={(v) => handleChange("username", v)}
             placeholder={t("auth.register.usernamePlaceholder")}
           />
           <UserInput
             id="name"
             label={t("auth.register.fullName")}
-            value={user.name}
+            value={userRegister.name}
             onChange={(v) => handleChange("name", v)}
             placeholder={t("auth.register.fullNamePlaceholder")}
           />
@@ -90,23 +97,23 @@ export function RegisterForm() {
             id="email"
             label={t("auth.register.email")}
             type="email"
-            value={user.email}
+            value={userRegister.email}
             onChange={(v) => handleChange("email", v)}
             placeholder={t("auth.register.emailPlaceholder")}
           />
           <RoleSelector
-            value={user.role}
+            value={userRegister.role}
             onChange={(v) => handleChange("role", v)}
           />
           <LanguageSelector
-            value={user.language}
+            value={userRegister.language}
             onChange={(v) => handleChange("language", v)}
           />
           <UserInput
             id="password"
             label={t("auth.register.password")}
             type="password"
-            value={user.password}
+            value={userRegister.password}
             onChange={(v) => handleChange("password", v)}
             placeholder={t("auth.register.passwordPlaceholder")}
           />

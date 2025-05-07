@@ -6,7 +6,8 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * This class configures CORS (Cross-Origin Resource Sharing) settings for the application.
+ * This class configures CORS (Cross-Origin Resource Sharing) settings for the
+ * application.
  * It allows requests from specific origins and specifies allowed HTTP methods.
  * This is useful only for development purposes.
  * TODO: Remove this class in production.
@@ -21,7 +22,8 @@ public class CorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOrigins("http://localhost:3000")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE");
+                        .allowedMethods("*")
+                        .allowCredentials(true);
             }
         };
     }
