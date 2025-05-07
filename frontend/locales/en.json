@@ -23,12 +23,16 @@
     },
     "login": {
       "title": "Login",
-      "email": "Email",
+      "username": "Username",
       "password": "Password",
-      "rememberMe": "Remember Me",
       "loginButton": "Login",
-      "forgotPasswordLink": "Forgot Password?",
-      "registerLink": "Register"
+      "loginSuccess": "¡Welcome Back!",
+      "registerLink": "Register",
+      "error": {
+        "invalidCredentials": "Invalid username or password.",
+        "userNotFound": "Error on Login",
+        "serverError": "Server Error"
+      }
     },
     "register": {
       "title": "Register",
@@ -60,6 +64,11 @@
   },
   "business": {
     "page": {
+      "activity": "Activity",
+      "teamSize": "Team Size",
+      "auditsCount": "Audits Count",
+      "audits": "Audits",
+      "title": "Business Details",
       "search": "ACME Inc",
       "clear": "Clear",
       "retry": "Retry Later...",
@@ -79,9 +88,11 @@
       "error": "Error creating company. Please try again."
     },
     "associates": {
-      "title": "USERS",
+      "title": "Associates",
       "empty": "No users associated with this business"
-    }
+    },
+    "audits": "Audits",
+    "statistics": "Statistics"
   },
   "rulesets": {
     "rulesets": "Rulesets",
@@ -112,9 +123,9 @@
     },
     "create": {},
     "list": {
-      "title":"Search the Most Trending Rulesets!",
+      "title": "Search the Most Trending Rulesets!",
       "noRulesets": "Any Ruleset was found matching your search criteria.",
-      "itemList":{
+      "itemList": {
         "rollIn": "Roll In!"
       },
       "backHome": "Back to Home"

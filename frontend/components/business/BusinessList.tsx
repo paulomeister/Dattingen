@@ -9,6 +9,7 @@ import BusinessItem from "./BusinessItem";
 import { Building2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card } from "@/components/ui/card";
+import { ResponseDTO } from "@/types/ResponseDTO";
 
 export default function BusinessList() {
     const { t } = useLanguage();
@@ -35,10 +36,10 @@ export default function BusinessList() {
                     throw new Error(`Error: ${response.status}`);
                 }
 
-                const data = await response.json();
-
-                if (data.status === 200 && data.data) {
-                    setBusinesses(data.data);
+                const data: ResponseDTO<Business[]> = await response.json();
+                const businesses: Business[] = data.data || [];
+                if (data.status === 200 && businesses.length > 0) {
+                    setBusinesses(businesses);
                 } else {
                     setBusinesses([]);
                 }
@@ -76,11 +77,11 @@ export default function BusinessList() {
     }
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {businesses.map((business) => (
+        businesses.length > 0 && (<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {businesses && businesses.map((business) => (
                 <BusinessItem key={business._id} business={business} />
             ))}
-        </div>
+        </div>)
     );
 }
 
@@ -88,7 +89,7 @@ function BusinessListSkeleton() {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {Array.from({ length: 6 }).map((_, i) => (
-                <Card key={i} className="p-6 h-full">
+                <Card key={i + 6} className="p-6 h-full">
                     <div className="flex items-start">
                         <Skeleton className="h-12 w-12 rounded-full" />
                         <div className="flex-1 ml-4">

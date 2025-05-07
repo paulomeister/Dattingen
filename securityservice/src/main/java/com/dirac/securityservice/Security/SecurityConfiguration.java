@@ -84,15 +84,16 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+        // En lugar de usar allowedOrigins con "*", especificamos los orígenes permitidos
         configuration.setAllowedOrigins(List.of(
             "http://localhost:3000",  // Frontend URL
             "http://localhost:8090"   // API Gateway URL
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowCredentials(true);
-        configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
-        configuration.setExposedHeaders(Arrays.asList("Authorization")); // Expose JWT header
-
+        configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type", "Content-Length", "Accept", "X-Requested-With"));
+        configuration.setExposedHeaders(List.of("Authorization")); // Expose JWT header
+        
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
