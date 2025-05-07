@@ -88,9 +88,9 @@ public class SecurityConfiguration {
             "http://localhost:3000",  // Frontend URL
             "http://localhost:8090"   // API Gateway URL
         ));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowCredentials(true);
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
         configuration.setExposedHeaders(Arrays.asList("Authorization")); // Expose JWT header
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
