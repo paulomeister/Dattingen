@@ -7,6 +7,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Document(collection = "auditprocess")
 public class AuditProcessModel {
   @JsonIgnore
@@ -20,12 +27,17 @@ public class AuditProcessModel {
   private Date processBegins;
   private Date processEnds;
 
+  @Data
+  @AllArgsConstructor
+  @NoArgsConstructor
   public class Inspector {
     private String _id;
     private String name;
   }
 
-
+  @Data
+  @AllArgsConstructor
+  @NoArgsConstructor
   public class Criterion {
     public Compositekey compositeKey;
     public Date assesedIn;
@@ -35,15 +47,20 @@ public class AuditProcessModel {
     private boolean satisfaction; // TODO: understand why
     private List<Evidence> proof;
     private String stage;
-
   }
 
+  @Data
+  @AllArgsConstructor
+  @NoArgsConstructor
   public class Compositekey {
     private String _id;
     private String controlld;
     private Date startsIn;
   }
 
+  @Data
+  @AllArgsConstructor
+  @NoArgsConstructor  
   public class Evidence {
     private String description;
     private String url;
