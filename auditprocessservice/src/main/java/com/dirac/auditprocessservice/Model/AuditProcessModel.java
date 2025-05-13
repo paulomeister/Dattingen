@@ -46,7 +46,7 @@ public class AuditProcessModel {
     private String comment;
     private boolean satisfaction; // TODO: understand why
     private List<Evidence> proof;
-    private String stage;
+    private CycleStageModel stage;
   }
 
   @Data
