@@ -39,23 +39,14 @@ public class AuditProcessModel {
   @AllArgsConstructor
   @NoArgsConstructor
   public class Criterion {
-    public Compositekey compositeKey;
+    public String _id;
     public Date assesedIn;
     public List<Inspector> internals;
     public List<Inspector> externals;
     private String comment;
     private boolean satisfaction; // TODO: understand why
     private List<Evidence> proof;
-    private CycleStageModel stage;
-  }
-
-  @Data
-  @AllArgsConstructor
-  @NoArgsConstructor
-  public class Compositekey {
-    private String _id;
-    private String controlld;
-    private Date startsIn;
+    private String stage;
   }
 
   @Data
