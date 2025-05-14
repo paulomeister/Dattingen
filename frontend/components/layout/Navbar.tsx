@@ -20,7 +20,7 @@ export function Navbar() {
     },
     {
       label: t("navbar.links.myAudits"),
-      href: "/progress",
+      href: "/audits",
     },
     // Only show the My Business link if the user has a businessId
     ...(user?.businessId ? [
