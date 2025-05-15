@@ -36,19 +36,19 @@ public class UserService {
         }
         return user;
     }
-    
+
     // Nuevo método: Buscar usuarios por nombre o username
     public List<UserModel> searchUsers(String searchTerm) {
         if (searchTerm == null || searchTerm.trim().isEmpty()) {
             throw new BadRequestException("Search term cannot be empty");
         }
-        
+
         List<UserModel> users = userRepository.findByUsernameOrNameContainingIgnoreCase(searchTerm);
-        
+
         if (users.isEmpty()) {
             throw new ResourceNotFoundException("Users matching search term", searchTerm);
         }
-        
+
         return users;
     }
 
@@ -161,6 +161,14 @@ public class UserService {
         }
 
         userRepository.deleteById(_id);
+    }
+
+    public UserModel getRandomExternalAuditor() {
+        List<UserModel> auditors = userRepository.findByRole(RoleEnum.ExternalAuditor);
+        if (auditors.isEmpty()) {
+            throw new ResourceNotFoundException("Users", "External Auditors");
+        }
+        return auditors.get((int) (Math.random() * auditors.size()));
     }
 
     // Convertir a DTO

@@ -19,11 +19,14 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.dirac.auditprocessservice.DTOs.BusinessAuditDTO;
+import com.dirac.auditprocessservice.DTOs.ResponseDTO;
+import com.dirac.auditprocessservice.DTOs.UserDTO;
 import com.dirac.auditprocessservice.Exceptions.NotFoundException;
 import com.dirac.auditprocessservice.Model.AuditProcessModel;
 import com.dirac.auditprocessservice.Model.AuditProcessModel.Assesment;
 import com.dirac.auditprocessservice.Model.AuditProcessModel.AssesmentStatus;
 import com.dirac.auditprocessservice.Model.AuditProcessModel.Control;
+import com.dirac.auditprocessservice.Model.AuditProcessModel.Inspector;
 import com.dirac.auditprocessservice.Repository.AuditProcessRepository;
 
 @Service
@@ -37,7 +40,8 @@ public class AuditProcessService {
   // Método createAuditProcess
   public String createAuditProcess(AuditProcessModel auditProcess) {
     String rulesetId = auditProcess.getRulesetId();
-    String businessId = auditProcess.getBusinessId(); // Asegúrate de que tu modelo tenga getBusinessId
+    String businessId = auditProcess.getBusinessId();
+
     if (rulesetId == null || rulesetId.isEmpty()) {
       return "Error creating audit process: rulesetId is missing.";
     }
@@ -45,7 +49,7 @@ public class AuditProcessService {
       return "Error creating audit process: businessId is missing.";
     }
 
-    AuditProcessModel savedAuditProcess = null; // Para tener el objeto guardado si falla la 2da llamada
+    AuditProcessModel savedAuditProcess = null;
 
     try {
       // Paso 1: Obtener controles y poblar los assesments
@@ -67,12 +71,14 @@ public class AuditProcessService {
         auditProcess.setAssesment(new ArrayList<>());
       }
       auditProcess.getAssesment().addAll(assesments);
+      // Paso 2: Llamar al Servicio para asignar un External Auditor de manera
+      // Aleatoria
+      AuditProcessModel finalAuditProcess = this.assignRandomExternalAuditors(auditProcess);
 
-      // Paso 2: Guardar el AuditProcessModel en tu base de datos (MongoDB)
-      savedAuditProcess = auditProcessRepository.save(auditProcess); // Capturamos el resultado del save
+      // Paso 3: Guardar el AuditProcessModel en tu base de datos (MongoDB)
+      savedAuditProcess = auditProcessRepository.save(finalAuditProcess);
 
-      // Paso 3: Llamar al Business Service para actualizar el objeto Business
-      // Esto se hace DESPUÉS de haber guardado exitosamente el AuditProcess
+      // Paso 4: Llamar al Business Service para actualizar el objeto Business
 
       // Preparamos los datos que espera el Business Service en su AuditModel
       BusinessAuditDTO businessAuditData = new BusinessAuditDTO(
@@ -85,22 +91,12 @@ public class AuditProcessService {
       // Llamamos al método auxiliar para hacer la petición POST al Business Service
       updateBusinessWithNewAudit(businessId, businessAuditData);
 
-      // Si llegamos aquí, el proceso se guardó en BD y se intentó notificar al
-      // servicio de negocios
       return "Audit process created successfully with " + assesments.size()
           + " assesments. Business update notification sent.";
 
     } catch (Exception e) {
-      // Este catch manejará errores de la obtención de controles o del guardado en
-      // BD.
-      // Los errores de la 2da llamada HTTP se capturan en el método auxiliar
-      // updateBusinessWithNewAudit
       System.err.println("Error during audit process creation or initial save: " + e.getMessage());
       e.printStackTrace();
-      // Puedes añadir lógica para limpiar si el savedAuditProcess no es null pero
-      // falló la 2da llamada,
-      // pero eso implica transacciones distribuidas y es más complejo. Por ahora,
-      // solo logeamos el error de la 2da llamada.
       return "Error creating audit process: " + e.getMessage();
     }
   }
@@ -127,7 +123,8 @@ public class AuditProcessService {
           "Error calling Business Service to add new audit for businessId " + businessId + ": " + e.getMessage());
       e.printStackTrace();
     } catch (Exception e) {
-      System.err.println("Unexpected error calling Business Service for businessId " + businessId + ": " + e.getMessage());
+      System.err
+          .println("Unexpected error calling Business Service for businessId " + businessId + ": " + e.getMessage());
       e.printStackTrace();
     }
   }
@@ -206,5 +203,159 @@ public class AuditProcessService {
       return "Error deleting audit process: ";
     }
 
+  }
+
+  /**
+   * Asigna un auditor interno a todos los Assesments de un AuditProcess
+   * específico
+   * 
+   * @param auditProcessId ID del proceso de auditoría
+   * @param auditorId      ID del auditor interno a asignar
+   * @param auditorName    Nombre del auditor interno a asignar
+   * @return AuditProcessModel actualizado o null si no se encontró
+   */
+  public AuditProcessModel assignInternalAuditorToAllAssesments(String auditProcessId, String auditorId,
+      String auditorName) {
+    Optional<AuditProcessModel> auditProcessOptional = auditProcessRepository.findById(auditProcessId);
+
+    if (auditProcessOptional.isPresent()) {
+      AuditProcessModel auditProcess = auditProcessOptional.get();
+
+      // Crear el objeto Inspector con los datos proporcionados
+      Inspector internalAuditor = new Inspector();
+      internalAuditor.set_id(auditorId);
+      internalAuditor.setName(auditorName);
+
+      // Asignar el auditor interno a cada assesment
+      if (auditProcess.getAssesment() != null) {
+        for (Assesment assesment : auditProcess.getAssesment()) {
+          assesment.setInternalAuditor(internalAuditor);
+        }
+      }
+
+      // Si la lista de auditores internos asignados no existe, inicializarla
+      if (auditProcess.getAssignedIntAuditors() == null) {
+        auditProcess.setAssignedIntAuditors(new ArrayList<>());
+      }
+
+      // Verificar si el auditor ya está en la lista para evitar duplicados
+      boolean auditorExists = auditProcess.getAssignedIntAuditors().stream()
+          .anyMatch(auditor -> auditor.get_id().equals(auditorId));
+
+      if (!auditorExists) {
+        auditProcess.getAssignedIntAuditors().add(internalAuditor);
+      }
+
+      return auditProcessRepository.save(auditProcess);
+    }
+
+    return null;
+  }
+
+  /**
+   * Asigna un auditor interno a un Assesment específico dentro de un AuditProcess
+   * 
+   * @param auditProcessId ID del proceso de auditoría
+   * @param controlId      ID del control al que se asignará el auditor interno
+   * @param auditorId      ID del auditor interno a asignar
+   * @param auditorName    Nombre del auditor interno a asignar
+   * @return AuditProcessModel actualizado
+   */
+  public AuditProcessModel assignInternalAuditorToAssesment(String auditProcessId, String controlId, String auditorId,
+      String auditorName) {
+    Optional<AuditProcessModel> auditProcessOptional = auditProcessRepository.findById(auditProcessId);
+
+    if (auditProcessOptional.isPresent()) {
+      AuditProcessModel auditProcess = auditProcessOptional.get();
+
+      // Crear el objeto Inspector con los datos proporcionados
+      Inspector internalAuditor = new Inspector();
+      internalAuditor.set_id(auditorId);
+      internalAuditor.setName(auditorName);
+
+      // Buscar y actualizar solo el assesment específico
+      boolean assesmentFound = false;
+      if (auditProcess.getAssesment() != null) {
+        for (Assesment assesment : auditProcess.getAssesment()) {
+          if (assesment.getControlId() != null && assesment.getControlId().equals(controlId)) {
+            assesment.setInternalAuditor(internalAuditor);
+            assesmentFound = true;
+            break;
+          }
+        }
+      }
+
+      if (!assesmentFound) {
+        throw new NotFoundException("No se encontró un assessment con el controlId: " + controlId);
+      }
+
+      // Si la lista de auditores internos asignados no existe, inicializarla
+      if (auditProcess.getAssignedIntAuditors() == null) {
+        auditProcess.setAssignedIntAuditors(new ArrayList<>());
+      }
+
+      // Verificar si el auditor ya está en la lista para evitar duplicados
+      boolean auditorExists = auditProcess.getAssignedIntAuditors().stream()
+          .anyMatch(auditor -> auditor.get_id().equals(auditorId));
+
+      if (!auditorExists) {
+        auditProcess.getAssignedIntAuditors().add(internalAuditor);
+      }
+
+      return auditProcessRepository.save(auditProcess);
+    }
+
+    throw new NotFoundException("No se encontró el proceso de auditoría con ID: " + auditProcessId);
+  }
+
+  /**
+   * Asigna auditores externos aleatorios obtenidos desde el servicio de usuarios
+   * 
+   * @param AuditProcessModel proceso de auditoría original
+   * @return AuditProcessModel proceso de auditoría actualizado
+   */
+  public AuditProcessModel assignRandomExternalAuditors(AuditProcessModel auditProcess) {
+
+    // Construir la URL para el endpoint de usuarios externos aleatorios
+    String url = UriComponentsBuilder.fromUriString(apiGatewayUrl)
+        .path("/users/api/getRandomExternalAuditors")
+        .toUriString();
+
+    try {
+      // Realizar la solicitud HTTP GET para obtener auditores externos aleatorios
+      ResponseEntity<ResponseDTO<UserDTO>> response = restTemplate.exchange(
+          url,
+          HttpMethod.GET,
+          null,
+          new ParameterizedTypeReference<ResponseDTO<UserDTO>>() {
+          });
+      if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+        @SuppressWarnings("null")
+        UserDTO externalAuditor = response.getBody().data;
+        Inspector auditor = new Inspector(externalAuditor.get_id(), externalAuditor.getName());
+
+        // Actualizar la lista de auditores externos asignados
+        if (auditProcess.getAssignedExtAuditors() == null) {
+          auditProcess.setAssignedExtAuditors(new ArrayList<>());
+        }
+
+        // Asignar auditores externos a los assesments que no tengan uno asignado
+        for (Assesment assesment : auditProcess.getAssesment()) {
+          if (assesment.getExternalAuditor() == null) {
+            assesment.setExternalAuditor(auditor);
+          }
+        }
+
+        // Asignarlo a los External Auditors
+        auditProcess.getAssignedExtAuditors().add(auditor);
+
+        return auditProcess;
+      } else {
+        throw new RuntimeException(
+            "Error al obtener auditores externos: Respuesta no exitosa del servicio de usuarios");
+      }
+    } catch (RestClientException e) {
+      throw new RuntimeException("Error al contactar el servicio de usuarios: " + e.getMessage(), e);
+    }
   }
 }

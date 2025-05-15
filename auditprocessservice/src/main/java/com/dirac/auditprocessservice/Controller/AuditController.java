@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dirac.auditprocessservice.Model.AuditProcessModel;
 import com.dirac.auditprocessservice.Service.AuditProcessService;
 import com.dirac.auditprocessservice.DTOs.ResponseDTO;
+import com.dirac.auditprocessservice.Exceptions.NotFoundException;
 
 @RestController
 @RequestMapping("/api")
@@ -64,4 +65,49 @@ public class AuditController {
     auditProcessService.deleteAuditProcess(id);
     return new ResponseDTO<>(200, "Audit process deleted successfully", null);
   }
+  
+  /**
+   * Endpoint para asignar un auditor interno a todos los Assesments de un AuditProcess
+   */
+  @PostMapping("/assignInternalAuditorToAll")
+  public ResponseDTO<AuditProcessModel> assignInternalAuditorToAllAssesments(
+      @RequestParam String auditProcessId,
+      @RequestParam String auditorId,
+      @RequestParam String auditorName) {
+    try {
+      AuditProcessModel updatedProcess = auditProcessService.assignInternalAuditorToAllAssesments(
+          auditProcessId, auditorId, auditorName);
+      
+      if (updatedProcess == null) {
+        return new ResponseDTO<>(404, "Proceso de auditoría no encontrado", null);
+      }
+      
+      return new ResponseDTO<>(200, "Auditor interno asignado exitosamente a todos los assessments", updatedProcess);
+    } catch (Exception e) {
+      return new ResponseDTO<>(500, "Error al asignar auditor interno: " + e.getMessage(), null);
+    }
+  }
+  
+  /**
+   * Endpoint para asignar un auditor interno a un solo Assesment específico
+   */
+  @PostMapping("/assignInternalAuditorToAssesment")
+  public ResponseDTO<AuditProcessModel> assignInternalAuditorToAssesment(
+      @RequestParam String auditProcessId,
+      @RequestParam String controlId,
+      @RequestParam String auditorId,
+      @RequestParam String auditorName) {
+    try {
+      AuditProcessModel updatedProcess = auditProcessService.assignInternalAuditorToAssesment(
+          auditProcessId, controlId, auditorId, auditorName);
+      
+      return new ResponseDTO<>(200, "Auditor interno asignado exitosamente al assessment", updatedProcess);
+    } catch (NotFoundException e) {
+      return new ResponseDTO<>(404, e.getMessage(), null);
+    } catch (Exception e) {
+      return new ResponseDTO<>(500, "Error al asignar auditor interno: " + e.getMessage(), null);
+    }
+  }
+  
+
 }

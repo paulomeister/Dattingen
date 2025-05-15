@@ -35,7 +35,15 @@ public class UserController {
         UserModel user = userService.getUserByUsername(username);
         return ResponseEntity.ok(new ResponseDTO<>(200, "User Found", userService.toUserDTO(user)));
     }
-    
+
+    // Obtener usuarios por rol
+    @GetMapping("/getRandomExternalAuditors")
+    public ResponseEntity<ResponseDTO<UserDTO>> getRandomExternalAuditor() {
+        UserModel user = userService.getRandomExternalAuditor();
+        UserDTO userDTO = userService.toUserDTO(user);
+        return ResponseEntity.ok(new ResponseDTO<>(200, "Found 1 external auditor", userDTO));
+    }
+
     // Nuevo endpoint: Buscar usuarios por nombre o username (búsqueda parcial)
     @GetMapping("/search/users")
     public ResponseEntity<ResponseDTO<List<UserDTO>>> searchUsers(@RequestParam String q) {
@@ -43,9 +51,9 @@ public class UserController {
         List<UserDTO> userDTOs = users.stream()
                 .map(userService::toUserDTO)
                 .collect(Collectors.toList());
-                
-        return ResponseEntity.ok(new ResponseDTO<>(200, 
-                "Found " + userDTOs.size() + " users matching: " + q, 
+
+        return ResponseEntity.ok(new ResponseDTO<>(200,
+                "Found " + userDTOs.size() + " users matching: " + q,
                 userDTOs));
     }
 
