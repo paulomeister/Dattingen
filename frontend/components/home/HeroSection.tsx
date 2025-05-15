@@ -1,59 +1,3 @@
-/*
-"use client";
-import { Button } from "@/components/ui/button";
-import { useLanguage } from "@/lib/LanguageContext";
-import { CirclePlay } from "lucide-react";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { memo } from "react";
-
-// Memorizamos el componente para evitar renderizados innecesarios
-export const HeroSection = memo(function HeroSection() {
-  const { t } = useLanguage();
-  const router = useRouter()
-  function handle(): void {
-    router.push("/auth")
-  }
-
-  return (
-    <div className="space-x-2">
-      <div className="text-center mb-16 flex items-center justify-center flex-col ">
-        <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight">
-          {t("home.hero.title")}
-          <br />
-          <strong>{t("home.hero.titleBold")}</strong>
-        </h1>
-        <p className="text-gray-400 text-lg mb-8 max-w-2xl mx-auto">
-          {t("home.hero.description")} <br />
-          <strong>{t("home.hero.descriptionBold")}</strong>
-        </p>
-        <div className="flex gap-4 justify-center">
-          <Button
-            onClick={() => handle()}
-            variant="outline"
-            className="gap-2 text-xl rounded-2xl shadow-lg bg-primary-color text-white hover:text-white ease-in transition-all hover:scale-110 hover:ease-in hover:duration-200 hover:bg-secondary-color hover:cursor-pointer"
-          >
-            <CirclePlay />
-            {t("home.hero.startButton")}
-          </Button>
-        </div>
-      </div>
-
-      <div className="relative">
-        <Image
-          src="/hero.jpg"
-          alt="Background Gradient"
-          width={1080}
-          height={720}
-          priority
-          placeholder="blur"
-          blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAQDAwQDAwQEBAQFBQQFBwsHBwYGBw4KCggLEA4RERAOEA8SFBoWEhIYFRcZHBwcJyIlJSUaHDMzKi4wGiIeJBwkKS//2wBDAQUFBQcGBw0HBw0kEhASJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCT/wgARCAACAAMDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAABgH/xAAUAQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIQAxAAAAGKD//EABQQAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQEAAQUCf//EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQMBAT8Bf//EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQIBAT8Bf//EABQQAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQEABj8Cf//EABQQAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQEAAT8hf//aAAwDAQACAAMAAAAQj//EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQMBAT8Qf//EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQIBAT8Qf//EABQQAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQEAAT8Qf//Z"
-        />
-      </div>
-    </div>
-  );
-});
-*/
 
 "use client";
 import { Button } from "@/components/ui/button";
@@ -62,10 +6,22 @@ import { CirclePlay } from "lucide-react";
 import Image from "next/image";
 import { memo } from "react";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/AuthContext";
 
 
 export const HeroSection = memo(function HeroSection() {
   const { t } = useLanguage();
+  const router = useRouter()
+  const { isLoggedIn } = useAuth()
+
+  function handleStartButton(): void {
+    if (isLoggedIn) {
+      router.push("/audits")
+    } else {
+      router.push("/auth")
+    }
+  }
 
   return (
     <div className="space-y-20 px-4">
@@ -130,7 +86,7 @@ export const HeroSection = memo(function HeroSection() {
           </div>
         </div>
       </div>
-      
+
       {/* Image Grid Section - estilo hero */}
       <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto mt-12">
         {/* Imagen 1 */}
@@ -184,27 +140,28 @@ export const HeroSection = memo(function HeroSection() {
 
       {/* Actuar */}
       <motion.div
-    initial={{ opacity: 0, y: 40 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    transition={{ duration: 0.6 }}
-  >
-    <div className="bg-primary-color/10 rounded-xl py-12 px-6 text-center shadow-lg max-w-3xl mx-auto mt-10">
-      <h2 className="text-2xl font-bold text-gray-800 mb-4">
-      Ready to raise your standards?
-      </h2>
-      <p className="text-gray-600 mb-6">
-        Start your certification journey today and show the world your commitment to excellence.
-      </p>
-    <Button
-      variant="outline"
-      className="gap-2 text-xl rounded-2xl shadow-lg bg-primary-color text-white hover:text-white ease-in transition-all hover:scale-110 hover:ease-in hover:duration-200 hover:bg-secondary-color hover:cursor-pointer"
-    >
-      <CirclePlay />
-      Start!
-    </Button>
-  </div>
-</motion.div>
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+      >
+        <div className="bg-primary-color/10 rounded-xl py-12 px-6 text-center shadow-lg max-w-3xl mx-auto mt-10">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">
+            Ready to raise your standards?
+          </h2>
+          <p className="text-gray-600 mb-6">
+            Start your certification journey today and show the world your commitment to excellence.
+          </p>
+          <Button
+            variant="outline"
+            onClick={() => handleStartButton()}
+            className="gap-2 text-xl rounded-2xl shadow-lg bg-primary-color text-white hover:text-white ease-in transition-all hover:scale-110 hover:ease-in hover:duration-200 hover:bg-secondary-color hover:cursor-pointer"
+          >
+            <CirclePlay />
+            Start!
+          </Button>
+        </div>
+      </motion.div>
 
 
     </div>
