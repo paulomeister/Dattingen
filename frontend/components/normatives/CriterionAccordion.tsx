@@ -1,45 +1,89 @@
 "use client";
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "../ui/accordion";
-import { Criterion } from "@/types/Criterion";
+} from "@/components/ui/accordion";
 import CriterionForm from "./CriterionForm";
+import { Control, PHVAPhase, Ruleset } from "@/types/Ruleset";
+import { ClipboardCheck, ClipboardEdit, Beaker, ClipboardList } from "lucide-react";
+import { updateRuleset } from "@/lib/utils";
+import { useLanguage } from "@/lib/LanguageContext";
+import { toast } from "react-hot-toast";
 
-const CriterionAccordion = ({ criterion }: { criterion: Criterion }) => {
-  const onSave = (data: Criterion) => {
-    alert("guardar CRITERIO");
+// Componente para mostrar un criterio en un acordeón
+const CriterionAccordion = ({ criterion, ruleset }: { criterion: Control, ruleset: Ruleset | null }) => {
+  const { t } = useLanguage();
+  const getCycleStageIcon = (stage: PHVAPhase) => {
+    switch (stage) {
+      case PHVAPhase.PLAN:
+        return <ClipboardEdit size={16} className="text-blue-500 shrink-0" />;
+      case PHVAPhase.DO:
+        return <ClipboardList size={16} className="text-green-500 shrink-0" />;
+      case PHVAPhase.CHECK:
+        return <Beaker size={16} className="text-yellow-500 shrink-0" />;
+      case PHVAPhase.ACT:
+        return <ClipboardCheck size={16} className="text-red-500 shrink-0" />;
+      default:
+        return <ClipboardEdit size={16} className="text-primary-color shrink-0" />;
+    }
   };
 
-  const onDelete = (criterionId: string) => {
-    alert("eliminar CRITERIO!!!");
+  // Actualizada para manejar la interfaz Control
+  const onSave = async (data: Control) => {
+    if (ruleset) {
+      const index = ruleset.controls.findIndex((control) => control.controlId === data.controlId);
+      if (index === -1) {
+        toast.error(t('normatives.criterionAccordion.errorNotFound'));
+        return;
+      }
+      const updatedRuleset = { ...ruleset };
+      updatedRuleset.controls[index] = data;
+      try {
+        await updateRuleset(updatedRuleset._id as string, updatedRuleset);
+        toast.success(t('normatives.criterionAccordion.saveSuccess'));
+      } catch (exc) {
+        console.error("Error at Control Update", exc);
+        toast.error(t('normatives.criterionAccordion.saveError'));
+      }
+    }
+  };
+
+  const onDelete = async (controlId: string) => {
+    if (!ruleset || !controlId) return;
+    try {
+      const updatedRuleset = { ...ruleset };
+      updatedRuleset.controls = ruleset.controls.filter(control => control.controlId !== controlId);
+      await updateRuleset(ruleset._id as string, updatedRuleset);
+      toast.success(t('normatives.criterionAccordion.deleteSuccess'));
+      window.location.reload();
+    } catch (error) {
+      console.error("Error al eliminar el criterio:", error);
+      toast.error(t('normatives.criterionAccordion.errorDelete'));
+    }
   };
 
   return (
-    <Accordion type="single" collapsible>
-      <AccordionItem value="item-1">
+    <Accordion type="single" collapsible className="border-0">
+      <AccordionItem value="item-1" className="border-0 mb-1">
         <AccordionTrigger
-          className="
-       text-md text-center text-neutral-900
-        hover:cursor-pointer text-ellipsis"
+          className="bg-primary-color/5 hover:bg-primary-color/10 py-2 px-3 rounded-lg transition-colors
+                     text-sm font-medium text-gray-700 hover:no-underline flex items-center"
         >
-          <i
-            className="text-transparent inline-flex p-0 m-0
-        bg-clip-text bg-gradient-to-r from-sky-400 to-blue-500"
-          >
-            C.{criterion.controlId}
-          </i>
-          {criterion.title}
+          <div className="flex items-center gap-2 overflow-hidden">
+            {getCycleStageIcon(criterion.cycleStage)}
+            <span className="text-xs text-primary-color mr-1">{t('normatives.criterionAccordion.criterionPrefix')}{criterion.controlId}.</span>
+            <span className="truncate">{criterion.title}</span>
+          </div>
         </AccordionTrigger>
-        <AccordionContent>
+        <AccordionContent className="pt-3 px-1">
           <CriterionForm
+            ruleset={ruleset}
             criterion={criterion}
             onSave={onSave}
-            onDelete={onDelete}
+            onDelete={() => criterion.controlId && onDelete(criterion.controlId)}
           />
         </AccordionContent>
       </AccordionItem>

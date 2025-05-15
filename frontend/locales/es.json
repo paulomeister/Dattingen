@@ -1,54 +1,234 @@
 {
-  "auth": {
-    "tabs": {
-      "title": "Sistema de Auditorías ACME",
-      "subtitle": "Login or create an account to continue",
-      "login": "Login",
-      "register": "Register"
+  "navbar": {
+    "links": {
+      "home": "Inicio",
+      "rulesets": "Normativas",
+      "myAudits": "Mis Auditorías",
+      "business": "Empresas",
+      "myBusiness": "Mi Empresa"
     },
-    "login": {
-      "title": "Login",
-      "email": "Email",
-      "password": "Password",
-      "rememberMe": "Remember Me",
-      "loginButton": "Login",
-      "forgotPasswordLink": "Forgot Password?",
-      "registerLink": "Register"
-    },
-    "register": {
-      "username": "Usuario",
-      "usernameplaceholder": "Escoge un Usuario",
-      "fullName": "Usuario",
-      "fullNameplaceholder": "Escoge un Usuario",
-      "email": "Correo",
-      "emailplaceholder": "Escoge un Correo",
-      "password": "Contraseña",
-      "passwordplaceholder": "Escoge una Contraseña",
-      "confirmPassword": "Confirmar Contraseña",
-      "confirmPasswordplaceholder": "Confirma la Contraseña"
+    "userDropdown": {
+      "title": "Mi Cuenta",
+      "profile": "Perfil",
+      "admin": "Administrador",
+      "logout": "Cerrar Sesión"
     }
   },
-  "rulesets": {},
-  "statistics": {},
-  "user": {},
-  "components": {},
+  "auth": {
+    "tabs": {
+      "title": "Sistema de Auditoría ACME",
+      "subtitle": "Inicia sesión o crea una cuenta para continuar",
+      "login": "Iniciar sesión",
+      "register": "Registrarse"
+    },
+    "login": {
+      "title": "Iniciar sesión",
+      "username": "Nombre de usuario",
+      "password": "Contraseña",
+      "rememberMe": "Recordarme",
+      "loginButton": "Iniciar sesión",
+      "loginSuccess": "¡Bienvenido de nuevo!",
+      "forgotPasswordLink": "¿Olvidaste tu contraseña?",
+      "registerLink": "Registrarse",
+      "error": {
+        "invalidCredentials": "Usuario o Contraseña Inválido",
+        "userNotFound": "Error al Iniciar Sesión",
+        "serverError": "Error del Servidor"
+      }
+    },
+    "register": {
+      "title": "Registro",
+      "registerButton": "¡Registrarse!",
+      "username": "Nombre de usuario",
+      "usernamePlaceholder": "jsanchez08",
+      "fullName": "Tu nombre",
+      "fullNamePlaceholder": "Juan Andrés Sánchez",
+      "email": "Correo",
+      "emailPlaceholder": "Elige un correo electrónico",
+      "password": "Contraseña",
+      "passwordPlaceholder": "Elige una contraseña",
+      "confirmPassword": "Confirmar la contraseña",
+      "confirmPasswordPlaceholder": "Confirma la contraseña",
+      "languages": {
+        "language": "Idioma",
+        "english": "Inglés",
+        "spanish": "Español",
+        "french": "Francés"
+      },
+      "roles": {
+        "role": "Rol",
+        "coordinator": "Coordinador",
+        "auditor": "Auditor"
+      },
+      "successMessage": "¡Registro exitoso!",
+      "errorMessage": "Error en el registro. Por favor intenta de nuevo."
+    }
+  },
   "business": {
-    "creation": {
+    "page": {
+      "activity": "Actividad",
+      "teamSize": "Tamaño del equipo",
+      "auditsCount": "Auditorías realizadas",
+      "title": "Detalles de la empresa",
+      "search": "ACME Inc",
+      "clear": "Limpiar",
+      "retry": "Reintentar más tarde...",
+      "error": {
+        "fetch": "Error al obtener empresas. Por favor intenta de nuevo."
+      },
+      "emptyTitle": "No se encontraron empresas"
+    },
+    "create": {
       "title": "Crear Empresa",
       "subtitle": "Como Coordinador, necesitas configurar tu empresa para continuar.",
-      "logoUpload": "Logotipo de la Empresa",
-      "uploadHint": "Sube una imagen cuadrada para mejores resultados. Tamaño máximo 2MB.",
-      "uploadLabel": "Subir logotipo",
       "name": "Nombre de la Empresa",
-      "nameplaceholder": "Ingresa el nombre de tu empresa",
-      "activity": "Actividad Empresarial",
-      "activityplaceholder": "Describe las actividades principales de tu empresa",
-      "submitButton": "Crear Empresa",
-      "submitting": "Creando...",
-      "successMessage": "Empresa creada exitosamente!",
-      "errorMessage": "Error al crear la empresa",
-      "logoSuccessMessage": "Logotipo subido exitosamente!",
-      "logoErrorMessage": "Error al subir el logotipo"
+      "namePlaceholder": "Ingresa el nombre de tu empresa",
+      "activity": "Actividad de la Empresa",
+      "activityPlaceholder": "Describe las actividades principales de tu empresa",
+      "success": "¡Empresa creada exitosamente!",
+      "error": "Error al crear la empresa. Por favor intenta de nuevo."
+    },
+    "associates": {
+      "title": "Usuarios Asociados",
+      "empty": "No hay usuarios asociados con esta empresa"
+    },
+    "audits": "Auditorías",
+    "statistics": "Estadísticas"
+  },
+  "rulesets": {
+    "rulesets": "Conjuntos de Normas",
+    "paragraph": "Encuentra y gestiona los conjuntos de normas que necesitas para auditar.",
+    "paragraph2": "Elige una opción a continuación para comenzar.",
+    "createRuleset": "Crear un Conjunto de Normas",
+    "descriptionCreate": "Construye un conjunto de normas desde cero, define criterios y crea tu propia base de auditoría personalizada.",
+    "browseRulesets": "Explorar Conjuntos de Normas",
+    "descriptionBrowse": "Accede a nuestra lista completa de estándares internacionales, marcos de trabajo y guías de cumplimiento listos para ser auditados.",
+    "clickToBrowse": "La mayoría de usuarios comienzan aquí 🔍",
+    "upload": {
+      "title": "Subir Normativas",
+      "subtitle": "Comienza con los pergaminos del futuro",
+      "description": "¡Sube un documento de un conjunto de normas certificado y haz magia!",
+      "nothingUploaded": "Todavía no se ha subido nada :(",
+      "buttonOpenDrawer": "Subir Conjunto de Normas",
+      "drawerTitle": "Selecciona el Archivo Requerido",
+      "requirementsTitle": "¡REQUISITOS!",
+      "onlyPdf": "Solo Archivo PDF",
+      "editable": "Archivo Editable",
+      "dragFile": "Arrastra AQUÍ tu archivo.",
+      "confirmTitle": "¿Estás seguro de que usarás este archivo?",
+      "yes": "¡Sí!",
+      "no": "No",
+      "done": "Hecho",
+      "cancel": "Cancelar",
+      "goBack": "Volver"
+    },
+    "create": {},
+    "list": {
+      "title": "¡Busca los Conjuntos de Normas más Populares!",
+      "noRulesets": "No se encontró ningún Conjunto de Normas que coincida con tus criterios de búsqueda.",
+      "itemList": {
+        "rollIn": "¡Iniciar!"
+      },
+      "backHome": "Volver al Inicio"
+    },
+    "details": {
+      "join": "¡Unirme!",
+      "organization": "Organización:",
+      "published": "Publicado:",
+      "version": "Versión:",
+      "status": "Estado:",
+      "controls": "Controles",
+      "noControls": "No hay controles disponibles",
+      "noControlsDesc": "Este conjunto de normas no tiene controles definidos.",
+      "aboutTitle": "Acerca de este conjunto de normas",
+      "aboutDesc": "Este conjunto de normas fue creado para establecer estándares y criterios de cumplimiento para auditorías. Contiene {count} controles en diferentes fases del ciclo PHVA.",
+      "joinButton": "Unirse a este conjunto de normas",
+      "error": {
+        "title": "Error al cargar el conjunto de normas",
+        "retry": "Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste."
+      },
+      "loading": "Cargando detalles del conjunto de normas..."
+    },
+    "creator": {
+      "documentViewer": "Visor de Documentos",
+      "saveRuleset": "Guardar Normativa",
+      "addRule": "Agregar Regla",
+      "finishRuleset": "Finalizar Normativa",
+      "confirmFinish": "¿Estás seguro de que deseas finalizar esta normativa?",
+      "confirmFinishDescription": "Esta acción publicará la normativa y la hará disponible para auditorías. Esta acción no se puede deshacer.",
+      "confirm": "Confirmar",
+      "cancel": "Cancelar",
+      "success": {
+        "save": "¡Normativa guardada exitosamente!",
+        "publish": "¡Normativa publicada exitosamente!"
+      },
+      "error": {
+        "save": "Error al guardar la normativa. Por favor, inténtalo de nuevo.",
+        "publish": "Error al publicar la normativa. Por favor, inténtalo de nuevo."
+      }
+    }
+  },
+  "statistics": {},
+  "user": {
+    "profile": {
+      "delete": "Eliminar Cuenta",
+      "deleting": "Eliminando Cuenta...",
+      "edit": "Editar Perfil",
+      "confirmDeletion": "Confirmar Eliminación de Cuenta",
+      "deleteConfirmationMessage": "Esta acción no se puede deshacer. Eliminará permanentemente tu cuenta y tus datos de nuestros servidores.",
+      "confirmationQuestion": "¿Estás seguro de que deseas eliminar tu cuenta?",
+      "cancel": "Cancelar",
+      "success": "¡Usuario eliminado con éxito!",
+      "error": "Error al eliminar el usuario. Por favor, inténtalo de nuevo."
+    }
+  },
+  "components": {},
+  "common": {
+    "cancel": "Cancelar",
+    "warning": "Atención"
+  },
+  "home": {
+    "hero": {
+      "title": "Muestra al Mundo Lo Que",
+      "titleBold": "Significas",
+      "description": "Certifica tu empresa con las mejores prácticas y estándares del mundo.",
+      "descriptionBold": "Sé la mejor versión de tu empresa.",
+      "startButton": "¡Comenzar!"
+    }
+  },
+  "normatives": {
+    "sidebar": {
+      "ruleset": "Normativa",
+      "terms": "Términos",
+      "criteria": "Criterios",
+      "criterions": "Criterios",
+      "noCriterions": "Aún no hay criterios definidos"
+    },
+    "criterionAccordion": {
+      "errorNotFound": "Error: No se encontró el control a actualizar.",
+      "errorDelete": "Error al eliminar el criterio, por favor intenta de nuevo.",
+      "criterionPrefix": "C",
+      "saveSuccess": "¡Criterio guardado exitosamente!",
+      "saveError": "Error al guardar el criterio. Por favor, intenta de nuevo.",
+      "deleteSuccess": "¡Criterio eliminado exitosamente!"
+    },
+    "criterionForm": {
+      "edit": "Editar Criterio",
+      "create": "Crear Criterio",
+      "title": "Título",
+      "titlePlaceholder": "Ingresa el título del criterio",
+      "description": "Descripción",
+      "descriptionPlaceholder": "Ingresa la descripción del criterio",
+      "compulsoriness": "Obligatoriedad",
+      "compulsorinessPlaceholder": "Selecciona la Obligatoriedad",
+      "cycleStage": "Fase del Ciclo",
+      "cycleStagePlaceholder": "Selecciona la fase del ciclo",
+      "save": "Guardar Criterio",
+      "saving": "Guardando...",
+      "delete": "Eliminar",
+      "errorTitle": "El título es obligatorio",
+      "errorCompulsoriness": "La Obligatoriedad es obligatoria",
+      "errorCycleStage": "La fase del ciclo es obligatoria"
     }
   }
 }

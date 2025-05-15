@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { environment } from "@/env/environment.dev";
 import { Business } from "@/types/Business";
 import BusinessDetail from "@/components/business/BusinessDetail";
+import { useLanguage } from "@/lib/LanguageContext";
 
 type BusinessPageProps = {
     params: {
@@ -17,7 +18,6 @@ export const metadata: Metadata = {
 // This is a React Server Component that fetches the data
 export default async function BusinessPage({ params }: BusinessPageProps) {
     const { id } = await params;
-    // TODO esperar a que estén los métodos para probar esto!!
 
     // Server-side API request to fetch business data
     const response = await fetch(
@@ -32,9 +32,7 @@ export default async function BusinessPage({ params }: BusinessPageProps) {
 
     // Handle errors
     if (!response.ok) {
-
-        console.log(`Failed to fetch business data: ${response.statusText}`);
-
+        console.error(`Failed to fetch business data: ${response.statusText}`);
     }
 
     const data = await response.json();
@@ -42,9 +40,8 @@ export default async function BusinessPage({ params }: BusinessPageProps) {
 
     return (
         <div className="container mx-auto px-4 py-6 mt-20">
-            <h1 className="text-3xl font-bold mb-8">Business Details</h1>
 
-            {/* Pass business data to client component */}
+
             <BusinessDetail business={business} />
         </div>
     );

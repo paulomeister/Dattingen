@@ -4,32 +4,37 @@ import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/lib/LanguageContext";
 import { CirclePlay } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { memo } from "react";
 
 // Memorizamos el componente para evitar renderizados innecesarios
 export const HeroSection = memo(function HeroSection() {
-  const {t} = useLanguage();
+  const { t } = useLanguage();
+  const router = useRouter()
+  function handle(): void {
+    router.push("/auth")
+  }
 
   return (
     <div className="space-x-2">
       <div className="text-center mb-16 flex items-center justify-center flex-col ">
         <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight">
-          Show the World What
+          {t("home.hero.title")}
           <br />
-          <strong>You Mean</strong>
+          <strong>{t("home.hero.titleBold")}</strong>
         </h1>
         <p className="text-gray-400 text-lg mb-8 max-w-2xl mx-auto">
-          Certify your business with the best practices and standards in the
-          world. <br />
-          <strong>Be the best version of your business.</strong>
+          {t("home.hero.description")} <br />
+          <strong>{t("home.hero.descriptionBold")}</strong>
         </p>
         <div className="flex gap-4 justify-center">
           <Button
+            onClick={() => handle()}
             variant="outline"
             className="gap-2 text-xl rounded-2xl shadow-lg bg-primary-color text-white hover:text-white ease-in transition-all hover:scale-110 hover:ease-in hover:duration-200 hover:bg-secondary-color hover:cursor-pointer"
           >
             <CirclePlay />
-            Start!
+            {t("home.hero.startButton")}
           </Button>
         </div>
       </div>

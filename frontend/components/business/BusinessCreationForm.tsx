@@ -49,10 +49,6 @@ export default function BusinessCreationForm() {
 
     // Handle form submission
     const onSubmit = async (values: FormValues) => {
-        if (!user) {
-            toast.error("You must be logged in to create an business");
-            return;
-        }
 
         setIsSubmitting(true);
 
@@ -62,8 +58,8 @@ export default function BusinessCreationForm() {
                 name: values.name,
                 activity: values.activity,
                 associates: [{
-                    userId: user._id!,
-                    role: user.role as AssociateRole,
+                    _id: user!._id!,
+                    role: user!.role as AssociateRole,
                 }],
                 audits: []
             };
@@ -73,7 +69,7 @@ export default function BusinessCreationForm() {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    ...(token && { Authorization: `Bearer ${token}` }),
+                    ...(token && { Authorization: token }),
                 },
                 body: JSON.stringify(business),
             });
@@ -84,17 +80,17 @@ export default function BusinessCreationForm() {
 
             const result = await response.json();
 
-            if (result.status !== 200) {
+            if (result.status >= 400) {
                 throw new Error(result.message || "Failed to create business");
             }
 
-            toast.success("Business created successfully!");
+            toast.success(t("business.create.success"))
 
             // Redirect to dashboard or business page
             router.push('/');
         } catch (error) {
             console.error("Error creating business:", error);
-            toast.error("Failed to create business");
+            toast.error(t("business.create.error"));
         } finally {
             setIsSubmitting(false);
         }

@@ -12,7 +12,7 @@ import ProfileContent from './ProfileContent'
 
 const UserClient = () => {
     const params = useParams()
-    const { user: authUser } = useAuth()
+    const { user: authUser, token } = useAuth()
     const [user, setUser] = useState<UserDTO | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
@@ -49,7 +49,7 @@ const UserClient = () => {
     if (error) return <ProfileError error={error} />
     if (!user) return <ProfileNotFound />
 
-    return <ProfileContent user={user} isOwnProfile={isOwnProfile} authUser={authUser} />
+    return <ProfileContent user={user} isOwnProfile={isOwnProfile} authUser={authUser} auth={token}/>
 }
 
 export default UserClient

@@ -3,7 +3,15 @@
     "links": {
       "home": "Home",
       "rulesets": "Rulesets",
-      "myAudits": "My Audits"
+      "myAudits": "My Audits",
+      "business": "Businesses",
+      "myBusiness": "My business"
+    },
+    "userDropdown": {
+      "title": "My Account",
+      "profile": "Profile",
+      "admin": "Admin",
+      "logout": "Logout"
     }
   },
   "auth": {
@@ -15,17 +23,21 @@
     },
     "login": {
       "title": "Login",
-      "email": "Email",
+      "username": "Username",
       "password": "Password",
-      "rememberMe": "Remember Me",
       "loginButton": "Login",
-      "forgotPasswordLink": "Forgot Password?",
-      "registerLink": "Register"
+      "loginSuccess": "¡Welcome Back!",
+      "registerLink": "Register",
+      "error": {
+        "invalidCredentials": "Invalid username or password.",
+        "userNotFound": "Error on Login",
+        "serverError": "Server Error"
+      }
     },
     "register": {
       "title": "Register",
       "registerButton": "Register!",
-      "username": "User",
+      "username": "Username",
       "usernamePlaceholder": "jsanchez08",
       "fullName": "Your Name",
       "fullNamePlaceholder": "Juan Andrés Sánchez",
@@ -51,17 +63,248 @@
     }
   },
   "business": {
+    "page": {
+      "activity": "Activity",
+      "teamSize": "Team Size",
+      "auditsCount": "Audits Count",
+      "audits": "Audits",
+      "title": "Business Details",
+      "search": "ACME Inc",
+      "clear": "Clear",
+      "retry": "Retry Later...",
+      "error": {
+        "fetch": "Error fetching companies. Please try again."
+      },
+      "emptyTitle": "No Businesses found"
+    },
     "create": {
       "title": "Create Company",
       "subtitle": "As a Coordinator, you need to set up your company to continue.",
       "name": "Company Name",
       "namePlaceholder": "Enter your company name",
       "activity": "Business Activity",
-      "activityPlaceholder": "Describe the main activities of your company"
+      "activityPlaceholder": "Describe the main activities of your company",
+      "success": "Company created successfully!",
+      "error": "Error creating company. Please try again."
+    },
+    "associates": {
+      "title": "Associates",
+      "empty": "No users associated with this business"
+    },
+    "audits": "Audits",
+    "statistics": "Statistics"
+  },
+  "rulesets": {
+    "rulesets": "Rulesets",
+    "paragraph": "Find and manage the rulesets you need to audit.",
+    "paragraph2": "Choose an option below to get started.",
+    "createRuleset": "Create a Ruleset",
+    "descriptionCreate": "  Build a ruleset from scratch, define criterions and make your own custom audit base.",
+    "browseRulesets": "Browse Rulesets",
+    "descriptionBrowse": "Access our complete list of international standards, frameworks, and compliance guides ready to be audited.",
+    "clickToBrowse": "Most users start here 🔍",
+    "upload": {
+      "title": "Upload Normatives",
+      "subtitle": "Start with the scrolls of the future",
+      "description": "Upload a document of a Certified Ruleset and make magic!",
+      "nothingUploaded": "Anything uploaded yet :(",
+      "buttonOpenDrawer": "Upload Ruleset",
+      "drawerTitle": "Select the Required File",
+      "requirementsTitle": "REQUIREMENTS!",
+      "onlyPdf": "PDF File Only",
+      "editable": "Editable File",
+      "dragFile": "Drag HERE your file.",
+      "confirmTitle": "Are you sure you'll use this file?",
+      "yes": "Yes!",
+      "no": "No",
+      "done": "Done",
+      "cancel": "Cancel",
+      "goBack": "Go Back"
+    },
+    "create": {},
+    "list": {
+      "title": "Search the Most Trending Rulesets!",
+      "noRulesets": "Any Ruleset was found matching your search criteria.",
+      "itemList": {
+        "rollIn": "Roll In!"
+      },
+      "backHome": "Back to Home"
+    },
+    "details": {
+      "join": "Join!",
+      "organization": "Organization:",
+      "published": "Published:",
+      "version": "Version:",
+      "status": "Status:",
+      "controls": "Controls",
+      "noControls": "No controls available",
+      "noControlsDesc": "This ruleset doesn't have any controls defined.",
+      "aboutTitle": "About this ruleset",
+      "aboutDesc": "This ruleset was created to establish standards and compliance criteria for audits. It contains {count} controls across different phases of the PHVA cycle.",
+      "joinButton": "Join this ruleset",
+      "error": {
+        "title": "Error Loading Ruleset",
+        "retry": "Please try again later or contact support if the problem persists."
+      },
+      "loading": "Loading ruleset details..."
+    },
+    "creator": {
+      "documentViewer": "Document Viewer",
+      "saveRuleset": "Save Ruleset",
+      "addRule": "Add Rule",
+      "finishRuleset": "Finish Ruleset",
+      "confirmFinish": "Are you sure you want to finish this ruleset?",
+      "confirmFinishDescription": "This action will publish the ruleset and make it available for audits. This action cannot be undone.",
+      "confirm": "Confirm",
+      "cancel": "Cancel",
+      "success": {
+        "save": "Ruleset saved successfully!",
+        "publish": "Ruleset published successfully!"
+      },
+      "error": {
+        "save": "Failed to save ruleset. Please try again.",
+        "publish": "Failed to publish ruleset. Please try again."
+      }
     }
   },
-  "rulesets": {},
   "statistics": {},
-  "user": {},
-  "components": {}
+  "admin": {
+    "createUser": {
+      "title": "Create External Auditor",
+      "cardTitle": "New External Auditor",
+      "cardDescription": "Create a new external auditor user account",
+      "form": {
+        "username": {
+          "label": "Username",
+          "placeholder": "Username",
+          "description": "Unique username for the auditor"
+        },
+        "name": {
+          "label": "Full Name",
+          "placeholder": "Full name",
+          "description": "The auditor's full name"
+        },
+        "email": {
+          "label": "Email",
+          "placeholder": "Email address",
+          "description": "Professional email address"
+        },
+        "password": {
+          "label": "Password",
+          "placeholder": "Password",
+          "description": "Minimum 6 characters"
+        },
+        "language": {
+          "label": "Preferred Language",
+          "description": "Default language for the user interface",
+          "options": {
+            "english": "English",
+            "spanish": "Spanish",
+            "french": "French"
+          }
+        },
+        "submit": {
+          "label": "Create External Auditor",
+          "loading": "Creating..."
+        }
+      },
+      "alerts": {
+        "error": {
+          "title": "Error",
+          "description": "Failed to create external auditor"
+        },
+        "success": {
+          "title": "Success",
+          "description": "External auditor created successfully"
+        }
+      },
+      "toast": {
+        "success": "External auditor created successfully",
+        "error": "Failed to create external auditor"
+      }
+    }
+  },
+  "user": {
+    "profile": {
+      "business": "Business",
+      "cancel": "Cancel",
+      "confirmationQuestion": "Are you sure you want to delete your account?",
+      "confirmDeletion": "Confirm Account Deletion",
+      "delete": "Delete Account",
+      "deleteConfirmationMessage": "This action cannot be undone. This will permanently delete your account and remove your data from our servers.",
+      "deleting": "Deleting Account...",
+      "edit": "Edit Profile",
+      "erroFetchingBusiness": "Error on User's Business",
+      "error": "Failed to delete user. Please try again.",
+      "language": "Language",
+      "success": "User deleted successfully!"
+    },
+    "search": {
+      "title": "User Search",
+      "cardTitle": "Search Users",
+      "cardDescription": "Find users by their username or name",
+      "placeholder": "Type to search for users...",
+      "initialMessage": "Start typing to search for users",
+      "noResults": "No users found",
+      "error": "Error searching for users. Please try again."
+    },
+    "roles": {
+      "admin": "Administrator",
+      "coordinator": "Coordinator",
+      "auditor": "Auditor",
+      "externalAuditor": "External Auditor"
+    },
+    "card": {
+      "business": "Business"
+    }
+  },
+  "components": {},
+  "common": {
+    "cancel": "Cancel",
+    "warning": "Warning"
+  },
+  "home": {
+    "hero": {
+      "title": "Show the World What",
+      "titleBold": "You Mean",
+      "description": "Certify your business with the best practices and standards in the world.",
+      "descriptionBold": "Be the best version of your business.",
+      "startButton": "Start!"
+    }
+  },
+  "normatives": {
+    "sidebar": {
+      "ruleset": "Ruleset",
+      "terms": "Terms",
+      "criteria": "Criteria",
+      "criterions": "Criterions",
+      "noCriterions": "No criterions defined yet"
+    },
+    "criterionAccordion": {
+      "errorNotFound": "Error: Control to update not found.",
+      "errorDelete": "Error deleting criterion, please try again.",
+      "criterionPrefix": "C",
+      "saveSuccess": "Criterion saved successfully!",
+      "saveError": "Error saving criterion. Please try again.",
+      "deleteSuccess": "Criterion deleted successfully!"
+    },
+    "criterionForm": {
+      "edit": "Edit Criterion",
+      "create": "Create Criterion",
+      "title": "Title",
+      "titlePlaceholder": "Enter criterion title",
+      "description": "Description",
+      "descriptionPlaceholder": "Enter criterion description",
+      "compulsoriness": "Compulsoriness",
+      "compulsorinessPlaceholder": "Select compulsoriness",
+      "cycleStage": "Cycle Stage",
+      "cycleStagePlaceholder": "Select cycle stage",
+      "save": "Save Criterion",
+      "saving": "Saving...",
+      "delete": "Delete",
+      "errorTitle": "Title is required",
+      "errorCompulsoriness": "Compulsoriness is required",
+      "errorCycleStage": "Cycle stage is required"
+    }
+  }
 }
