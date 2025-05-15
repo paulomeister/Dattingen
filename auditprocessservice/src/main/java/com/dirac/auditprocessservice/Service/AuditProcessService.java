@@ -2,6 +2,7 @@ package com.dirac.auditprocessservice.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +28,7 @@ import com.dirac.auditprocessservice.Model.AuditProcessModel.Assesment;
 import com.dirac.auditprocessservice.Model.AuditProcessModel.AssesmentStatus;
 import com.dirac.auditprocessservice.Model.AuditProcessModel.Control;
 import com.dirac.auditprocessservice.Model.AuditProcessModel.Inspector;
+import com.dirac.auditprocessservice.Model.AuditProcessModel.ProcessStatus;
 import com.dirac.auditprocessservice.Repository.AuditProcessRepository;
 
 @Service
@@ -205,15 +207,6 @@ public class AuditProcessService {
 
   }
 
-  /**
-   * Asigna un auditor interno a todos los Assesments de un AuditProcess
-   * específico
-   * 
-   * @param auditProcessId ID del proceso de auditoría
-   * @param auditorId      ID del auditor interno a asignar
-   * @param auditorName    Nombre del auditor interno a asignar
-   * @return AuditProcessModel actualizado o null si no se encontró
-   */
   public AuditProcessModel assignInternalAuditorToAllAssesments(String auditProcessId, String auditorId,
       String auditorName) {
     Optional<AuditProcessModel> auditProcessOptional = auditProcessRepository.findById(auditProcessId);
@@ -252,15 +245,6 @@ public class AuditProcessService {
     return null;
   }
 
-  /**
-   * Asigna un auditor interno a un Assesment específico dentro de un AuditProcess
-   * 
-   * @param auditProcessId ID del proceso de auditoría
-   * @param controlId      ID del control al que se asignará el auditor interno
-   * @param auditorId      ID del auditor interno a asignar
-   * @param auditorName    Nombre del auditor interno a asignar
-   * @return AuditProcessModel actualizado
-   */
   public AuditProcessModel assignInternalAuditorToAssesment(String auditProcessId, String controlId, String auditorId,
       String auditorName) {
     Optional<AuditProcessModel> auditProcessOptional = auditProcessRepository.findById(auditProcessId);
@@ -308,12 +292,6 @@ public class AuditProcessService {
     throw new NotFoundException("No se encontró el proceso de auditoría con ID: " + auditProcessId);
   }
 
-  /**
-   * Asigna auditores externos aleatorios obtenidos desde el servicio de usuarios
-   * 
-   * @param AuditProcessModel proceso de auditoría original
-   * @return AuditProcessModel proceso de auditoría actualizado
-   */
   public AuditProcessModel assignRandomExternalAuditors(AuditProcessModel auditProcess) {
 
     // Construir la URL para el endpoint de usuarios externos aleatorios
@@ -357,5 +335,78 @@ public class AuditProcessService {
     } catch (RestClientException e) {
       throw new RuntimeException("Error al contactar el servicio de usuarios: " + e.getMessage(), e);
     }
+  }
+
+  public AuditProcessModel updateAuditProcessStatus(String auditProcessId, ProcessStatus status) {
+    Optional<AuditProcessModel> auditProcessOptional = auditProcessRepository.findById(auditProcessId);
+
+    if (!auditProcessOptional.isPresent()) {
+      throw new NotFoundException("No se encontró el proceso de auditoría con ID: " + auditProcessId);
+    }
+
+    AuditProcessModel auditProcess = auditProcessOptional.get();
+    auditProcess.setStatus(status);
+
+    // Si el estado es EVALUATED, actualizar la fecha de finalización
+    if (status == ProcessStatus.EVALUATED) {
+      auditProcess.setEndDate(new Date());
+    }
+
+    return auditProcessRepository.save(auditProcess);
+  }
+
+  public AuditProcessModel updateAssesmentByControlId(String auditProcessId, String controlId,
+      AssesmentStatus status, String comment) {
+    Optional<AuditProcessModel> auditProcessOptional = auditProcessRepository.findById(auditProcessId);
+
+    if (!auditProcessOptional.isPresent()) {
+      throw new NotFoundException("No se encontró el proceso de auditoría con ID: " + auditProcessId);
+    }
+
+    AuditProcessModel auditProcess = auditProcessOptional.get();
+    boolean assesmentFound = false;
+
+    if (auditProcess.getAssesment() != null) {
+      for (Assesment assesment : auditProcess.getAssesment()) {
+        if (assesment.getControlId() != null && assesment.getControlId().equals(controlId)) {
+          // Actualizar solo los campos proporcionados
+          if (status != null) {
+            assesment.setStatus(status);
+            assesment.setAssesedIn(new Date()); // Registrar la fecha de evaluación
+          }
+
+          if (comment != null) {
+            assesment.setComment(comment);
+          }
+
+          assesmentFound = true;
+          break;
+        }
+      }
+    }
+
+    if (!assesmentFound) {
+      throw new NotFoundException("No se encontró un assessment con el controlId: " + controlId);
+    }
+
+    // Verificar si todos los assessments han sido evaluados para actualizar el
+    // estado del proceso
+    boolean allAssessed = true;
+    if (auditProcess.getAssesment() != null) {
+      for (Assesment assesment : auditProcess.getAssesment()) {
+        if (assesment.getStatus() == AssesmentStatus.NOT_EVALUATED) {
+          allAssessed = false;
+          break;
+        }
+      }
+
+      // Si todos han sido evaluados, actualizar el estado del proceso
+      if (allAssessed && auditProcess.getStatus() != ProcessStatus.EVALUATED) {
+        auditProcess.setStatus(ProcessStatus.EVALUATED);
+        auditProcess.setEndDate(new Date());
+      }
+    }
+
+    return auditProcessRepository.save(auditProcess);
   }
 }

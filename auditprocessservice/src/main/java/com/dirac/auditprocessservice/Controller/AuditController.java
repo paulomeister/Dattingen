@@ -1,5 +1,6 @@
 package com.dirac.auditprocessservice.Controller;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,12 +9,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dirac.auditprocessservice.Model.AuditProcessModel;
+import com.dirac.auditprocessservice.Model.AuditProcessModel.ProcessStatus;
+import com.dirac.auditprocessservice.Model.AuditProcessModel.AssesmentStatus;
 import com.dirac.auditprocessservice.Service.AuditProcessService;
 import com.dirac.auditprocessservice.DTOs.ResponseDTO;
 import com.dirac.auditprocessservice.Exceptions.NotFoundException;
@@ -109,5 +113,69 @@ public class AuditController {
     }
   }
   
+  /**
+   * Endpoint para actualizar el estado de un proceso de auditoría
+   */
+  @PostMapping("/updateStatus")
+  public ResponseDTO<AuditProcessModel> updateAuditProcessStatus(
+      @RequestParam String auditProcessId,
+      @RequestParam String status) {
+    try {
+      // Convertir el string de status a enum ProcessStatus
+      ProcessStatus processStatus;
+      try {
+        processStatus = ProcessStatus.valueOf(status);
+      } catch (IllegalArgumentException e) {
+        return new ResponseDTO<>(400, "Estado inválido. Valores permitidos: " + 
+                  Arrays.toString(ProcessStatus.values()), null);
+      }
+      
+      AuditProcessModel updatedProcess = auditProcessService.updateAuditProcessStatus(
+          auditProcessId, processStatus);
+      
+      return new ResponseDTO<>(200, "Estado del proceso de auditoría actualizado exitosamente", updatedProcess);
+    } catch (NotFoundException e) {
+      return new ResponseDTO<>(404, e.getMessage(), null);
+    } catch (Exception e) {
+      return new ResponseDTO<>(500, "Error al actualizar el estado del proceso: " + e.getMessage(), null);
+    }
+  }
+  
+  /**
+   * Endpoint para actualizar un assessment específico por su controlId
+   */
+  @PutMapping("/updateAssessment")
+  public ResponseDTO<AuditProcessModel> updateAssessment(
+      @RequestParam String auditProcessId,
+      @RequestParam String controlId,
+      @RequestParam(required = false) String status,
+      @RequestParam(required = false) String comment) {
+    try {
+      // Validar que al menos uno de los parámetros opcionales está presente
+      if (status == null && comment == null) {
+        return new ResponseDTO<>(400, "Se debe proporcionar al menos un valor para actualizar (status o comment)", null);
+      }
+      
+      // Convertir el string de status a enum AssesmentStatus si está presente
+      AssesmentStatus assessmentStatus = null;
+      if (status != null) {
+        try {
+          assessmentStatus = AssesmentStatus.valueOf(status);
+        } catch (IllegalArgumentException e) {
+          return new ResponseDTO<>(400, "Estado inválido. Valores permitidos: " + 
+                    Arrays.toString(AssesmentStatus.values()), null);
+        }
+      }
+      
+      AuditProcessModel updatedProcess = auditProcessService.updateAssesmentByControlId(
+          auditProcessId, controlId, assessmentStatus, comment);
+      
+      return new ResponseDTO<>(200, "Assessment actualizado exitosamente", updatedProcess);
+    } catch (NotFoundException e) {
+      return new ResponseDTO<>(404, e.getMessage(), null);
+    } catch (Exception e) {
+      return new ResponseDTO<>(500, "Error al actualizar el assessment: " + e.getMessage(), null);
+    }
+  }
 
 }
