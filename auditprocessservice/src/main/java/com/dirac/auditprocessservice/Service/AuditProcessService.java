@@ -5,8 +5,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -14,6 +18,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.dirac.auditprocessservice.DTOs.BusinessAuditDTO;
 import com.dirac.auditprocessservice.Exceptions.NotFoundException;
 import com.dirac.auditprocessservice.Model.AuditProcessModel;
 import com.dirac.auditprocessservice.Model.AuditProcessModel.Assesment;
@@ -27,57 +32,108 @@ public class AuditProcessService {
   private AuditProcessRepository auditProcessRepository;
   @Autowired
   private RestTemplate restTemplate;
-  private String API_GATEWAY_URL = "http://host.docker.internal:8090"; // Cambia esto a la URL de tu API Gateway
+  private String apiGatewayUrl = "http://host.docker.internal:8090"; // Cambia esto a la URL de tu API Gateway
 
   // Método createAuditProcess
   public String createAuditProcess(AuditProcessModel auditProcess) {
     String rulesetId = auditProcess.getRulesetId();
+    String businessId = auditProcess.getBusinessId(); // Asegúrate de que tu modelo tenga getBusinessId
     if (rulesetId == null || rulesetId.isEmpty()) {
       return "Error creating audit process: rulesetId is missing.";
     }
+    if (businessId == null || businessId.isEmpty()) { // También validamos businessId
+      return "Error creating audit process: businessId is missing.";
+    }
+
+    AuditProcessModel savedAuditProcess = null; // Para tener el objeto guardado si falla la 2da llamada
 
     try {
-      // 1. Mandar la petición para obtener la lista de controles (que tienen el
-      // controlId)
+      // Paso 1: Obtener controles y poblar los assesments
       List<Control> controls = fetchControlsByRulesetId(rulesetId);
 
-      // Verificar si se obtuvieron controles
       if (controls == null || controls.isEmpty()) {
         return "Error creating audit process: Could not fetch controls or no controls found for rulesetId " + rulesetId;
       }
 
-      // 2. Crear la lista de Assesments basándonos en los controles obtenidos
       List<Assesment> assesments = new ArrayList<>();
       for (Control control : controls) {
         Assesment assesment = new Assesment();
-        // *** Aquí es donde usamos el controlId del Control obtenido para crear el Assesment ***
         assesment.controlId = control.getControlId();
-        assesment.status = AssesmentStatus.NOT_EVALUATED; // Establecer estado inicial
-        // Los demás campos de Assesment se dejan como null o valores por defecto
+        assesment.status = AssesmentStatus.NOT_EVALUATED;
         assesments.add(assesment);
       }
 
-      // Asignar la lista de assesments al proceso de auditoría
       if (auditProcess.getAssesment() == null) {
         auditProcess.setAssesment(new ArrayList<>());
       }
       auditProcess.getAssesment().addAll(assesments);
 
-      // 3. Guardar el proceso de auditoría modificado
-      auditProcessRepository.save(auditProcess);
+      // Paso 2: Guardar el AuditProcessModel en tu base de datos (MongoDB)
+      savedAuditProcess = auditProcessRepository.save(auditProcess); // Capturamos el resultado del save
 
-      return "Audit process created successfully with " + assesments.size() + " assesments.";
+      // Paso 3: Llamar al Business Service para actualizar el objeto Business
+      // Esto se hace DESPUÉS de haber guardado exitosamente el AuditProcess
+
+      // Preparamos los datos que espera el Business Service en su AuditModel
+      BusinessAuditDTO businessAuditData = new BusinessAuditDTO(
+          savedAuditProcess.getRulesetId(), // rulesetId
+          savedAuditProcess.getStartDate(), // startDate del proceso guardado
+          savedAuditProcess.getEndDate(), // endDate del proceso guardado
+          savedAuditProcess.getStatus() != null ? savedAuditProcess.getStatus().name() : null // Convertir enum a String
+      );
+
+      // Llamamos al método auxiliar para hacer la petición POST al Business Service
+      updateBusinessWithNewAudit(businessId, businessAuditData);
+
+      // Si llegamos aquí, el proceso se guardó en BD y se intentó notificar al
+      // servicio de negocios
+      return "Audit process created successfully with " + assesments.size()
+          + " assesments. Business update notification sent.";
 
     } catch (Exception e) {
-      System.err.println("Error creating audit process: " + e.getMessage());
+      // Este catch manejará errores de la obtención de controles o del guardado en
+      // BD.
+      // Los errores de la 2da llamada HTTP se capturan en el método auxiliar
+      // updateBusinessWithNewAudit
+      System.err.println("Error during audit process creation or initial save: " + e.getMessage());
       e.printStackTrace();
+      // Puedes añadir lógica para limpiar si el savedAuditProcess no es null pero
+      // falló la 2da llamada,
+      // pero eso implica transacciones distribuidas y es más complejo. Por ahora,
+      // solo logeamos el error de la 2da llamada.
       return "Error creating audit process: " + e.getMessage();
     }
   }
 
-  // Método auxiliar para llamar al servicio de rulesets usando RestTemplate
+  private void updateBusinessWithNewAudit(String businessId, BusinessAuditDTO auditData) {
+    // Construimos la URL usando la URL base inyectada
+    String url = UriComponentsBuilder.fromUriString(apiGatewayUrl)
+        .path("/businesses/api/{businessId}/newAudit")
+        .buildAndExpand(businessId)
+        .toUriString();
+
+    try {
+      HttpHeaders headers = new HttpHeaders();
+      headers.setContentType(MediaType.APPLICATION_JSON);
+
+      // Creamos la entidad HTTP con el cuerpo (el DTO) y los headers
+      HttpEntity<BusinessAuditDTO> requestEntity = new HttpEntity<BusinessAuditDTO>(auditData, headers);
+      restTemplate.exchange(url, HttpMethod.POST, requestEntity, Void.class);
+      System.out.println("Successfully notified Business Service for businessId: " + businessId);
+
+    } catch (RestClientException e) {
+      // Capturamos errores de la llamada HTTP (conexión, 4xx, 5xx)
+      System.err.println(
+          "Error calling Business Service to add new audit for businessId " + businessId + ": " + e.getMessage());
+      e.printStackTrace();
+    } catch (Exception e) {
+      System.err.println("Unexpected error calling Business Service for businessId " + businessId + ": " + e.getMessage());
+      e.printStackTrace();
+    }
+  }
+
   private List<Control> fetchControlsByRulesetId(String rulesetId) {
-    String url = UriComponentsBuilder.fromUriString(API_GATEWAY_URL)
+    String url = UriComponentsBuilder.fromUriString(apiGatewayUrl) // Usar la URL base inyectada
         .path("/rulesets/api/controls/{rulesetId}")
         .buildAndExpand(rulesetId)
         .toUriString();

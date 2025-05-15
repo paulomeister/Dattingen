@@ -22,7 +22,7 @@ public class AuditProcessModel {
   @Id
   private String _id;
 
-  private String bussinessId; //
+  private String businessId; //
   private String rulesetId; //
   private ProcessStatus status; // Evaluated or not
   private List<Inspector> assignedIntAuditors;

@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.dirac.businessservice.DTOs.ResponseDTO;
+import com.dirac.businessservice.Model.AuditModel;
 import com.dirac.businessservice.Model.BusinessModel;
 import com.dirac.businessservice.Service.BusinessService;
 
@@ -42,7 +43,16 @@ public class BusinessController {
         return ResponseEntity.ok(new ResponseDTO<>(200, "Business updated successfully.", updatedBusiness));
     }
 
+    @PostMapping("/{businessId}/newAudit")
+    public ResponseEntity<ResponseDTO<String>> createAuditProcess(@PathVariable String businessId,
+            @RequestBody AuditModel auditModel) {
+        String auditProcessId = businessService.addAudit(businessId, auditModel);
+        return ResponseEntity.status(201)
+                .body(new ResponseDTO<>(201, "Audit process created successfully.", auditProcessId));
+    }
+
     @DeleteMapping("/{businessId}")
+
     public ResponseEntity<ResponseDTO<String>> deleteBusiness(@PathVariable String businessId) {
         businessService.deleteBusiness(businessId);
         return ResponseEntity.ok(new ResponseDTO<>(200, "Business deleted successfully.", businessId));
