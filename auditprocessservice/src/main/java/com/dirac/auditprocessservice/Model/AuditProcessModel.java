@@ -33,17 +33,10 @@ public class AuditProcessModel {
   private Date startDate;
   private Date endDate;
 
-
-
-
-
-
-
-
   @Data
   @AllArgsConstructor
   @NoArgsConstructor
-  public class Inspector {
+  public static class Inspector {
     private String _id;
     private String name;
   }
@@ -51,7 +44,7 @@ public class AuditProcessModel {
   @Data
   @AllArgsConstructor
   @NoArgsConstructor
-  public class Assesment {
+  public static class Assesment {
     public String controlId; // SE manda a un endpoint getControl(controlId, rulesetId) para obtener el
                              // control
     public AssesmentStatus status;
@@ -62,7 +55,7 @@ public class AuditProcessModel {
   }
 
   @Data
-  public class Evidence {
+  public static class Evidence {
     private String description;
     private String url;
     private Date addedDate; // Fecha en que se añadió la evidencia
