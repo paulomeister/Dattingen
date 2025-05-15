@@ -1,7 +1,7 @@
 package com.dirac.userservice.Enums;
 
 public enum RoleEnum {
-    Admin,
+    admin,
     Coordinator,
     InternalAuditor,
     ExternalAuditor,
