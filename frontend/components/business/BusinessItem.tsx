@@ -23,9 +23,11 @@ export default function BusinessItem({ business }: BusinessItemProps) {
                     <div className="h-12 w-12 rounded-full bg-primary-color/10 flex items-center justify-center mr-4">
                         <Building2 className="h-6 w-6 text-primary-color" />
                     </div>
-                    <div className="flex-1">
-                        <h3 className="text-xl font-medium text-gray-900">{business?.name}</h3>
-                        <p className="text-sm text-gray-500 mt-1 line-clamp-2">{business?.activity.slice(0, 30) + "..."}</p>
+
+                    <div className="">
+                        <h3 className="text-xl font-medium text-gray-900">{business.name}</h3>
+                        <p className="text-sm text-gray-500 mt-1 ">{business.activity.slice(0, 30) + "..."}</p>
+
                     </div>
                 </div>
 
