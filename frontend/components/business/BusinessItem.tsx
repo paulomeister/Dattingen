@@ -23,9 +23,11 @@ export default function BusinessItem({ business }: BusinessItemProps) {
                     <div className="h-12 w-12 rounded-full bg-primary-color/10 flex items-center justify-center mr-4">
                         <Building2 className="h-6 w-6 text-primary-color" />
                     </div>
+
                     <div className="">
                         <h3 className="text-xl font-medium text-gray-900">{business.name}</h3>
                         <p className="text-sm text-gray-500 mt-1 ">{business.activity.slice(0, 30) + "..."}</p>
+
                     </div>
                 </div>
 
@@ -33,7 +35,7 @@ export default function BusinessItem({ business }: BusinessItemProps) {
                     <div className="flex items-center">
                         <Users className="h-5 w-5 text-secondary-color mr-2" />
                         <span className="text-sm font-medium">
-                            {business.associates.length} {t("business.associates.title")}
+                            {business?.associates?.length} {t("business.associates.title")}
                         </span>
                     </div>
 
