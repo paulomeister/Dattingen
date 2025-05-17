@@ -1,63 +1,6 @@
 import TrendCompliancesChart from "@/components/statistics/TrendCompliancesChart";
 import { TrendCompliances } from '@/types/statistics';
 
-// const auditoriasData = [
-//   {
-//     id: "A-102",
-//     totalAuditorias: 132,
-//     auditoriasActivas: 24,
-//     auditoriasConMasProcesos: ["#A-102", "#B-305"],
-//     duracionPromedioHoras: 4.5,
-//     porcentajeConformidades: 82,
-//     porcentajeInconformidades: 18,
-//     tendenciaConformidades: [
-//       { fecha: "Ene", cantidadConformidades: 75 },
-//       { fecha: "Feb", cantidadConformidades: 80 },
-//       { fecha: "Mar", cantidadConformidades: 85 },
-//       { fecha: "Abr", cantidadConformidades: 82 },
-//       { fecha: "May", cantidadConformidades: 84 },
-//     ],
-//     phvaConMasInconformidades: "Actuar (A)",
-//     ruleset: "Ruleset1",
-//   },
-//   {
-//     id: "B-305",
-//     totalAuditorias: 98,
-//     auditoriasActivas: 18,
-//     auditoriasConMasProcesos: ["#B-305", "#C-210"],
-//     duracionPromedioHoras: 3.8,
-//     porcentajeConformidades: 76,
-//     porcentajeInconformidades: 24,
-//     tendenciaConformidades: [
-//       { fecha: "Ene", cantidadConformidades: 70 },
-//       { fecha: "Feb", cantidadConformidades: 74 },
-//       { fecha: "Mar", cantidadConformidades: 77 },
-//       { fecha: "Abr", cantidadConformidades: 75 },
-//       { fecha: "May", cantidadConformidades: 78 },
-//     ],
-//     phvaConMasInconformidades: "Planear (P)",
-//     ruleset: "Ruleset2",
-//   },
-//   {
-//     id: "C-210",
-//     totalAuditorias: 150,
-//     auditoriasActivas: 30,
-//     auditoriasConMasProcesos: ["#C-210", "#D-400"],
-//     duracionPromedioHoras: 5.2,
-//     porcentajeConformidades: 88,
-//     porcentajeInconformidades: 12,
-//     tendenciaConformidades: [
-//       { fecha: "Ene", cantidadConformidades: 85 },
-//       { fecha: "Feb", cantidadConformidades: 87 },
-//       { fecha: "Mar", cantidadConformidades: 89 },
-//       { fecha: "Abr", cantidadConformidades: 90 },
-//       { fecha: "May", cantidadConformidades: 91 },
-//     ],
-//     phvaConMasInconformidades: "Hacer (H)",
-//     ruleset: "Ruleset3",
-//   },
-// ];
-
 const auditoriaDesdeApi = [
   {
     totalAudits: 5,
@@ -311,48 +254,6 @@ export default function StatisticsPage() {
           </div>
         </div>
       ))}
-      {/* <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-        
-        <div className="bg-white p-4 rounded-2xl shadow col-span-1">
-          <p className="text-gray-500 text-sm">Auditorías Totales</p>
-          <h2 className="text-2xl font-bold text-gray-800">132</h2>
-        </div>
-
-        <div className="bg-white p-4 rounded-2xl shadow col-span-1">
-          <p className="text-gray-500 text-sm">Auditorías Activas</p>
-          <h2 className="text-2xl font-bold text-gray-800">24</h2>
-        </div>
-
-        <div className="bg-white p-4 rounded-2xl shadow col-span-1">
-          <p className="text-gray-500 text-sm">Auditorías con más procesos</p>
-          <h2 className="text-2xl font-bold text-gray-800">#A-102, #B-305</h2>
-        </div>
-
-        <div className="bg-white p-4 rounded-2xl shadow col-span-1">
-          <p className="text-gray-500 text-sm">Duración Promedio</p>
-          <h2 className="text-2xl font-bold text-gray-800">4.5 hrs</h2>
-        </div>
-
-        <div className="bg-white p-4 rounded-2xl shadow col-span-1">
-          <p className="text-gray-500 text-sm">% Conformidades</p>
-          <h2 className="text-2xl font-bold text-green-600">82%</h2>
-        </div>
-
-        <div className="bg-white p-4 rounded-2xl shadow col-span-1">
-          <p className="text-gray-500 text-sm">% Inconformidades</p>
-          <h2 className="text-2xl font-bold text-red-600">18%</h2>
-        </div>
-
-        <div className="bg-white p-4 rounded-2xl shadow col-span-1 md:col-span-2">
-          <h3 className="text-lg font-semibold mb-2">Tendencia de Conformidades</h3>
-          <TrendCompliancesChart />
-        </div>
-
-        <div className="bg-white p-4 rounded-2xl shadow col-span-1">
-          <h3 className="text-lg font-semibold mb-2">PHVA con más Inconformidades</h3>
-          <p className="text-xl font-bold text-red-500">Actuar (A)</p>
-        </div>
-      </div> */}
     </div>
   );
 }
