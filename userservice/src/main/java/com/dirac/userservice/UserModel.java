@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class UserModel {
 
     @Id
-    private String _id;
+    private String _id; // MongoDB Id
     private String username;
     private String name;
     private String email;

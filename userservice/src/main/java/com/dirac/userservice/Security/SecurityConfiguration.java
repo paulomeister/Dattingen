@@ -1,63 +1,46 @@
-package com.dirac.securityservice.Security;
+package com.dirac.userservice.Security;
 
-import com.dirac.securityservice.Security.JWT.CustomUsernameAndPasswordAuthenticationFilter;
-import com.dirac.securityservice.Security.JWT.JwtConfigurationVariables;
-import com.dirac.securityservice.Service.UsersRetrievalService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.dirac.userservice.Security.JWT.JwtConfigurationVariables;
+import com.dirac.userservice.Security.JWT.JwtTokenVerifier;
+import com.dirac.userservice.Security.Logging.LoggingSecurityFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.crypto.SecretKey;
-
-import java.util.Arrays;
 import java.util.List;
 
-/**
- * SecurityConfiguration class is responsible for configuring the security settings of the application.
- * It sets up the authentication manager, password encoder, and JWT filter.
- * It also configures the HTTP security settings, including CSRF protection and session management.
- *
- * @author Jean Paul Delgado Jurado
- * @version 1.1
- * @since 2025-05-02
- */
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true) // Enable method-level security annotations
 public class SecurityConfiguration {
 
-    private final PasswordEncoder passwordEncoder;
-    private final UsersRetrievalService usersRetrievalService;
     private final SecretKey secretKey;
     private final JwtConfigurationVariables jwtConfigurationVariables;
 
-    @Autowired
-    public SecurityConfiguration(PasswordEncoder passwordEncoder, UsersRetrievalService usersRetrievalService, SecretKey secretKey, JwtConfigurationVariables jwtConfigurationVariables) {
-        this.passwordEncoder = passwordEncoder;
-        this.usersRetrievalService = usersRetrievalService;
+    public SecurityConfiguration(SecretKey secretKey, JwtConfigurationVariables jwtConfigurationVariables) {
         this.secretKey = secretKey;
         this.jwtConfigurationVariables = jwtConfigurationVariables;
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
-
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf((csrf) -> csrf.disable())
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilter(new CustomUsernameAndPasswordAuthenticationFilter(authenticationManager, jwtConfigurationVariables, secretKey))
+                .addFilterBefore(new JwtTokenVerifier(secretKey, jwtConfigurationVariables), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(new LoggingSecurityFilter(), JwtTokenVerifier.class)
                 .authorizeHttpRequests((authz) -> authz
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest()
@@ -70,29 +53,17 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-        AuthenticationManagerBuilder authenticationManagerBuilder =
-                http.getSharedObject(AuthenticationManagerBuilder.class);
-
-        authenticationManagerBuilder
-                .userDetailsService(usersRetrievalService)
-                .passwordEncoder(passwordEncoder);
-
-        return authenticationManagerBuilder.build();
-    }
-
-    @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of(
-            "http://localhost:3000",  // Frontend URL
-            "http://localhost:8090"   // API Gateway URL
+                "http://localhost:3000",  // Frontend URL
+                "http://localhost:8090"   // API Gateway URL
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type", "Content-Length", "Accept", "X-Requested-With"));
         configuration.setExposedHeaders(List.of("Authorization")); // Expose JWT header
-        
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
