@@ -4,10 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.dirac.businessservice.DTOs.AuditStatisticsDTO;
 import com.dirac.businessservice.DTOs.ResponseDTO;
 import com.dirac.businessservice.Model.AsociateModel;
 import com.dirac.businessservice.Model.AuditModel;
 import com.dirac.businessservice.Model.BusinessModel;
+import com.dirac.businessservice.Service.AuditStatisticsService;
 import com.dirac.businessservice.Service.BusinessService;
 
 import java.util.List;
@@ -18,6 +20,9 @@ public class BusinessController {
 
     @Autowired
     private BusinessService businessService;
+    
+    @Autowired
+    private AuditStatisticsService auditStatisticsService;
 
     @GetMapping("/")
     public ResponseEntity<ResponseDTO<List<BusinessModel>>> getAllBusinesses() {
@@ -51,13 +56,35 @@ public class BusinessController {
         return ResponseEntity.status(201)
                 .body(new ResponseDTO<>(201, "Audit process created successfully.", auditProcessId));
     }
-
+    
     @DeleteMapping("/{businessId}")
-
     public ResponseEntity<ResponseDTO<String>> deleteBusiness(@PathVariable String businessId) {
         businessService.deleteBusiness(businessId);
         return ResponseEntity.ok(new ResponseDTO<>(200, "Business deleted successfully.", businessId));
-    }    @GetMapping("/search")
+    }
+    
+    /**
+     * Endpoint para obtener estadísticas completas de auditoría para una empresa y un ruleset
+     * 
+     * @param businessId ID del negocio
+     * @param rulesetId ID del conjunto de reglas
+     * @return Estadísticas completas de auditoría
+     */
+    @GetMapping("/{businessId}/statistics/{rulesetId}")
+    public ResponseEntity<ResponseDTO<AuditStatisticsDTO>> getCompleteAuditStatistics(
+            @PathVariable String businessId, 
+            @PathVariable String rulesetId) {
+        
+        AuditStatisticsDTO statistics = auditStatisticsService.getCompleteAuditStatistics(businessId, rulesetId);
+        
+        return ResponseEntity.ok(new ResponseDTO<>(
+            200, 
+            "Complete audit statistics retrieved successfully.", 
+            statistics
+        ));
+    }
+
+    @GetMapping("/search")
     public ResponseEntity<ResponseDTO<List<BusinessModel>>> searchBusinesses(
             @RequestParam(required = false) String name) {
         List<BusinessModel> businesses = businessService.findBusinessesByName(name);
