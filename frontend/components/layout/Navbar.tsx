@@ -39,7 +39,7 @@ export function Navbar() {
       ] : []), ...(user ? [
         {
           label: t("navbar.links.myAudits"),
-          href: "/progress",
+          href: "/audits",
         },
       ] : [])
     ])
