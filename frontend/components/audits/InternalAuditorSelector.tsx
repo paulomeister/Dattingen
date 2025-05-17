@@ -3,16 +3,16 @@
 import { useState, useEffect } from 'react';
 import { UserDTO } from '@/types/User';
 import { useAuth } from '@/lib/AuthContext';
-import { Button } from '../button';
 
 interface InternalAuditorSelectorProps {
     onSelect?: (selectedAuditors: UserDTO[]) => void;
+    selectedAuditors?: UserDTO[];
 }
 
-const InternalAuditorSelector = ({ onSelect }: InternalAuditorSelectorProps) => {
+const InternalAuditorSelector = ({ onSelect, selectedAuditors: initialSelectedAuditors }: InternalAuditorSelectorProps) => {
     const [auditors, setAuditors] = useState<UserDTO[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
-    const [selectedAuditors, setSelectedAuditors] = useState<UserDTO[]>([]);
+    const [selectedAuditors, setSelectedAuditors] = useState<UserDTO[]>(initialSelectedAuditors || []);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const { token } = useAuth();
@@ -52,26 +52,19 @@ const InternalAuditorSelector = ({ onSelect }: InternalAuditorSelectorProps) => 
     const filteredAuditors = auditors.filter(auditor =>
         auditor.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         auditor.username?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    );    const toggleAuditorSelection = (auditor: UserDTO) => {
+        const newSelected = selectedAuditors.some(a => a._id === auditor._id)
+            ? selectedAuditors.filter(a => a._id !== auditor._id)
+            : [...selectedAuditors, auditor];
+        
+        console.log("Selected auditors:", newSelected);
 
-    const toggleAuditorSelection = (auditor: UserDTO) => {
-        setSelectedAuditors(prev => {
-            // Si ya está seleccionado, quitarlo de la selección
-            if (prev.some(a => a._id === auditor._id)) {
-                return prev.filter(a => a._id !== auditor._id);
-            }
-            // Si no está seleccionado, agregarlo
-            else {
-                return [...prev, auditor];
-            }
-        });
-    };
 
-    const handleShowSelected = () => {
+        setSelectedAuditors(newSelected);
+        
+        // Notificar al componente padre de los cambios inmediatamente
         if (onSelect) {
-            onSelect(selectedAuditors);
-        } else {
-            console.log('Auditores seleccionados:', selectedAuditors);
+            onSelect(newSelected);
         }
     };
 
@@ -120,28 +113,12 @@ const InternalAuditorSelector = ({ onSelect }: InternalAuditorSelectorProps) => 
                         ))}
                     </ul>
                 )}
-            </div>
-
-            {/* Información de selección */}
+            </div>            {/* Información de selección */}
             <div className="mb-4 text-sm text-gray-700">
                 {selectedAuditors.length === 0
                     ? 'Ningún auditor seleccionado'
                     : `${selectedAuditors.length} auditor(es) seleccionado(s)`}
             </div>
-
-            {/* Botón para mostrar seleccionados */}
-            <Button
-                onClick={handleShowSelected}
-                disabled={selectedAuditors.length === 0}
-                className={`w-full py-2 px-4 rounded-lg text-white font-medium ${selectedAuditors.length === 0
-                    ? 'bg-gray-300 cursor-not-allowed'
-                    : 'bg-primary-color hover:bg-secondary-color'
-                    }`}
-            >
-                {selectedAuditors.length === 0
-                    ? 'Seleccione al menos un auditor'
-                    : `Confirmar selección (${selectedAuditors.length})`}
-            </Button>
         </div>
     );
 };

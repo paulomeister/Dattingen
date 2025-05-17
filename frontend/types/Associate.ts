@@ -1,6 +1,7 @@
 import { RoleEnum } from "./RoleEnum";
 
 export interface Associate {
-  userId: string;
+  _id: string;
   role: RoleEnum;
+  username: string;
 }

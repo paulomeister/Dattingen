@@ -1,4 +1,5 @@
 import { environment } from "@/env/environment.dev";
+import { Associate } from "@/types/Associate";
 import { ResponseDTO } from "@/types/ResponseDTO";
 import { RoleEnum } from "@/types/RoleEnum";
 import { Ruleset } from "@/types/Ruleset";
@@ -105,16 +106,10 @@ export async function updateRuleset(
 
 export async function registerAuditors(
   businessId: string,
-  auditorIds: string[],
+  associates: Associate[],
   token: string | null = null
 ): Promise<ResponseDTO<unknown>> {
   try {
-    // Convertir los IDs de auditores a una lista de objetos AsociateModel
-    const associates = auditorIds.map(id => ({
-      _id: id,
-      role: "InternalAuditor"
-    }));    console.log("Sending associates:", associates);
-
     const response = await fetch(
       `${environment.API_URL}/businesses/api/business/registerAuditors/${businessId}`,
       {

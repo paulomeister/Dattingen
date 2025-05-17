@@ -6,8 +6,8 @@ import InternalAuditorSelector from '@/components/audits/InternalAuditorSelector
 import { UserDTO } from '@/types/User';
 import { registerAuditors } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
-
-
+import { Button } from '@/components/button';
+import { Associate } from '@/types/Associate';
 
 export default function MiComponente({ params }: { params: Promise<{ id: string }> }) {
     const { id: businessId } = use(params); // 🔥 Aquí se desenvuelve el Promise
@@ -29,14 +29,16 @@ export default function MiComponente({ params }: { params: Promise<{ id: string 
         }
 
         setIsSubmitting(true);
-        setError(null);
-
-        try {
+        setError(null);        try {
             // Extract the IDs from the selected auditors
-            const auditorIds = selectedAuditors.map(auditor => auditor._id as string);
+            const associates: Associate[] = selectedAuditors.map(auditor => ({
+                username: auditor.username as string,
+                _id: auditor._id as string,
+                role: "InternalAuditor"
+            }));
 
             // Call the API to register auditors
-            const response = await registerAuditors(businessId, auditorIds, token);
+            const response = await registerAuditors(businessId, associates, token);
 
             if (response.status === 200) {
                 setSuccess(true);
@@ -105,14 +107,16 @@ export default function MiComponente({ params }: { params: Promise<{ id: string 
                     >
                         Cancel
                     </button>
-                    <button
+                    <Button
                         onClick={handleSubmit}
-                        className={`px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''
+                        disabled={isSubmitting || success || selectedAuditors.length === 0}
+                        className={`py-2 px-4 rounded-lg text-white font-medium ${isSubmitting || selectedAuditors.length === 0
+                            ? 'bg-gray-400 cursor-not-allowed'
+                            : 'bg-primary-color hover:bg-secondary-color'
                             }`}
-                        disabled={isSubmitting || success}
                     >
-                        {isSubmitting ? 'Submitting...' : 'Register Auditors'}
-                    </button>
+                        {isSubmitting ? 'Submitting...' : `Register Auditors (${selectedAuditors.length})`}
+                    </Button>
                 </div>
             </div>
         </div>

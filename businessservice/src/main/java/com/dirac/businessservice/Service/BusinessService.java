@@ -125,22 +125,25 @@ public class BusinessService {
      * Obtiene una lista con las primeras 20 empresas
      * 
      * @return Lista limitada a 20 empresas
-     */    public List<BusinessModel> findAllBusinesses() {
+     */
+    public List<BusinessModel> findAllBusinesses() {
         // Utilizamos paginación para limitar a las primeras 20 empresas
         return businessRepository.findTop20ByOrderByNameAsc();
     }
 
     /**
      * Registra una lista de auditores internos para un negocio específico
+     * 
      * @param businessId ID del negocio al que se añadirán los auditores
-     * @param associates Lista de objetos AsociateModel con ID y rol de usuario
+     * @param associates Lista de objetos AsociateModel con ID, username y rol de
+     *                   usuario
      * @return El negocio actualizado con los nuevos asociados
      */
     public BusinessModel registerAuditors(String businessId, List<AsociateModel> associates) {
         // Obtenemos el negocio por su ID
         BusinessModel business = businessRepository.findById(businessId)
                 .orElseThrow(() -> new BusinessNotFoundException("Business with ID " + businessId + " not found."));
-        
+
         // Si el negocio no tiene lista de asociados, la inicializamos
         if (business.getAssociates() == null) {
             business.setAssociates(associates);
@@ -150,7 +153,7 @@ public class BusinessService {
             List<String> existingIds = business.getAssociates().stream()
                     .map(AsociateModel::get_id)
                     .toList();
-            
+
             // Añadimos solo los asociados que no existen ya
             for (AsociateModel associate : associates) {
                 if (!existingIds.contains(associate.get_id())) {
@@ -158,18 +161,18 @@ public class BusinessService {
                 }
             }
         }
-        
+
         // Guardamos el negocio actualizado
         BusinessModel updatedBusiness = businessRepository.save(business);
-        
+
         // Extraemos los IDs de usuario para actualizar su businessId
         List<String> userIds = associates.stream()
                 .map(AsociateModel::get_id)
                 .toList();
-        
+
         // Actualizamos el businessId de los usuarios en el userservice
         updateUsersBusinessId(businessId, userIds);
-        
+
         return updatedBusiness;
     }
 }
