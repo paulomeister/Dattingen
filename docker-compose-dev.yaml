@@ -49,6 +49,9 @@ services:
       - type: bind
         source: ./businessservice
         target: /app
+      - type: bind
+        source: ./businessservice/logs
+        target: /app/businessservice-logs
     ports:
       - "8080:8080"
     restart: unless-stopped
@@ -68,6 +71,9 @@ services:
       - type: bind
         source: ./auditprocessservice
         target: /app
+      - type: bind
+        source: ./auditprocessservice/logs
+        target: /app/auditprocessservice-logs
     ports:
       - "8081:8081"
     restart: unless-stopped
@@ -87,6 +93,9 @@ services:
       - type: bind
         source: ./userservice
         target: /app
+      - type: bind
+        source: ./userservice/logs
+        target: /app/userservice-logs
     ports:
       - "8083:8083"
     restart: unless-stopped
@@ -108,7 +117,7 @@ services:
         target: /app
       - type: bind
         source: ./rulesetservice/logs
-        target: /app/logs
+        target: /app/rulesetservice-logs
     ports:
       - "8082:8082"
     restart: unless-stopped
@@ -128,11 +137,56 @@ services:
       - type: bind
         source: ./securityservice
         target: /app
+      - type: bind
+        source: ./securityservice/logs
+        target: /app/securityservice-logs
     ports:
       - "8084:8084"
     restart: unless-stopped
     networks:
       - backend
+  elasticsearch:
+    image: elastic/elasticsearch:9.0.1
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    networks:
+      - backend
+  kibana:
+    image: elastic/kibana:9.0.1
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - backend
+  filebeat:
+    image: filebeatservice:dev
+    container_name: filebeatservice_dev
+    build:
+      context: ./filebeat
+      dockerfile: Dockerfile
+      target: dev
+    user: root
+    depends_on:
+      - elasticsearch
+    volumes:
+      - ./businessservice/logs:/app/businessservice-logs:ro
+      - ./rulesetservice/logs:/app/rulesetservice-logs:ro
+      - ./auditprocessservice/logs:/app/auditprocessservice-logs:ro
+      - ./userservice/logs:/app/userservice-logs:ro
+      - ./securityservice/logs:/app/securityservice-logs:ro
+    networks:
+      - backend
 networks:
   backend:
   frontend:
+volumes:
+  elasticsearch-data:
+  
