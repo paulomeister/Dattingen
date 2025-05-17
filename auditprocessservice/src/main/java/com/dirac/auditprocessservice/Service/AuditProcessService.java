@@ -77,7 +77,7 @@ public class AuditProcessService {
       // Aleatoria
       AuditProcessModel finalAuditProcess = this.assignRandomExternalAuditors(auditProcess);
 
-      // Paso 3: Guardar el AuditProcessModel en tu base de datos (MongoDB)
+      // Paso 3: Guardar el AuditProcessModel en bd
       savedAuditProcess = auditProcessRepository.save(finalAuditProcess);
 
       // Paso 4: Llamar al Business Service para actualizar el objeto Business
