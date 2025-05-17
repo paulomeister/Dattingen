@@ -25,8 +25,11 @@ export const getUserImage = (role: RoleEnum | undefined): string => {
   }
 };
 
-export const getUserRole = (role: string, language: string | undefined): string => {
-  console.log(language)
+export const getUserRole = (
+  role: string,
+  language: string | undefined
+): string => {
+  console.log(language);
 
   switch (role) {
     case "InternalAuditor":
@@ -98,4 +101,39 @@ export async function updateRuleset(
       body: JSON.stringify(updatedRuleset),
     }
   );
+}
+
+export async function registerAuditors(
+  businessId: string,
+  auditorIds: string[],
+  token: string | null = null
+): Promise<ResponseDTO<unknown>> {
+  try {
+    // Convertir los IDs de auditores a una lista de objetos AsociateModel
+    const associates = auditorIds.map(id => ({
+      _id: id,
+      role: "InternalAuditor"
+    }));    console.log("Sending associates:", associates);
+
+    const response = await fetch(
+      `${environment.API_URL}/businesses/api/business/registerAuditors/${businessId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+        body: JSON.stringify(associates), // Enviar directamente la lista de AsociateModel
+      }
+    );
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error registering auditors:", error);
+    return {
+      status: 500,
+      message: "Error registering auditors",
+      data: null,
+    };
+  }
 }

@@ -10,6 +10,8 @@ import com.dirac.userservice.Enums.RoleEnum;
 import java.util.EnumSet;
 import java.util.List;
 
+import javax.management.relation.Role;
+
 @Service
 public class UserService {
 
@@ -161,6 +163,12 @@ public class UserService {
         }
 
         userRepository.deleteById(_id);
+    }
+
+    public List<UserModel> getUsersByRole(RoleEnum role) {
+
+        return userRepository.findByRole(role);
+
     }
 
     public UserModel getRandomExternalAuditor() {
