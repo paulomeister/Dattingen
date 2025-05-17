@@ -40,10 +40,10 @@ const RulesetsPage = () => {
                   shadow-[0_4px_20px_0_var(--tw-shadow-color)] shadow-secondary-color/30
                   overflow-hidden">
                   <div className="relative w-full h-48 overflow-hidden">
-                    <Image 
-                      src="/images/createRuleset.jpg" 
+                    <Image
+                      src="/images/createRuleset.jpg"
                       alt="Create Ruleset"
-                      layout="fill" 
+                      layout="fill"
                       objectFit="cover"
                     />
                     <div className="absolute inset-0 bg-primary-color/40 mix-blend-multiply"></div>
@@ -68,11 +68,12 @@ const RulesetsPage = () => {
                   shadow-[0_6px_30px_0_var(--tw-shadow-color)] shadow-primary-color/40
                   overflow-hidden">
                   <div className="relative w-full h-48 overflow-hidden">
-                    <Image 
-                      src="/images/browseRuleset.jpg" 
+                    <Image
+                      src="/images/browseRuleset.jpg"
                       alt="Browse Rulesets"
-                      layout="fill" 
-                      objectFit="cover"
+                      fill
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      style={{ objectFit: "cover" }}
                     />
                     <div className="absolute inset-0 bg-primary-color/40 mix-blend-multiply"></div>
                   </div>
@@ -102,11 +103,11 @@ const RulesetsPage = () => {
                   shadow-[0_6px_30px_0_var(--tw-shadow-color)] shadow-primary-color/40
                   overflow-hidden">
                   <div className="relative w-full h-64 overflow-hidden">
-                    <Image 
-                      src="/images/browseRuleset.jpg" 
+                    <Image
+                      src="/images/browseRuleset.jpg"
                       alt="Browse Rulesets"
-                      layout="fill" 
-                      objectFit="cover" 
+                      layout="fill"
+                      objectFit="cover"
                       className="object-center"
                     />
                     <div className="absolute inset-0 bg-primary-color/40 mix-blend-multiply"></div>
