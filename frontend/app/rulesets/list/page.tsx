@@ -30,10 +30,10 @@ export default function ListNormatives() {
     const getNormatives = async () => {
       try {
         const response = await fetch(`${environment.API_URL}/rulesets/api/ListAll`)
-        const data : Ruleset[] = await response.json()
-        setNormatives(data.filter((normative) => normative.status.toLowerCase() === "published")) 
-        setFilteredNormatives(data.filter((normative) => normative.status.toLowerCase() === "published")) 
-        
+        const data: Ruleset[] = await response.json()
+        setNormatives(data.filter((normative) => normative?.status?.toLowerCase() === "published"))
+        setFilteredNormatives(data.filter((normative) => normative?.status?.toLowerCase() === "published"))
+
       } catch (error) {
         console.error("Error fetching normatives:", error)
       }
@@ -46,21 +46,21 @@ export default function ListNormatives() {
     let filtered = [...normatives]
 
     if (searchQuery.trim() !== "") {
-      const query = searchQuery.toLowerCase()
+      const query = searchQuery?.toLowerCase()
 
       filtered = normatives.filter((normative) => {
         switch (searchField) {
           case "name":
-            return normative.name.toLowerCase().includes(query)
+            return normative?.name?.toLowerCase().includes(query)
           case "organization":
-            return normative.organization.toLowerCase().includes(query)
+            return normative?.organization?.toLowerCase().includes(query)
           case "publishingDate":
             // Simple date search - checks if the formatted date includes the query
             return format(normative.publishingDate, "yyyy-MM-dd").includes(query)
           default:
             return (
-              normative.name.toLowerCase().includes(query) ||
-              normative.organization.toLowerCase().includes(query) ||
+              normative?.name?.toLowerCase().includes(query) ||
+              normative?.organization?.toLowerCase().includes(query) ||
               format(normative.publishingDate, "yyyy-MM-dd").includes(query)
             )
         }

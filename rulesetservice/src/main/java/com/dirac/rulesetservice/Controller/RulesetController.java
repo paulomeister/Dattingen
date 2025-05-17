@@ -68,6 +68,27 @@ public class RulesetController {
         return new ResponseEntity<>(rulesets, HttpStatus.OK);
     }
 
+    // New Endpoint!
+
+    @GetMapping("/controls/{rulesetId}")
+    public ResponseEntity<List<Control>> getAllControls(@PathVariable String rulesetId) {
+        log.info("Fetching all controls for ruleset: {}", rulesetId);
+        List<Control> controls = rulesetService.getAllControls(rulesetId);
+        return new ResponseEntity<>(controls, HttpStatus.OK);
+    }
+    
+    // New Endpoint!
+
+    @GetMapping("/controls/{rulesetId}/{controlId}")
+    public ResponseEntity<Control> getControlByIdAndRuleset(
+            @PathVariable String rulesetId,
+            @PathVariable String controlId) {
+        log.info("Fetching control with id: {} for ruleset: {}", controlId, rulesetId);
+        return rulesetService.getControlByIdAndRuleset(controlId, rulesetId)
+                .map(control -> new ResponseEntity<>(control, HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
     @GetMapping("/findbyid/{id}")
     @PreAuthorize("hasAnyRole('admin', 'Coordinator', 'InternalAuditor', 'ExternalAuditor')")
     public ResponseEntity<RulesetModel> getRulesetById(@PathVariable String id) {
@@ -119,7 +140,7 @@ public class RulesetController {
         log.info("Publishing ruleset with id: {}", id);
         try {
             RulesetModel published = rulesetService.publishRuleset(id);
-            
+
             return ResponseEntity
                     .ok()
                     .body(Map.of(

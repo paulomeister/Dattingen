@@ -31,6 +31,8 @@ const UserDropdown = () => {
     router.push("/admin/create-user");
   }
 
+  const isAdmin = user?.role.toLowerCase() === "admin";
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -44,40 +46,41 @@ const UserDropdown = () => {
           t("navbar.userDropdown.title")
         }</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="cursor-pointer hover:bg-primary-color hover:text-white 
-          transition-colors duration-100 ease-in-out"
-          onClick={() => navigateToProfile(user!.username)}
 
-        >
-          <User className="mr-2 h-4 w-4" />
-          <span >{
-            t("navbar.userDropdown.profile")
-          }</span>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        {
-          user?.role.toLowerCase() === "admin" && (
-            <DropdownMenuItem className="cursor-pointer hover:bg-primary-color text-primary-color
-          transition-colors duration-100 ease-in-out"
+        {/* Mostrar opción de perfil solo para usuarios que NO son Admin */}
+        {!isAdmin && (
+          <>
+            <DropdownMenuItem className="cursor-pointer hover:bg-primary-color hover:text-white 
+              transition-colors duration-100 ease-in-out"
+              onClick={() => navigateToProfile(user!.username)}
+            >
+              <User className="mr-2 h-4 w-4" />
+              <span>{t("navbar.userDropdown.profile")}</span>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </>
+        )}
+
+        {/* Panel de administración solo para Admin */}
+        {isAdmin && (
+          <>
+            <DropdownMenuItem className="cursor-pointer hover:bg-primary-color hover:text-white
+              transition-colors duration-100 ease-in-out"
               onClick={navigateToAdmin}
             >
               <UserRoundCog className="mr-2 h-4 w-4" />
-              <span >{
-                t("navbar.userDropdown.admin")
-              }</span>
+              <span>{t("navbar.userDropdown.admin")}</span>
             </DropdownMenuItem>
-          )
-        }
-        <DropdownMenuSeparator />
+            <DropdownMenuSeparator />
+          </>
+        )}
+
         <DropdownMenuItem className="cursor-pointer hover:bg-primary-color hover:text-white 
           transition-colors duration-100 ease-in-out"
-
           onClick={logout}
         >
           <LogOut className="mr-2 h-4 w-4" />
-          <span >{
-            t("navbar.userDropdown.logout")
-          }</span>
+          <span>{t("navbar.userDropdown.logout")}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

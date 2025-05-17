@@ -3,6 +3,7 @@ package com.dirac.userservice;
 import com.dirac.userservice.DTOs.ResponseDTO;
 import com.dirac.userservice.DTOs.UserDTO;
 import com.dirac.userservice.DTOs.UsersAssignDTO;
+import com.dirac.userservice.Enums.RoleEnum;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +49,15 @@ public class UserController {
         }
         return ResponseEntity.ok(new ResponseDTO<>(200, "User Found", userService.toUserDTO(user)));
     }
-    
+
+    // Obtener usuarios por rol
+    @GetMapping("/getRandomExternalAuditors")
+    public ResponseEntity<ResponseDTO<UserDTO>> getRandomExternalAuditor() {
+        UserModel user = userService.getRandomExternalAuditor();
+        UserDTO userDTO = userService.toUserDTO(user);
+        return ResponseEntity.ok(new ResponseDTO<>(200, "Found 1 external auditor", userDTO));
+    }
+
     // Nuevo endpoint: Buscar usuarios por nombre o username (búsqueda parcial)
     @GetMapping("/search/users")
     @PreAuthorize("hasAnyRole('admin', 'Coordinator')")
@@ -60,8 +69,7 @@ public class UserController {
                 .collect(Collectors.toList());
         log.info("Found {} users matching query '{}'", userDTOs.size(), q);
         return ResponseEntity.ok(new ResponseDTO<>(200, 
-                "Found " + userDTOs.size() + " users matching: " + q, 
-                userDTOs));
+                "Found " + userDTOs.size() + " users matching: " + q, userDTOs));
     }
 
     // Obtener usuario por ID
@@ -91,6 +99,17 @@ public class UserController {
         return ResponseEntity.ok(new ResponseDTO<>(200, "Users from business " + businessId, userDTOs));
     }
 
+    // Obtener usuarios por rol
+    @GetMapping("/roles/{role}/users")
+    public ResponseEntity<ResponseDTO<List<UserDTO>>> getUsersByRole(@PathVariable RoleEnum role) {
+        List<UserModel> users = userService.getUsersByRole(role);
+        List<UserDTO> userDTOs = users.stream()
+                .map(userService::toUserDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(new ResponseDTO<>(200, "Users with role " + role, userDTOs));
+    }
+
+    // Crear nuevo usuario
     // | WARNING: user creation should only happen upon credentials creation
     // (see securityservice/src/main/java/com/dirac/securityservice/Controller/CredentialsController.java)
     @PostMapping("/")
