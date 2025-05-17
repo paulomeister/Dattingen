@@ -253,6 +253,31 @@ public class AuditStatisticsService {
     }
     
     /**
+     * Obtener el nombre del ruleset desde el servicio de rulesets
+     * 
+     * @param rulesetId ID del ruleset
+     * @return Nombre del ruleset o "Ruleset Desconocido" si no se puede obtener
+     */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private String getRulesetName(String rulesetId) {
+        // Llamar al servicio de rulesets a través del API Gateway
+        String url = apiGatewayUrl + "/rulesets/api/findbyid/" + rulesetId;
+        
+        try {
+            ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, null, Map.class);
+            Map<String, Object> data = response.getBody();
+            
+            if (data != null && data.containsKey("name")) {
+                return data.get("name").toString();
+            }
+        } catch (Exception e) {
+            System.err.println("Error al obtener información del ruleset: " + e.getMessage());
+        }
+        
+        return "Ruleset " + rulesetId;
+    }
+    
+    /**
      * Obtener estadísticas de auditoría en el formato solicitado para todas las auditorías de un negocio
      * 
      * @param businessId ID del negocio
@@ -333,8 +358,11 @@ public class AuditStatisticsService {
                     try {
                         // Obtener las estadísticas específicas para esta auditoría y su ruleset
                         AuditStatisticsDTO auditStats = getCompleteAuditStatistics(businessId, audit.getRulesetId());
+                          AuditDetailDTO detail = new AuditDetailDTO();
                         
-                        AuditDetailDTO detail = new AuditDetailDTO();
+                        // Obtener el nombre del ruleset
+                        String rulesetName = getRulesetName(audit.getRulesetId());
+                        detail.setRulesetName(rulesetName);
                         
                         // Obtener porcentajes de conformidad y no conformidad
                         Map<String, Double> compliancePercentages = auditStats.getCompliancePercentages();

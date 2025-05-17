@@ -18,13 +18,12 @@ public class AuditStatisticsResponseDTO {
     private Integer meanAuditTime;
     
     // Lista de estadísticas por auditoría
-    private List<AuditDetailDTO> audits;
-
-    // DTO anidado para detalles de cada auditoría
+    private List<AuditDetailDTO> audits;    // DTO anidado para detalles de cada auditoría
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AuditDetailDTO {
+        private String rulesetName; // Nombre del ruleset
         private Float conformityProcess;
         private Float nonConformityProcess;
         private PHVAInformitiesDTO phvaInformities;
