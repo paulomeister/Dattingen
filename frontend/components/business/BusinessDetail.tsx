@@ -41,21 +41,14 @@ export default function BusinessDetail({ business }: BusinessDetailProps) {
                         </div>
                     </div>
 
-                    {business.logo && (
-                        <div className="w-40 h-40 relative">
-                            <img
-                                src={business.logo}
-                                alt={`${business.name} logo`}
-                                className="object-contain w-full h-full"
-                            />
-                        </div>
-                    )}
-                </div>
-            </Card>
 
-            {/* Bottom left - Users section */}
+                </div>
+            </Card>            {/* Bottom left - Users section */}
             <Card className="p-6 shadow-lg overflow-auto">
-                <BusinessAssociates associates={business.associates || []} />
+                <BusinessAssociates
+                    associates={business.associates || []}
+                    businessId={business._id || ''}
+                />
             </Card>
 
             {/* Bottom right - Statistics section */}

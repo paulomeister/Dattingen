@@ -41,11 +41,11 @@ const RulesetCreator = ({ rulesetId, onUpdateSuccess }: RulesetCreatorProps) => 
             setFileUrl(URL.createObjectURL(fileObject)); // Envía el blob (desde el cliente) al visor
         }
 
-        if (ruleset !== null && rulesetId) {
+        if (ruleset && rulesetId) {
             const currentStatus = ruleset?.status?.toLowerCase();
 
             // Si ya ha sido publicado, entonces no se puede editar
-            if (currentStatus === "published" || ruleset.status.toLowerCase() === "publicado") {
+            if (currentStatus === "published" || ruleset?.status?.toLowerCase() === "publicado") {
                 router.push(`/rulesets/get/${rulesetId}`);
             } else {
                 getFileUrl();

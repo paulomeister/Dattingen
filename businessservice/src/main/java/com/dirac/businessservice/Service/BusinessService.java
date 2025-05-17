@@ -11,6 +11,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.dirac.businessservice.Exception.BusinessNotFoundException;
 import com.dirac.businessservice.Model.AsociateModel;
+import com.dirac.businessservice.Model.AuditModel;
 import com.dirac.businessservice.Model.BusinessModel;
 import com.dirac.businessservice.Repository.BusinessRepository;
 
@@ -18,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-
 
 @Service
 public class BusinessService {
@@ -38,7 +38,9 @@ public class BusinessService {
     }
 
     /**
-     * Busca empresas por nombre, utilizando una expresión regular para una búsqueda insensible a mayúsculas/minúsculas
+     * Busca empresas por nombre, utilizando una expresión regular para una búsqueda
+     * insensible a mayúsculas/minúsculas
+     * 
      * @param name Nombre o parte del nombre a buscar
      * @return Lista de empresas que coinciden con el criterio de búsqueda
      */
@@ -105,6 +107,14 @@ public class BusinessService {
         return businessRepository.save(existingBusiness);
     }
 
+    public String addAudit(String _id, AuditModel auditModel) {
+        BusinessModel existingBusiness = businessRepository.findById(_id)
+                .orElseThrow(() -> new BusinessNotFoundException("Business with ID " + _id + " not found."));
+        existingBusiness.getAudits().add(auditModel);
+        businessRepository.save(existingBusiness);
+        return "New Audit of " + auditModel.getRulesetId() + " Added.";
+    }
+
     public void deleteBusiness(String _id) {
         BusinessModel existingBusiness = businessRepository.findById(_id)
                 .orElseThrow(() -> new BusinessNotFoundException("Business with ID " + _id + " not found."));
@@ -113,10 +123,56 @@ public class BusinessService {
 
     /**
      * Obtiene una lista con las primeras 20 empresas
+     * 
      * @return Lista limitada a 20 empresas
      */
     public List<BusinessModel> findAllBusinesses() {
         // Utilizamos paginación para limitar a las primeras 20 empresas
         return businessRepository.findTop20ByOrderByNameAsc();
+    }
+
+    /**
+     * Registra una lista de auditores internos para un negocio específico
+     * 
+     * @param businessId ID del negocio al que se añadirán los auditores
+     * @param associates Lista de objetos AsociateModel con ID, username y rol de
+     *                   usuario
+     * @return El negocio actualizado con los nuevos asociados
+     */
+    public BusinessModel registerAuditors(String businessId, List<AsociateModel> associates) {
+        // Obtenemos el negocio por su ID
+        BusinessModel business = businessRepository.findById(businessId)
+                .orElseThrow(() -> new BusinessNotFoundException("Business with ID " + businessId + " not found."));
+
+        // Si el negocio no tiene lista de asociados, la inicializamos
+        if (business.getAssociates() == null) {
+            business.setAssociates(associates);
+        } else {
+            // Agregamos los nuevos asociados a la lista existente
+            // Primero, filtramos para evitar duplicados (por ID)
+            List<String> existingIds = business.getAssociates().stream()
+                    .map(AsociateModel::get_id)
+                    .toList();
+
+            // Añadimos solo los asociados que no existen ya
+            for (AsociateModel associate : associates) {
+                if (!existingIds.contains(associate.get_id())) {
+                    business.getAssociates().add(associate);
+                }
+            }
+        }
+
+        // Guardamos el negocio actualizado
+        BusinessModel updatedBusiness = businessRepository.save(business);
+
+        // Extraemos los IDs de usuario para actualizar su businessId
+        List<String> userIds = associates.stream()
+                .map(AsociateModel::get_id)
+                .toList();
+
+        // Actualizamos el businessId de los usuarios en el userservice
+        updateUsersBusinessId(businessId, userIds);
+
+        return updatedBusiness;
     }
 }

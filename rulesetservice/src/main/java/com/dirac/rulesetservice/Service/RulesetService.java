@@ -48,6 +48,40 @@ public class RulesetService {
         return null;
     }
 
+    // get All ControlsF
+    public List<RulesetModel.Control> getAllControls(String rulesetId) {
+        RulesetModel ruleset = getRulesetById(rulesetId)
+                .orElseThrow(() -> new RuntimeException("Ruleset not found with id: " + rulesetId));
+
+        return ruleset.getControls();
+    }
+
+    // get Control by ID
+    public Optional<Control> getControlByIdAndRuleset(String controlId, String rulesetId) {
+        // 1. Obtener la normativa por su ID
+        Optional<RulesetModel> rulesetOptional = getRulesetById(rulesetId);
+
+        if (rulesetOptional.isPresent()) {
+            RulesetModel ruleset = rulesetOptional.get();
+            List<Control> controls = ruleset.getControls();
+
+            if (controls != null && !controls.isEmpty()) {
+                // 2. Buscar el control específico en la lista de controles de la normativa
+                // Usamos Java Streams para una búsqueda concisa:
+                return controls.stream()
+                        .filter(control -> controlId.equals(control.getControlId()))
+                        .findFirst();
+            } else {
+                // La normativa no tiene controles
+                return Optional.empty();
+            }
+        } else {
+            // La normativa no fue encontrada
+            return Optional.empty();
+                                    
+        }
+    }
+
     /**
      * Publica un Ruleset cambiando su estado a "published"
      * 
@@ -58,10 +92,10 @@ public class RulesetService {
     public RulesetModel publishRuleset(String rulesetId) {
         RulesetModel ruleset = getRulesetById(rulesetId)
                 .orElseThrow(() -> new RuntimeException("Ruleset not found with id: " + rulesetId));
-        
+
         // Actualizar el estado a "published"
         ruleset.setStatus("published");
-        
+
         // Guardar y devolver el Ruleset actualizado
         return rulesetRepository.save(ruleset);
     }

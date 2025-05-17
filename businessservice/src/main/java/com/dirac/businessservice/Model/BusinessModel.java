@@ -1,6 +1,7 @@
 package com.dirac.businessservice.Model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -19,6 +20,6 @@ public class BusinessModel {
   private String _id;
   private String name;
   private String activity;
-  private ArrayList<AsociateModel> associates;
-  private ArrayList<AuditModel> audits;
+  private List<AsociateModel> associates;
+  private List<AuditModel> audits;
 }

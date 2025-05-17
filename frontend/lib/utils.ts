@@ -1,4 +1,5 @@
 import { environment } from "@/env/environment.dev";
+import { Associate } from "@/types/Associate";
 import { ResponseDTO } from "@/types/ResponseDTO";
 import { RoleEnum } from "@/types/RoleEnum";
 import { Ruleset } from "@/types/Ruleset";
@@ -25,8 +26,11 @@ export const getUserImage = (role: RoleEnum | undefined): string => {
   }
 };
 
-export const getUserRole = (role: string, language: string | undefined): string => {
-  console.log(language)
+export const getUserRole = (
+  role: string,
+  language: string | undefined
+): string => {
+  console.log(language);
 
   switch (role) {
     case "InternalAuditor":
@@ -98,4 +102,33 @@ export async function updateRuleset(
       body: JSON.stringify(updatedRuleset),
     }
   );
+}
+
+export async function registerAuditors(
+  businessId: string,
+  associates: Associate[],
+  token: string | null = null
+): Promise<ResponseDTO<unknown>> {
+  try {
+    const response = await fetch(
+      `${environment.API_URL}/businesses/api/business/registerAuditors/${businessId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+        body: JSON.stringify(associates), // Enviar directamente la lista de AsociateModel
+      }
+    );
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error registering auditors:", error);
+    return {
+      status: 500,
+      message: "Error registering auditors",
+      data: null,
+    };
+  }
 }

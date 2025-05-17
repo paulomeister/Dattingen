@@ -53,14 +53,15 @@ export default function CreateNormativesPage() {
         });
 
 
-        const data = await uploadResponse.json(); // Suponemos que el nombre del archivo es el texto retornado
+        const dataInfo = await uploadResponse.json(); // Suponemos que el nombre del archivo es el texto retornado
+        const name: string = dataInfo.fileName;
+        const fileName = name.replace("Rulesets/", "")
 
-        const fileName = data.fileName;
 
         // Ahora, usamos los datos del formulario para completar el ruleset
         const completeRulesetData = {
           ...data,  // Los datos que vienen del formulario
-          fileUrl: fileName,   // Añadimos el nombre del archivo
+          fileName,   // Añadimos el nombre del archivo
         };
 
         // Enviar el ruleset al endpoint

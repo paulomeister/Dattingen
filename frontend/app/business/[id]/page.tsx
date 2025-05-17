@@ -2,7 +2,6 @@ import { Metadata } from "next";
 import { environment } from "@/env/environment.dev";
 import { Business } from "@/types/Business";
 import BusinessDetail from "@/components/business/BusinessDetail";
-import { useLanguage } from "@/lib/LanguageContext";
 
 type BusinessPageProps = {
     params: {
