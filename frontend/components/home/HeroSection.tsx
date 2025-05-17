@@ -1,4 +1,3 @@
-
 "use client";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/lib/LanguageContext";
@@ -9,34 +8,28 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/AuthContext";
 
-
 export const HeroSection = memo(function HeroSection() {
   const { t } = useLanguage();
-  const router = useRouter()
-  const { isLoggedIn } = useAuth()
+  const router = useRouter();
+  const { isLoggedIn } = useAuth();
 
   function handleStartButton(): void {
-    if (isLoggedIn) {
-      router.push("/audits")
-    } else {
-      router.push("/auth")
-    }
+    router.push(isLoggedIn ? "/audits" : "/auth");
   }
 
   return (
     <div className="space-y-20 px-4">
-
       {/* Intro Section */}
       <div className="text-center mt-10 flex items-center justify-center flex-col">
         <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight">
-          Show the World What
+          {t("home.hero.title")}
           <br />
-          <strong>You Mean</strong>
+          <strong>{t("home.hero.titleBold")}</strong>
         </h1>
         <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-          Certify your business with the best practices and standards in the world.
+          {t("home.hero.description")}
           <br />
-          <strong>Be the best version of your business.</strong>
+          <strong>{t("home.hero.descriptionBold")}</strong>
         </p>
       </div>
 
@@ -50,46 +43,32 @@ export const HeroSection = memo(function HeroSection() {
           priority
           placeholder="blur"
           className="rounded-xl shadow-md object-cover w-full h-[250px]"
-          blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAQDAwQDAwQEBAQFBQQFBwsHBwYGBw4KCggLEA4RERAOEA8SFBoWEhIYFRcZHBwcJyIlJSUaHDMzKi4wGiIeJBwkKS//2wBDAQUFBQcGBw0HBw0kEhASJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCT/wgARCAACAAMDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAABgH/xAAUAQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIQAxAAAAGKD//EABQQAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQEAAQUCf//EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQMBAT8Bf//EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQIBAT8Bf//EABQQAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQEABj8Cf//EABQQAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQEAAT8hf//aAAwDAQACAAMAAAAQj//EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQMBAT8Qf//EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQIBAT8Qf//EABQQAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQEAAT8Qf//Z"
+          blurDataURL="data:image/jpeg;base64,..."
         />
       </div>
 
-
-
       {/* Benefits Section */}
       <div className="bg-gray-50 py-16 text-center">
-        <h2 className="text-3xl font-bold text-gray-800 mb-6">
-          Why Get Certified with ACME?
-        </h2>
-        <p className="text-gray-600 max-w-2xl mx-auto mb-12">
-          Our platform helps you streamline audits, reduce costs, and ensure compliance
-          with international standards like ISO 27001, ISO 9001, and NIST SP 800-53.
-        </p>
+        <h2 className="text-3xl font-bold text-gray-800 mb-6">{t("home.benefits.title")}</h2>
+        <p className="text-gray-600 max-w-2xl mx-auto mb-12">{t("home.benefits.description")}</p>
         <div className="grid gap-6 md:grid-cols-3 max-w-6xl mx-auto px-4">
           <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
-            <h3 className="text-xl font-semibold text-purple-700 mb-2">Faster Audits</h3>
-            <p className="text-gray-600">
-              Simplify your certification process and cut down on manual work with guided workflows.
-            </p>
+            <h3 className="text-xl font-semibold text-purple-700 mb-2">{t("home.benefits.cards.fast.title")}</h3>
+            <p className="text-gray-600">{t("home.benefits.cards.fast.description")}</p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
-            <h3 className="text-xl font-semibold text-purple-700 mb-2">Real-Time Dashboards</h3>
-            <p className="text-gray-600">
-              Get full visibility into your organization’s compliance progress with dynamic metrics.
-            </p>
+            <h3 className="text-xl font-semibold text-purple-700 mb-2">{t("home.benefits.cards.dashboard.title")}</h3>
+            <p className="text-gray-600">{t("home.benefits.cards.dashboard.description")}</p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
-            <h3 className="text-xl font-semibold text-purple-700 mb-2">Global Standards</h3>
-            <p className="text-gray-600">
-              Align with key norms like ISO 45001 and NIST using our multilingual and flexible tools.
-            </p>
+            <h3 className="text-xl font-semibold text-purple-700 mb-2">{t("home.benefits.cards.standards.title")}</h3>
+            <p className="text-gray-600">{t("home.benefits.cards.standards.description")}</p>
           </div>
         </div>
       </div>
 
-      {/* Image Grid Section - estilo hero */}
+      {/* Image Gallery */}
       <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto mt-12">
-        {/* Imagen 1 */}
         <div className="relative">
           <Image
             src="/auditing.jpg"
@@ -99,12 +78,11 @@ export const HeroSection = memo(function HeroSection() {
             priority
             placeholder="blur"
             className="rounded-xl shadow-md object-cover w-full h-[250px]"
-            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHB..."
+            blurDataURL="data:image/jpeg;base64,..."
           />
-          <p className="mt-4 text-primary-color font-semibold text-center text-lg">Structured Auditing Process</p>
+          <p className="mt-4 text-primary-color font-semibold text-center text-lg">{t("home.gallery.image1")}</p>
         </div>
 
-        {/* Imagen 2 */}
         <div className="relative">
           <Image
             src="/dashboard.jpg"
@@ -114,13 +92,11 @@ export const HeroSection = memo(function HeroSection() {
             priority
             placeholder="blur"
             className="rounded-xl shadow-md object-cover w-full h-[250px]"
-            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHB..."
-
+            blurDataURL="data:image/jpeg;base64,..."
           />
-          <p className="mt-4 text-primary-color font-semibold text-center text-lg">Real-time Compliance Dashboard</p>
+          <p className="mt-4 text-primary-color font-semibold text-center text-lg">{t("home.gallery.image2")}</p>
         </div>
 
-        {/* Imagen 3 */}
         <div className="relative">
           <Image
             src="/certified.jpg"
@@ -130,15 +106,13 @@ export const HeroSection = memo(function HeroSection() {
             priority
             placeholder="blur"
             className="rounded-xl shadow-md object-cover w-full h-[250px]"
-            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL..."
-
+            blurDataURL="data:image/jpeg;base64,..."
           />
-          <p className="mt-4 text-primary-color font-semibold text-center text-lg">Professional Certification Showcase</p>
+          <p className="mt-4 text-primary-color font-semibold text-center text-lg">{t("home.gallery.image3")}</p>
         </div>
       </div>
 
-
-      {/* Actuar */}
+      {/* CTA */}
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -146,24 +120,18 @@ export const HeroSection = memo(function HeroSection() {
         transition={{ duration: 0.6 }}
       >
         <div className="bg-primary-color/10 rounded-xl py-12 px-6 text-center shadow-lg max-w-3xl mx-auto mt-10">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">
-            Ready to raise your standards?
-          </h2>
-          <p className="text-gray-600 mb-6">
-            Start your certification journey today and show the world your commitment to excellence.
-          </p>
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">{t("home.cta.title")}</h2>
+          <p className="text-gray-600 mb-6">{t("home.cta.description")}</p>
           <Button
             variant="outline"
-            onClick={() => handleStartButton()}
-            className="gap-2 text-xl rounded-2xl shadow-lg bg-primary-color text-white hover:text-white ease-in transition-all hover:scale-110 hover:ease-in hover:duration-200 hover:bg-secondary-color hover:cursor-pointer"
+            onClick={handleStartButton}
+            className="gap-2 text-xl rounded-2xl shadow-lg bg-primary-color text-white hover:text-white transition hover:scale-110 hover:bg-secondary-color"
           >
             <CirclePlay />
-            Start!
+            {t("home.cta.button")}
           </Button>
         </div>
       </motion.div>
-
-
     </div>
   );
 });
