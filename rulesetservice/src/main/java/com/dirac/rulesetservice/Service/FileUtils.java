@@ -24,7 +24,7 @@ import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-@Slf4j
+@Slf4j // package: lombok.extern.slf4j
 @Service
 public class FileUtils {
 

@@ -10,4 +10,8 @@ compose-up-build:
 
 .PHONY: compose-down
 compose-down:
+	docker compose -f $(DEV_COMPOSE_FILE) down
+
+.PHONY: compose-down-remove
+compose-down-remove:
 	docker compose -f $(DEV_COMPOSE_FILE) down -v

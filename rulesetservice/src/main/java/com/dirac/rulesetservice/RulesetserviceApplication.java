@@ -2,8 +2,10 @@ package com.dirac.rulesetservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 @SpringBootApplication
+@ConfigurationPropertiesScan
 public class RulesetserviceApplication {
 
     public static void main(String[] args) {

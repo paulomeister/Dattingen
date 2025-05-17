@@ -1,0 +1,70 @@
+filebeat.inputs:
+  - type: filestream
+    id: businessservice-logs
+    enabled: true
+    paths:
+      - /app/businessservice-logs/*.json
+    json.keys_under_root: true
+    json.add_error_key: true
+    processors:
+      - add_fields:
+          target: ''
+          fields:
+            service: businessservice
+
+  - type: filestream
+    id: rulesetservice-logs
+    enabled: true
+    paths:
+      - /app/rulesetservice-logs/*.json
+    json.keys_under_root: true
+    json.add_error_key: true
+    processors:
+      - add_fields:
+          target: ''
+          fields:
+            service: rulesetservice
+
+  - type: filestream
+    id: auditprocessservice-logs
+    enabled: true
+    paths:
+      - /app/auditprocessservice-logs/*.json
+    json.keys_under_root: true
+    json.add_error_key: true
+    processors:
+      - add_fields:
+          target: ''
+          fields:
+            service: auditprocessservice
+
+  - type: filestream
+    id: userservice-logs
+    enabled: true
+    paths:
+      - /app/userservice-logs/*.json
+    json.keys_under_root: true
+    json.add_error_key: true
+    processors:
+      - add_fields:
+          target: ''
+          fields:
+            service: userservice
+
+  - type: filestream
+    id: securityservice-logs
+    enabled: true
+    paths:
+      - /app/securityservice-logs/*.json
+    json.keys_under_root: true
+    json.add_error_key: true
+    processors:
+      - add_fields:
+          target: ''
+          fields:
+            service: securityservice
+
+output.elasticsearch:
+  hosts: ["http://elasticsearch:9200"]
+  indices:
+    - index: "logs-%{[service]}-%{+yyyy.MM.dd}"
