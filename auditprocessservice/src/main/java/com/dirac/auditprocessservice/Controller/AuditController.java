@@ -1,11 +1,8 @@
 package com.dirac.auditprocessservice.Controller;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -28,45 +25,94 @@ public class AuditController {
   @Autowired
   private AuditProcessService auditProcessService;
 
-  @GetMapping("/get")
-  public ResponseDTO<AuditProcessModel> getAuditProcess(@RequestParam String bussinessId,
+  @GetMapping("/")
+  public ResponseDTO<List<AuditProcessModel>> getAllAuditProcesses() {
+    try {
+      List<AuditProcessModel> processes = auditProcessService.getAllAuditProcesses();
+      return new ResponseDTO<>(200, "Audit processes found", processes);
+    } catch (Exception e) {
+      return new ResponseDTO<>(500, "Error fetching processes: " + e.getMessage(), null);
+    }
+  }
+
+  @GetMapping("/auditProcesses/getAll")
+  public ResponseDTO<List<AuditProcessModel>> getByBusinessAndRuleset(
+      @RequestParam String businessId,
       @RequestParam String rulesetId) {
     try {
-      AuditProcessModel auditprocess = auditProcessService.getAuditProcess(bussinessId, rulesetId);
-      return new ResponseDTO<>(200, "Audit process retrieved successfully", auditprocess);
+      List<AuditProcessModel> processes = auditProcessService.getAuditProcessesByBusinessId(businessId, rulesetId);
+      if (processes == null || processes.isEmpty()) {
+        return new ResponseDTO<>(404, "No audit processes found", null);
+      }
+      return new ResponseDTO<>(200, "Audit processes found", processes);
+    } catch (NotFoundException e) {
+      return new ResponseDTO<>(404, e.getMessage(), null);
     } catch (Exception e) {
-      return new ResponseDTO<>(404, "Audit process not found", null);
+      return new ResponseDTO<>(500, "Error fetching audit processes: " + e.getMessage(), null);
     }
   }
 
-  // Endpoint para Leer Todos (GET)
-  @GetMapping("/")
-  public ResponseEntity<List<AuditProcessModel>> getAllAuditProcesses() {
-    List<AuditProcessModel> auditProcesses = auditProcessService.getAllAuditProcesses();
-    return new ResponseEntity<>(auditProcesses, HttpStatus.OK); // 200 OK
-  }
-
-  @PostMapping("/create")
-  public ResponseEntity<AuditProcessModel> createAuditProcess(@RequestBody AuditProcessModel auditProcess) {
-    auditProcessService.createAuditProcess(auditProcess);
-    return new ResponseEntity<>(auditProcess, HttpStatus.CREATED);
-  }
-
-  @PostMapping("/update/{id}")
-  public ResponseDTO<AuditProcessModel> updateAuditProcess(@RequestBody AuditProcessModel auditProcess,
-      @RequestParam String id) {
+  @GetMapping("/auditProcesses/getLatest")
+  public ResponseDTO<AuditProcessModel> getLatestByBusinessAndRuleset(
+      @RequestParam String businessId,
+      @RequestParam String rulesetId) {
     try {
-      AuditProcessModel audit = auditProcessService.updateAuditProcess(id, auditProcess);
-      return new ResponseDTO<>(200, "Audit process updated successfully", audit);
+      AuditProcessModel process = auditProcessService.getLatestAuditProcessByBusinessId(businessId, rulesetId);
+      if (process == null) {
+        return new ResponseDTO<>(404, "Audit process not found", null);
+      }
+      return new ResponseDTO<>(200, "Latest audit process found", process);
+    } catch (NotFoundException e) {
+      return new ResponseDTO<>(404, e.getMessage(), null);
     } catch (Exception e) {
-      return new ResponseDTO<>(500, "Error updating audit process: " + e.getMessage(), null);
+      return new ResponseDTO<>(500, "Error fetching process: " + e.getMessage(), null);
     }
   }
 
-  @PostMapping("/delete")
-  public ResponseDTO<String> deleteAuditProcess(@RequestParam String id) {
-    auditProcessService.deleteAuditProcess(id);
-    return new ResponseDTO<>(200, "Audit process deleted successfully", null);
+  @GetMapping("/assesments/getAll")
+  public ResponseDTO<List<AuditProcessModel.Assesment>> getAssesments(
+      @RequestParam String auditProcessId) {
+    try {
+      List<AuditProcessModel.Assesment> assesments = auditProcessService.getAssesments(auditProcessId);
+      return new ResponseDTO<>(200, "Assesments found", assesments);
+    } catch (NotFoundException e) {
+      return new ResponseDTO<>(404, e.getMessage(), null);
+    } catch (Exception e) {
+      return new ResponseDTO<>(500, "Error fetching assesments: " + e.getMessage(), null);
+    }
+  }
+
+  @GetMapping("/assesments/get")
+  public ResponseDTO<AuditProcessModel.Assesment> getAssesment(
+      @RequestParam String auditProcessId,
+      @RequestParam String controlId) {
+    try {
+      AuditProcessModel.Assesment assesment = auditProcessService.getAssesment(auditProcessId, controlId);
+      if (assesment == null) {
+        return new ResponseDTO<>(404, "Assesment not found", null);
+      }
+      return new ResponseDTO<>(200, "Assesment found", assesment);
+    } catch (NotFoundException e) {
+      return new ResponseDTO<>(404, e.getMessage(), null);
+    } catch (Exception e) {
+      return new ResponseDTO<>(500, "Error fetching assesment: " + e.getMessage(), null);
+    }
+  }
+
+  /**
+   * Endpoint to check if a userId is assigned as internal or external auditor in
+   * any audit process in the database
+   */
+  @GetMapping("/auditProcesses/isUserAssignedAsAuditor")
+  public ResponseDTO<Boolean> isUserAssignedAsAuditor(
+      @RequestParam String userId) {
+    try {
+      boolean assigned = auditProcessService.isUserAssignedAsAuditor(userId);
+      return new ResponseDTO<>(200, assigned ? "User is assigned as auditor" : "User is not assigned as auditor",
+          assigned);
+    } catch (Exception e) {
+      return new ResponseDTO<>(500, "Error checking auditor assignment: " + e.getMessage(), null);
+    }
   }
 
   /**
@@ -83,17 +129,17 @@ public class AuditController {
           auditProcessId, auditorId, auditorName);
 
       if (updatedProcess == null) {
-        return new ResponseDTO<>(404, "Proceso de auditoría no encontrado", null);
+        return new ResponseDTO<>(404, "Audit process not found", null);
       }
 
-      return new ResponseDTO<>(200, "Auditor interno asignado exitosamente a todos los assessments", updatedProcess);
+      return new ResponseDTO<>(200, "Internal auditor assigned to all assessments", updatedProcess);
     } catch (Exception e) {
-      return new ResponseDTO<>(500, "Error al asignar auditor interno: " + e.getMessage(), null);
+      return new ResponseDTO<>(500, "Error assigning internal auditor: " + e.getMessage(), null);
     }
   }
 
   /**
-   * Endpoint para asignar un auditor interno a un solo Assesment específico
+   * Endpoint to assign an internal auditor to a single specific assessment
    */
   @PostMapping("/assignInternalAuditorToAssesment")
   public ResponseDTO<AuditProcessModel> assignInternalAuditorToAssesment(
@@ -105,77 +151,137 @@ public class AuditController {
       AuditProcessModel updatedProcess = auditProcessService.assignInternalAuditorToAssesment(
           auditProcessId, controlId, auditorId, auditorName);
 
-      return new ResponseDTO<>(200, "Auditor interno asignado exitosamente al assessment", updatedProcess);
+      return new ResponseDTO<>(200, "Internal auditor assigned to assessment", updatedProcess);
     } catch (NotFoundException e) {
       return new ResponseDTO<>(404, e.getMessage(), null);
     } catch (Exception e) {
-      return new ResponseDTO<>(500, "Error al asignar auditor interno: " + e.getMessage(), null);
+      return new ResponseDTO<>(500, "Error assigning internal auditor: " + e.getMessage(), null);
     }
   }
 
   /**
-   * Endpoint para actualizar el estado de un proceso de auditoría
+   * Endpoint to update an entire AuditProcess by its ID
    */
-  @PostMapping("/updateStatus")
+  @PutMapping("/auditProcesses/update")
+  public ResponseDTO<AuditProcessModel> updateAuditProcess(
+      @RequestParam String auditProcessId,
+      @RequestBody AuditProcessModel updatedAuditProcess) {
+    try {
+      AuditProcessModel updated = auditProcessService.updateAuditProcess(auditProcessId, updatedAuditProcess);
+      if (updated == null) {
+        return new ResponseDTO<>(404, "Audit process not found", null);
+      }
+      return new ResponseDTO<>(200, "Audit process updated", updated);
+    } catch (Exception e) {
+      return new ResponseDTO<>(500, "Error updating audit process: " + e.getMessage(), null);
+    }
+  }
+
+  /**
+   * Endpoint to update the status of an audit process
+   */
+  @PutMapping("/auditProcesses/updateStatus")
   public ResponseDTO<AuditProcessModel> updateAuditProcessStatus(
       @RequestParam String auditProcessId,
-      @RequestParam String status) {
+      @RequestParam ProcessStatus status) {
     try {
-      // Convertir el string de status a enum ProcessStatus
-      ProcessStatus processStatus;
-      try {
-        processStatus = ProcessStatus.valueOf(status);
-      } catch (IllegalArgumentException e) {
-        return new ResponseDTO<>(400, "Estado inválido. Valores permitidos: " +
-            Arrays.toString(ProcessStatus.values()), null);
-      }
-
-      AuditProcessModel updatedProcess = auditProcessService.updateAuditProcessStatus(
-          auditProcessId, processStatus);
-
-      return new ResponseDTO<>(200, "Estado del proceso de auditoría actualizado exitosamente", updatedProcess);
+      AuditProcessModel updatedProcess = auditProcessService.updateAuditProcessStatus(auditProcessId, status);
+      return new ResponseDTO<>(200, "Audit process status updated", updatedProcess);
     } catch (NotFoundException e) {
       return new ResponseDTO<>(404, e.getMessage(), null);
     } catch (Exception e) {
-      return new ResponseDTO<>(500, "Error al actualizar el estado del proceso: " + e.getMessage(), null);
+      return new ResponseDTO<>(500, "Error updating process status: " + e.getMessage(), null);
     }
   }
 
   /**
-   * Endpoint para actualizar un assessment específico por su controlId
+   * Endpoint to update an assessment by controlId and auditProcessId
    */
-  @PutMapping("/updateAssessment")
-  public ResponseDTO<AuditProcessModel> updateAssessment(
+  @PutMapping("/assesments/update")
+  public ResponseDTO<AuditProcessModel.Assesment> updateAssessment(
       @RequestParam String auditProcessId,
       @RequestParam String controlId,
       @RequestParam(required = false) String status,
       @RequestParam(required = false) String comment) {
     try {
-      // Validar que al menos uno de los parámetros opcionales está presente
       if (status == null && comment == null) {
-        return new ResponseDTO<>(400, "Se debe proporcionar al menos un valor para actualizar (status o comment)",
-            null);
+        return new ResponseDTO<>(400, "At least one value must be provided for update (status or comment)", null);
       }
-
-      // Convertir el string de status a enum AssesmentStatus si está presente
       AssesmentStatus assessmentStatus = null;
       if (status != null) {
         try {
           assessmentStatus = AssesmentStatus.valueOf(status);
         } catch (IllegalArgumentException e) {
-          return new ResponseDTO<>(400, "Estado inválido. Valores permitidos: " +
-              Arrays.toString(AssesmentStatus.values()), null);
+          return new ResponseDTO<>(400,
+              "Invalid status. Allowed values: " + java.util.Arrays.toString(AssesmentStatus.values()), null);
         }
       }
-
-      AuditProcessModel updatedProcess = auditProcessService.updateAssesmentByControlId(
+      AuditProcessModel.Assesment updatedAssesment = auditProcessService.updateAssesmentByControlIdAndReturnAssesment(
           auditProcessId, controlId, assessmentStatus, comment);
-
-      return new ResponseDTO<>(200, "Assessment actualizado exitosamente", updatedProcess);
+      return new ResponseDTO<>(200, "Assessment updated", updatedAssesment);
     } catch (NotFoundException e) {
       return new ResponseDTO<>(404, e.getMessage(), null);
     } catch (Exception e) {
-      return new ResponseDTO<>(500, "Error al actualizar el assessment: " + e.getMessage(), null);
+      return new ResponseDTO<>(500, "Error updating assessment: " + e.getMessage(), null);
+    }
+  }
+
+  /**
+   * Endpoint to update only the status of an assessment by controlId and
+   * auditProcessId
+   */
+  @PutMapping("/assesments/updateStatus")
+  public ResponseDTO<AuditProcessModel.Assesment> updateAssessmentStatusOnly(
+      @RequestParam String auditProcessId,
+      @RequestParam String controlId,
+      @RequestParam String status) {
+    try {
+      AssesmentStatus assessmentStatus;
+      try {
+        assessmentStatus = AssesmentStatus.valueOf(status);
+      } catch (IllegalArgumentException e) {
+        return new ResponseDTO<>(400,
+            "Invalid status. Allowed values: " + java.util.Arrays.toString(AssesmentStatus.values()), null);
+      }
+      AuditProcessModel.Assesment updatedAssesment = auditProcessService.updateAssesmentByControlIdAndReturnAssesment(
+          auditProcessId, controlId, assessmentStatus, null);
+      return new ResponseDTO<>(200, "Assessment status updated", updatedAssesment);
+    } catch (NotFoundException e) {
+      return new ResponseDTO<>(404, e.getMessage(), null);
+    } catch (Exception e) {
+      return new ResponseDTO<>(500, "Error updating assessment status: " + e.getMessage(), null);
+    }
+  }
+
+  /**
+   * Endpoint to create a new AuditProcess
+   */
+  @PostMapping("/auditProcesses/create")
+  public ResponseDTO<AuditProcessModel> createAuditProcess(@RequestBody AuditProcessModel auditProcess) {
+    try {
+      AuditProcessModel created = auditProcessService.createAuditProcess(auditProcess);
+      return new ResponseDTO<>(201, "Audit process created", created);
+    } catch (IllegalArgumentException e) {
+      return new ResponseDTO<>(400, e.getMessage(), null);
+    } catch (Exception e) {
+      return new ResponseDTO<>(500, "Error creating audit process: " + e.getMessage(), null);
+    }
+  }
+
+  /**
+   * Endpoint to "delete" an AuditProcess by setting its status to CANCELED
+   */
+  @PutMapping("/auditProcesses/cancel")
+  public ResponseDTO<AuditProcessModel> cancelAuditProcess(
+      @RequestParam String auditProcessId) {
+    try {
+      AuditProcessModel updated = auditProcessService.updateAuditProcessStatus(auditProcessId, ProcessStatus.CANCELED);
+      if (updated == null) {
+        return new ResponseDTO<>(404, "Audit process not found", null);
+      }
+      return new ResponseDTO<>(200, "Audit process canceled", updated);
+    } catch (Exception e) {
+      return new ResponseDTO<>(500, "Error canceling audit process: " + e.getMessage(), null);
     }
   }
 

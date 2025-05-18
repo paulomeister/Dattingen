@@ -19,8 +19,11 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-        public boolean isOwner(String id, String username) {
-        UserModel user = userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException(String.format("Username %s not found", username)));
+    private final String apiUrl = "http://host.docker.internal:8090";
+
+    public boolean isOwner(String id, String username) {
+        UserModel user = userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException(String.format("Username %s not found", username)));
         return user != null && user.getUsername().equals(username);
     }
 
@@ -151,7 +154,6 @@ public class UserService {
 
     // Eliminar un usuario
     public void deleteUser(String _id) {
-
         UserModel user = userRepository.findById(_id)
                 .orElseThrow(() -> new ResourceNotFoundException("User", _id));
 
@@ -160,13 +162,19 @@ public class UserService {
             throw new BadRequestException("Cannot delete user with role: " + user.getRole());
         }
 
-        // Si el usuario está asociado a una empresa:
-        // 1. Eliminar la asociación con la empresa
-        if (user.getBusinessId() != null) {
-            // TODO!!!
-            // Ir al servicio de negocio y eliminar la asociación
-            // businessService.removeUserFromBusiness(user.getBusinessId(), _id);
+        // Verificar si el usuario está asignado a alguna auditoría
+        String auditProcessUrl = apiUrl + "/api/auditProcesses/isUserAssignedAsAuditor?userId=" + _id;
+        try {
+            org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
+            @SuppressWarnings("unchecked")
+            java.util.Map<String, Object> response = restTemplate.getForObject(auditProcessUrl, java.util.Map.class);
+            if (response != null && Boolean.TRUE.equals(response.get("data"))) {
+                throw new BadRequestException("Cannot delete user: user is assigned as auditor in an audit process.");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error checking auditor assignment before delete: " + e.getMessage(), e);
         }
+
 
         userRepository.deleteById(_id);
     }

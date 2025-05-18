@@ -27,7 +27,7 @@ public class AuditProcessModel {
   private List<Inspector> assignedIntAuditors;
   private List<Inspector> assignedExtAuditors;
 
-  private List<Assesment> assesment;
+  private List<Assesment> assesments;
 
   private Date startDate;
   private Date endDate;

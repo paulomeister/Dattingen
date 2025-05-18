@@ -51,7 +51,7 @@ public class UserController {
     }
 
     // Obtener usuarios por rol
-    @GetMapping("/getRandomExternalAuditors")
+    @GetMapping("get/randomExternalAuditors")
     public ResponseEntity<ResponseDTO<UserDTO>> getRandomExternalAuditor() {
         UserModel user = userService.getRandomExternalAuditor();
         UserDTO userDTO = userService.toUserDTO(user);
