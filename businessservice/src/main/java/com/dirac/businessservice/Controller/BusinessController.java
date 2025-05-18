@@ -6,6 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.dirac.businessservice.DTOs.ResponseDTO;
+import com.dirac.businessservice.Model.AuditModel;
 import com.dirac.businessservice.Model.BusinessModel;
 import com.dirac.businessservice.Service.AuditStatisticsService;
 import com.dirac.businessservice.Service.BusinessService;
@@ -52,6 +53,14 @@ public class BusinessController {
         BusinessModel savedBusiness = businessService.saveBusiness(businessModel);
         log.info("Business created with ID: {}", savedBusiness.get_id());
         return ResponseEntity.status(201).body(new ResponseDTO<>(201, "Business created successfully.", savedBusiness));
+    }
+
+    @PostMapping("/{businessId}/newAudit")
+    public ResponseEntity<ResponseDTO<String>> createAuditProcess(@PathVariable String businessId,
+            @RequestBody AuditModel auditModel) {
+        String auditProcessId = businessService.addAudit(businessId, auditModel);
+        return ResponseEntity.status(201)
+                .body(new ResponseDTO<>(201, "Audit process created successfully.", auditProcessId));
     }
 
     @PutMapping("/{businessId}")

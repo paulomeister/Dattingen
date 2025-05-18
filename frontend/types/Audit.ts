@@ -1,4 +1,13 @@
 export interface Audit {
-    audit: string; // The name of the audit
-  // This interface is currently a placeholder and will be expanded later
+  name: string;
+  rulesetId: string;
+  status: string;
+  startDate: Date;
+  endDate: Date;
+}
+
+export enum AuditStatus {
+  IN_PROGRESS = "In Progress",
+  COMPLETED = "Completed",
+  CANCELLED = "Cancelled",
 }

@@ -82,17 +82,6 @@ public class AuditProcessService {
 
       // Paso 4: Llamar al Business Service para actualizar el objeto Business
 
-      // Preparamos los datos que espera el Business Service en su AuditModel
-      BusinessAuditDTO businessAuditData = new BusinessAuditDTO(
-          savedAuditProcess.getRulesetId(), // rulesetId
-          savedAuditProcess.getStartDate(), // startDate del proceso guardado
-          savedAuditProcess.getEndDate(), // endDate del proceso guardado
-          savedAuditProcess.getStatus() != null ? savedAuditProcess.getStatus().name() : null // Convertir enum a String
-      );
-
-      // Llamamos al método auxiliar para hacer la petición POST al Business Service
-      updateBusinessWithNewAudit(businessId, businessAuditData);
-
       return "Audit process created successfully with " + assesments.size()
           + " assesments. Business update notification sent.";
 
@@ -103,33 +92,33 @@ public class AuditProcessService {
     }
   }
 
-  private void updateBusinessWithNewAudit(String businessId, BusinessAuditDTO auditData) {
-    // Construimos la URL usando la URL base inyectada
-    String url = UriComponentsBuilder.fromUriString(apiGatewayUrl)
-        .path("/businesses/api/{businessId}/newAudit")
-        .buildAndExpand(businessId)
-        .toUriString();
+  // private void updateBusinessWithNewAudit(String businessId, BusinessAuditDTO auditData) {
+  //   // Construimos la URL usando la URL base inyectada
+  //   String url = UriComponentsBuilder.fromUriString(apiGatewayUrl)
+  //       .path("/businesses/api/{businessId}/newAudit")
+  //       .buildAndExpand(businessId)
+  //       .toUriString();
 
-    try {
-      HttpHeaders headers = new HttpHeaders();
-      headers.setContentType(MediaType.APPLICATION_JSON);
+  //   try {
+  //     HttpHeaders headers = new HttpHeaders();
+  //     headers.setContentType(MediaType.APPLICATION_JSON);
 
-      // Creamos la entidad HTTP con el cuerpo (el DTO) y los headers
-      HttpEntity<BusinessAuditDTO> requestEntity = new HttpEntity<BusinessAuditDTO>(auditData, headers);
-      restTemplate.exchange(url, HttpMethod.POST, requestEntity, Void.class);
-      System.out.println("Successfully notified Business Service for businessId: " + businessId);
+  //     // Creamos la entidad HTTP con el cuerpo (el DTO) y los headers
+  //     HttpEntity<BusinessAuditDTO> requestEntity = new HttpEntity<BusinessAuditDTO>(auditData, headers);
+  //     restTemplate.exchange(url, HttpMethod.POST, requestEntity, Void.class);
+  //     System.out.println("Successfully notified Business Service for businessId: " + businessId);
 
-    } catch (RestClientException e) {
-      // Capturamos errores de la llamada HTTP (conexión, 4xx, 5xx)
-      System.err.println(
-          "Error calling Business Service to add new audit for businessId " + businessId + ": " + e.getMessage());
-      e.printStackTrace();
-    } catch (Exception e) {
-      System.err
-          .println("Unexpected error calling Business Service for businessId " + businessId + ": " + e.getMessage());
-      e.printStackTrace();
-    }
-  }
+  //   } catch (RestClientException e) {
+  //     // Capturamos errores de la llamada HTTP (conexión, 4xx, 5xx)
+  //     System.err.println(
+  //         "Error calling Business Service to add new audit for businessId " + businessId + ": " + e.getMessage());
+  //     e.printStackTrace();
+  //   } catch (Exception e) {
+  //     System.err
+  //         .println("Unexpected error calling Business Service for businessId " + businessId + ": " + e.getMessage());
+  //     e.printStackTrace();
+  //   }
+  // }
 
   private List<Control> fetchControlsByRulesetId(String rulesetId) {
     String url = UriComponentsBuilder.fromUriString(apiGatewayUrl) // Usar la URL base inyectada

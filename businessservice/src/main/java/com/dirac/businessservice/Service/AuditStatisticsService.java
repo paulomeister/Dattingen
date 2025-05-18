@@ -83,10 +83,16 @@ public class AuditStatisticsService {
 
         if (audits != null) {
             for (AuditModel audit : audits) {
+
+                // TODO Verificar esto.
+                if (audit.getProcessCount() != null) {
+                    // Hacer algo con el conteo de procesos
+                }
+
                 // Count active audits
                 if (audit.getStatus() != null &&
-                        !audit.getStatus().equals("COMPLETED") &&
-                        !audit.getStatus().equals("CANCELED")) {
+                        !audit.getStatus().toUpperCase().equals("COMPLETED") &&
+                        !audit.getStatus().toUpperCase().equals("CANCELED")) {
                     activeAudits++;
                 }
 
@@ -242,7 +248,9 @@ public class AuditStatisticsService {
         }
 
         return resultMap;
-    }    /**
+    }
+
+    /**
      * Initialize statistics with empty values when data is not available
      */
     private void initializeEmptyStatistics(AuditStatisticsDTO statistics) {
@@ -251,7 +259,7 @@ public class AuditStatisticsService {
         statistics.setPhvaCycleWithMostNonCompliances("N/A");
         statistics.setPhvaCycleNonComplianceCounts(new HashMap<>());
     }
-    
+
     /**
      * Obtener el nombre del ruleset desde el servicio de rulesets
      * 
@@ -262,23 +270,24 @@ public class AuditStatisticsService {
     private String getRulesetName(String rulesetId) {
         // Llamar al servicio de rulesets a través del API Gateway
         String url = apiGatewayUrl + "/rulesets/api/findbyid/" + rulesetId;
-        
+
         try {
             ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, null, Map.class);
             Map<String, Object> data = response.getBody();
-            
+
             if (data != null && data.containsKey("name")) {
                 return data.get("name").toString();
             }
         } catch (Exception e) {
             System.err.println("Error al obtener información del ruleset: " + e.getMessage());
         }
-        
+
         return "Ruleset " + rulesetId;
     }
-    
+
     /**
-     * Obtener estadísticas de auditoría en el formato solicitado para todas las auditorías de un negocio
+     * Obtener estadísticas de auditoría en el formato solicitado para todas las
+     * auditorías de un negocio
      * 
      * @param businessId ID del negocio
      * @return DTO con el formato de estadísticas requerido
@@ -286,41 +295,41 @@ public class AuditStatisticsService {
     public AuditStatisticsResponseDTO getFormattedAuditStatistics(String businessId) {
         // Crear el nuevo DTO con el formato solicitado
         AuditStatisticsResponseDTO formattedStats = new AuditStatisticsResponseDTO();
-        
+
         // Obtener el negocio para acceder a la lista de auditorías
         BusinessModel business = businessRepository.findById(businessId)
                 .orElseThrow(() -> new BusinessNotFoundException("Business with ID " + businessId + " not found."));
-        
+
         // Establecer estadísticas generales
         List<AuditModel> audits = business.getAudits();
         formattedStats.setTotalAudits(audits != null ? audits.size() : 0);
-        
+
         // Calcular auditorías activas y tiempo promedio
         int activeAudits = 0;
         double totalDurationDays = 0;
         int auditsWithDates = 0;
-        
+
         // Buscar la auditoría con más procesos
         AuditModel auditWithMostProcesses = null;
         int maxProcesses = 0;
-        
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        
+
         if (audits != null) {
             for (AuditModel audit : audits) {
                 // Count active audits
-                if (audit.getStatus() != null && 
-                    !audit.getStatus().equals("COMPLETED") && 
-                    !audit.getStatus().equals("CANCELED")) {
+                if (audit.getStatus() != null &&
+                        !audit.getStatus().equals("COMPLETED") &&
+                        !audit.getStatus().equals("CANCELED")) {
                     activeAudits++;
                 }
-                
+
                 // Find audit with most processes
                 if (audit.getProcessCount() != null && audit.getProcessCount() > maxProcesses) {
                     maxProcesses = audit.getProcessCount();
                     auditWithMostProcesses = audit;
                 }
-                
+
                 // Calculate average duration
                 if (audit.getStartDate() != null && audit.getEndDate() != null) {
                     try {
@@ -336,20 +345,20 @@ public class AuditStatisticsService {
                 }
             }
         }
-        
+
         formattedStats.setTotalAuditsActive(activeAudits);
         formattedStats.setAuditsWithMostProcesses(auditWithMostProcesses);
-        
+
         // Calculate average duration if we have at least one audit with valid dates
         if (auditsWithDates > 0) {
-            formattedStats.setMeanAuditTime((int)(totalDurationDays / auditsWithDates));
+            formattedStats.setMeanAuditTime((int) (totalDurationDays / auditsWithDates));
         } else {
             formattedStats.setMeanAuditTime(0);
         }
-        
+
         // Crear lista de detalles de auditoría
         List<AuditDetailDTO> auditDetails = new ArrayList<>();
-        
+
         // Procesar todas las auditorías del negocio
         if (audits != null) {
             for (AuditModel audit : audits) {
@@ -358,36 +367,39 @@ public class AuditStatisticsService {
                     try {
                         // Obtener las estadísticas específicas para esta auditoría y su ruleset
                         AuditStatisticsDTO auditStats = getCompleteAuditStatistics(businessId, audit.getRulesetId());
-                          AuditDetailDTO detail = new AuditDetailDTO();
-                        
+                        AuditDetailDTO detail = new AuditDetailDTO();
+
                         // Obtener el nombre del ruleset
                         String rulesetName = getRulesetName(audit.getRulesetId());
                         detail.setRulesetName(rulesetName);
-                        
+
                         // Obtener porcentajes de conformidad y no conformidad
                         Map<String, Double> compliancePercentages = auditStats.getCompliancePercentages();
                         Map<String, Double> nonCompliancePercentages = auditStats.getNonCompliancePercentages();
-                        
+
                         // Asignar valores si existen, verificando que los mapas y claves no sean nulos
-                        if (compliancePercentages != null && audit.get_id() != null && compliancePercentages.containsKey(audit.get_id())) {
+                        if (compliancePercentages != null && audit.get_id() != null
+                                && compliancePercentages.containsKey(audit.get_id())) {
                             detail.setConformityProcess(compliancePercentages.get(audit.get_id()).floatValue());
                         } else {
                             detail.setConformityProcess(0.0f);
                         }
-                        
-                        if (nonCompliancePercentages != null && audit.get_id() != null && nonCompliancePercentages.containsKey(audit.get_id())) {
+
+                        if (nonCompliancePercentages != null && audit.get_id() != null
+                                && nonCompliancePercentages.containsKey(audit.get_id())) {
                             detail.setNonConformityProcess(nonCompliancePercentages.get(audit.get_id()).floatValue());
                         } else {
                             detail.setNonConformityProcess(0.0f);
                         }
-                        
+
                         // Crear objeto para las no conformidades por ciclo PHVA
                         PHVAInformitiesDTO phvaInformities = new PHVAInformitiesDTO();
-                        
+
                         // Obtener conteos por ciclo PHVA
                         Map<String, Integer> phvaCounts = auditStats.getPhvaCycleNonComplianceCounts();
-                        
-                        // Asignar valores para cada fase del ciclo PHVA, verificando que el mapa no sea nulo
+
+                        // Asignar valores para cada fase del ciclo PHVA, verificando que el mapa no sea
+                        // nulo
                         if (phvaCounts != null) {
                             phvaInformities.setPlan(phvaCounts.containsKey("PLAN") ? phvaCounts.get("PLAN") : 0);
                             phvaInformities.setDoPhase(phvaCounts.containsKey("DO") ? phvaCounts.get("DO") : 0);
@@ -399,13 +411,13 @@ public class AuditStatisticsService {
                             phvaInformities.setCheck(0);
                             phvaInformities.setAct(0);
                         }
-                        
+
                         detail.setPhvaInformities(phvaInformities);
-                        
+
                         // Generar datos de tendencia de conformidades
                         List<TendencyDTO> tendencyData = generateConformityTendencyData(audit);
                         detail.setConformityTendency(tendencyData);
-                        
+
                         // Agregar el detalle a la lista
                         auditDetails.add(detail);
                     } catch (Exception e) {
@@ -415,19 +427,22 @@ public class AuditStatisticsService {
                 }
             }
         }
-        
+
         // Establecer la lista de detalles en el DTO de respuesta
         formattedStats.setAudits(auditDetails);
-        
+
         return formattedStats;
-    }    private List<TendencyDTO> generateConformityTendencyData(AuditModel audit) {
+    }
+
+    private List<TendencyDTO> generateConformityTendencyData(AuditModel audit) {
         List<TendencyDTO> tendencyData = new ArrayList<>();
 
-        // Si solo hay un proceso de auditoría, la fecha debe ser la del proceso (fecha de finalización)
+        // Si solo hay un proceso de auditoría, la fecha debe ser la del proceso (fecha
+        // de finalización)
         // Por defecto se usa el mes actual
         int monthToUse = Calendar.getInstance().get(Calendar.MONTH) + 1; // +1 porque Calendar.MONTH es 0-based
         int yearToUse = Calendar.getInstance().get(Calendar.YEAR);
-        
+
         // Intentar obtener la fecha del fin del proceso de auditoría
         if (audit.getEndDate() != null) {
             try {
@@ -441,13 +456,13 @@ public class AuditStatisticsService {
                 System.err.println("Error al parsear fecha de auditoría: " + e.getMessage());
             }
         }
-        
+
         // Crear un solo punto de datos para este mes y año específico
         // con valor cero porque no hay evaluaciones reales todavía
         String dateFormatted = String.format("%02d-%04d", monthToUse, yearToUse);
         TendencyDTO tendencyItem = new TendencyDTO(dateFormatted, 0);
         tendencyData.add(tendencyItem);
-        
+
         return tendencyData;
     }
 }

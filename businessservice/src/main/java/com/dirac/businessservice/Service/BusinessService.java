@@ -107,9 +107,20 @@ public class BusinessService {
         return businessRepository.save(existingBusiness);
     }
 
-    public String addAudit(String _id, AuditModel auditModel) {
-        BusinessModel existingBusiness = businessRepository.findById(_id)
-                .orElseThrow(() -> new BusinessNotFoundException("Business with ID " + _id + " not found."));
+    public String addAudit(String businessId, AuditModel auditModel) {
+
+        BusinessModel existingBusiness = businessRepository.findById(businessId)
+                .orElseThrow(() -> new BusinessNotFoundException("Business with ID " + businessId + " not found."));
+
+        // Verificar si el auditModel ya existe en la lista de auditorías
+        if (existingBusiness.getAudits() != null) {
+            for (AuditModel audit : existingBusiness.getAudits()) {
+                if (audit.getRulesetId().equals(auditModel.getRulesetId())) {
+                    throw new Error("Audit with Ruleset ID " + auditModel.getRulesetId() + " already exists.");
+                }
+            }
+        }
+
         existingBusiness.getAudits().add(auditModel);
         businessRepository.save(existingBusiness);
         return "New Audit of " + auditModel.getRulesetId() + " Added.";

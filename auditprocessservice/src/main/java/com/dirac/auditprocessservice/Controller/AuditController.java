@@ -68,9 +68,10 @@ public class AuditController {
     auditProcessService.deleteAuditProcess(id);
     return new ResponseDTO<>(200, "Audit process deleted successfully", null);
   }
-  
+
   /**
-   * Endpoint para asignar un auditor interno a todos los Assesments de un AuditProcess
+   * Endpoint para asignar un auditor interno a todos los Assesments de un
+   * AuditProcess
    */
   @PostMapping("/assignInternalAuditorToAll")
   public ResponseDTO<AuditProcessModel> assignInternalAuditorToAllAssesments(
@@ -80,17 +81,17 @@ public class AuditController {
     try {
       AuditProcessModel updatedProcess = auditProcessService.assignInternalAuditorToAllAssesments(
           auditProcessId, auditorId, auditorName);
-      
+
       if (updatedProcess == null) {
         return new ResponseDTO<>(404, "Proceso de auditoría no encontrado", null);
       }
-      
+
       return new ResponseDTO<>(200, "Auditor interno asignado exitosamente a todos los assessments", updatedProcess);
     } catch (Exception e) {
       return new ResponseDTO<>(500, "Error al asignar auditor interno: " + e.getMessage(), null);
     }
   }
-  
+
   /**
    * Endpoint para asignar un auditor interno a un solo Assesment específico
    */
@@ -103,7 +104,7 @@ public class AuditController {
     try {
       AuditProcessModel updatedProcess = auditProcessService.assignInternalAuditorToAssesment(
           auditProcessId, controlId, auditorId, auditorName);
-      
+
       return new ResponseDTO<>(200, "Auditor interno asignado exitosamente al assessment", updatedProcess);
     } catch (NotFoundException e) {
       return new ResponseDTO<>(404, e.getMessage(), null);
@@ -111,7 +112,7 @@ public class AuditController {
       return new ResponseDTO<>(500, "Error al asignar auditor interno: " + e.getMessage(), null);
     }
   }
-  
+
   /**
    * Endpoint para actualizar el estado de un proceso de auditoría
    */
@@ -125,13 +126,13 @@ public class AuditController {
       try {
         processStatus = ProcessStatus.valueOf(status);
       } catch (IllegalArgumentException e) {
-        return new ResponseDTO<>(400, "Estado inválido. Valores permitidos: " + 
-                  Arrays.toString(ProcessStatus.values()), null);
+        return new ResponseDTO<>(400, "Estado inválido. Valores permitidos: " +
+            Arrays.toString(ProcessStatus.values()), null);
       }
-      
+
       AuditProcessModel updatedProcess = auditProcessService.updateAuditProcessStatus(
           auditProcessId, processStatus);
-      
+
       return new ResponseDTO<>(200, "Estado del proceso de auditoría actualizado exitosamente", updatedProcess);
     } catch (NotFoundException e) {
       return new ResponseDTO<>(404, e.getMessage(), null);
@@ -139,7 +140,7 @@ public class AuditController {
       return new ResponseDTO<>(500, "Error al actualizar el estado del proceso: " + e.getMessage(), null);
     }
   }
-  
+
   /**
    * Endpoint para actualizar un assessment específico por su controlId
    */
@@ -152,23 +153,24 @@ public class AuditController {
     try {
       // Validar que al menos uno de los parámetros opcionales está presente
       if (status == null && comment == null) {
-        return new ResponseDTO<>(400, "Se debe proporcionar al menos un valor para actualizar (status o comment)", null);
+        return new ResponseDTO<>(400, "Se debe proporcionar al menos un valor para actualizar (status o comment)",
+            null);
       }
-      
+
       // Convertir el string de status a enum AssesmentStatus si está presente
       AssesmentStatus assessmentStatus = null;
       if (status != null) {
         try {
           assessmentStatus = AssesmentStatus.valueOf(status);
         } catch (IllegalArgumentException e) {
-          return new ResponseDTO<>(400, "Estado inválido. Valores permitidos: " + 
-                    Arrays.toString(AssesmentStatus.values()), null);
+          return new ResponseDTO<>(400, "Estado inválido. Valores permitidos: " +
+              Arrays.toString(AssesmentStatus.values()), null);
         }
       }
-      
+
       AuditProcessModel updatedProcess = auditProcessService.updateAssesmentByControlId(
           auditProcessId, controlId, assessmentStatus, comment);
-      
+
       return new ResponseDTO<>(200, "Assessment actualizado exitosamente", updatedProcess);
     } catch (NotFoundException e) {
       return new ResponseDTO<>(404, e.getMessage(), null);
