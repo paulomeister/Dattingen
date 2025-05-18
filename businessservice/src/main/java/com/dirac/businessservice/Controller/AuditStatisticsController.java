@@ -10,7 +10,8 @@ import com.dirac.businessservice.Service.AuditStatisticsService;
 
 @RestController
 @RequestMapping("/api/statistics/audits")
-public class AuditStatisticsController {    @Autowired
+public class AuditStatisticsController {    
+    @Autowired
     private AuditStatisticsService auditStatisticsService;
 
     @GetMapping("/{businessId}")
