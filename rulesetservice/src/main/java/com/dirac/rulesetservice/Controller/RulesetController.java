@@ -88,7 +88,6 @@ public class RulesetController {
     }
 
     @GetMapping("/findbyid/{id}")
-    @PreAuthorize("hasAnyRole('admin', 'Coordinator', 'InternalAuditor', 'ExternalAuditor')")
     public ResponseEntity<RulesetModel> getRulesetById(@PathVariable String id) {
         log.info("Fetching ruleset with id: {}", id);
         return rulesetService.getRulesetById(id)
