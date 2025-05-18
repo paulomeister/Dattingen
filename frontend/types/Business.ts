@@ -1,4 +1,5 @@
 import { Audit } from "./Audit";
+import { StatisticsData } from "@/types/statistics";
 
 export type AssociateRole = "Coordinator" | "InternalAuditor";
 
@@ -13,4 +14,5 @@ export interface Business {
   activity: string;
   associates: Associate[];
   audits: Audit[];
+  stats: StatisticsData;
 }

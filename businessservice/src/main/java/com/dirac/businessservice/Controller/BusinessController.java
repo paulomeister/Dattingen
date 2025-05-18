@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.dirac.businessservice.DTOs.ResponseDTO;
 import com.dirac.businessservice.Model.BusinessModel;
+import com.dirac.businessservice.Service.AuditStatisticsService;
 import com.dirac.businessservice.Service.BusinessService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -21,8 +22,10 @@ public class BusinessController {
     @Autowired
     private BusinessService businessService;
 
+    @Autowired
+    private AuditStatisticsService auditStatisticsService;
+
     @GetMapping("/")
-    @PreAuthorize("hasAnyRole('admin', 'Coordinator', 'InternalAuditor', 'ExternalAuditor')")
     public ResponseEntity<ResponseDTO<List<BusinessModel>>> getAllBusinesses() {
         log.info("Fetching all businesses");
         List<BusinessModel> businesses = businessService.findAllBusinesses();
@@ -31,7 +34,6 @@ public class BusinessController {
     }
 
     @GetMapping("/{businessId}")
-    @PreAuthorize("hasAnyRole('admin', 'Coordinator', 'InternalAuditor', 'ExternalAuditor')")
     public ResponseEntity<ResponseDTO<BusinessModel>> getBusinessById(@PathVariable String businessId) {
         log.info("Fetching business with ID: {}", businessId);
         BusinessModel business = businessService.getBusinessById(businessId);
@@ -54,6 +56,7 @@ public class BusinessController {
 
     @PutMapping("/{businessId}")
     @PreAuthorize("hasAnyRole('admin', 'Coordinator')")
+
     public ResponseEntity<ResponseDTO<BusinessModel>> updateBusiness(@PathVariable String businessId,
             @RequestBody BusinessModel businessModel) {
         log.info("Updating business with ID: {}", businessId);
@@ -72,7 +75,6 @@ public class BusinessController {
     }
 
     @GetMapping("/search")
-    @PreAuthorize("hasAnyRole('admin', 'Coordinator', 'InternalAuditor', 'ExternalAuditor')")
     public ResponseEntity<ResponseDTO<List<BusinessModel>>> searchBusinesses(
             @RequestParam(required = false) String name) {
         log.info("Searching businesses by name: {}", name);
@@ -81,5 +83,3 @@ public class BusinessController {
         return ResponseEntity.ok(new ResponseDTO<>(200, "Businesses retrieved successfully.", businesses));
     }
 }
-
-

@@ -5,7 +5,7 @@
       "rulesets": "Rulesets",
       "myAudits": "My Audits",
       "business": "Businesses",
-      "myBusiness": "My business"
+      "myBusiness": "My Business"
     },
     "userDropdown": {
       "title": "My Account",
@@ -66,6 +66,7 @@
     "page": {
       "activity": "Activity",
       "teamSize": "Team Size",
+      "info": "Business Information",
       "auditsCount": "Audits Count",
       "audits": "Audits",
       "title": "Business Details",
@@ -264,41 +265,41 @@
     "warning": "Warning"
   },
   "home": {
-  "hero": {
-    "title": "Show the World What",
-    "titleBold": "You Mean",
-    "description": "Certify your business with the best practices and standards in the world.",
-    "descriptionBold": "Be the best version of your business.",
-    "startButton": "Start!"
-  },
-  "benefits": {
-    "title": "Why Get Certified with ACME?",
-    "description": "Our platform helps you streamline audits, reduce costs, and ensure compliance with international standards like ISO 27001, ISO 9001, and NIST SP 800-53.",
-    "cards": {
-      "fast": {
-        "title": "Faster Audits",
-        "description": "Simplify your certification process and cut down on manual work with guided workflows."
-      },
-      "dashboard": {
-        "title": "Real-Time Dashboards",
-        "description": "Get full visibility into your organization’s compliance progress with dynamic metrics."
-      },
-      "standards": {
-        "title": "Global Standards",
-        "description": "Align with key norms like ISO 45001 and NIST using our multilingual and flexible tools."
+    "hero": {
+      "title": "Show the World What",
+      "titleBold": "You Mean",
+      "description": "Certify your business with the best practices and standards in the world.",
+      "descriptionBold": "Be the best version of your business.",
+      "startButton": "Start!"
+    },
+    "benefits": {
+      "title": "Why Get Certified with ACME?",
+      "description": "Our platform helps you streamline audits, reduce costs, and ensure compliance with international standards like ISO 27001, ISO 9001, and NIST SP 800-53.",
+      "cards": {
+        "fast": {
+          "title": "Faster Audits",
+          "description": "Simplify your certification process and cut down on manual work with guided workflows."
+        },
+        "dashboard": {
+          "title": "Real-Time Dashboards",
+          "description": "Get full visibility into your organization’s compliance progress with dynamic metrics."
+        },
+        "standards": {
+          "title": "Global Standards",
+          "description": "Align with key norms like ISO 45001 and NIST using our multilingual and flexible tools."
+        }
       }
+    },
+    "gallery": {
+      "image1": "Structured Auditing Process",
+      "image2": "Real-time Compliance Dashboard",
+      "image3": "Professional Certification Showcase"
+    },
+    "cta": {
+      "title": "Ready to raise your standards?",
+      "description": "Start your certification journey today and show the world your commitment to excellence.",
+      "button": "Start!"
     }
-  },
-  "gallery": {
-    "image1": "Structured Auditing Process",
-    "image2": "Real-time Compliance Dashboard",
-    "image3": "Professional Certification Showcase"
-  },
-  "cta": {
-    "title": "Ready to raise your standards?",
-    "description": "Start your certification journey today and show the world your commitment to excellence.",
-    "button": "Start!"
-  }
   },
 
   "normatives": {

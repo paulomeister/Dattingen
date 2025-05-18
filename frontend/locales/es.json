@@ -73,6 +73,7 @@
       "search": "ACME Inc",
       "clear": "Limpiar",
       "retry": "Reintentar más tarde...",
+      "info": "Información",
       "error": {
         "fetch": "Error al obtener empresas. Por favor intenta de nuevo."
       },

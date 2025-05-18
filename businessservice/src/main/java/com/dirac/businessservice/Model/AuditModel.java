@@ -1,7 +1,5 @@
 package com.dirac.businessservice.Model;
 
-import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,8 +8,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuditModel {
+  private String _id;
+  private String name;
   private String rulesetId;
-  private Date startDate;
-  private Date endDate;
+  private String startDate;
+  private String endDate;
   private String status;
+  private Integer processCount;
 }

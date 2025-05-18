@@ -12,7 +12,7 @@ export function MyAuditsPage() {
   ];
 
   // Conteo de métricas
-  const totalAudits = audits.length;
+  const totalAudits = audits?.length;
   const notEvaluatedCount = audits.filter(a => a.status === "NOT_EVALUATED").length;
   const evaluatedCount = audits.filter(a => a.status === "EVALUATED").length;
   const canceledCount = audits.filter(a => a.status === "CANCELED").length;
