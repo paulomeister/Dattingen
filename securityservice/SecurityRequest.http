@@ -1,10 +1,25 @@
-POST http://localhost:8080/login
+POST http://localhost:8084/login
 Content-Type: application/json
 
 {
-  "username": "yocana",
-  "password": ""
+  "username": "aleon",
+  "password": "DeltaC12"
 }
 
 ###
 
+#Coordinator
+
+#	aleon:DeltaC12
+
+#ExternalAuditor
+
+#	dlanzagorta:password123
+
+#InternalAuditor
+
+#	yocana:DeltaC12
+
+#admin
+
+#	joaquinPalmero:DeltaC12

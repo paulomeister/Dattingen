@@ -84,7 +84,6 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // En lugar de usar allowedOrigins con "*", especificamos los orígenes permitidos
         configuration.setAllowedOrigins(List.of(
             "http://localhost:3000",  // Frontend URL
             "http://localhost:8090"   // API Gateway URL

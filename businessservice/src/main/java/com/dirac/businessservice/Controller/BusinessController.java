@@ -2,16 +2,18 @@ package com.dirac.businessservice.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.dirac.businessservice.DTOs.ResponseDTO;
-import com.dirac.businessservice.Model.AsociateModel;
-import com.dirac.businessservice.Model.AuditModel;
 import com.dirac.businessservice.Model.BusinessModel;
 import com.dirac.businessservice.Service.BusinessService;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api")
 public class BusinessController {
@@ -20,54 +22,64 @@ public class BusinessController {
     private BusinessService businessService;
 
     @GetMapping("/")
+    @PreAuthorize("hasAnyRole('admin', 'Coordinator', 'InternalAuditor', 'ExternalAuditor')")
     public ResponseEntity<ResponseDTO<List<BusinessModel>>> getAllBusinesses() {
+        log.info("Fetching all businesses");
         List<BusinessModel> businesses = businessService.findAllBusinesses();
+        log.info("Retrieved {} businesses", businesses.size());
         return ResponseEntity.ok(new ResponseDTO<>(200, "Top 20 businesses retrieved successfully.", businesses));
     }
 
     @GetMapping("/{businessId}")
+    @PreAuthorize("hasAnyRole('admin', 'Coordinator', 'InternalAuditor', 'ExternalAuditor')")
     public ResponseEntity<ResponseDTO<BusinessModel>> getBusinessById(@PathVariable String businessId) {
+        log.info("Fetching business with ID: {}", businessId);
         BusinessModel business = businessService.getBusinessById(businessId);
+        if (business != null) {
+            log.info("Business found: {}", businessId);
+        } else {
+            log.warn("Business not found: {}", businessId);
+        }
         return ResponseEntity.ok(new ResponseDTO<>(200, "Business retrieved successfully.", business));
     }
 
-    @PostMapping
+    @PostMapping("/saveBusiness")
+    @PreAuthorize("hasAnyRole('admin', 'Coordinator')")
     public ResponseEntity<ResponseDTO<BusinessModel>> saveBusiness(@RequestBody BusinessModel businessModel) {
+        log.info("Creating new business: {}", businessModel.getName());
         BusinessModel savedBusiness = businessService.saveBusiness(businessModel);
+        log.info("Business created with ID: {}", savedBusiness.get_id());
         return ResponseEntity.status(201).body(new ResponseDTO<>(201, "Business created successfully.", savedBusiness));
     }
 
     @PutMapping("/{businessId}")
+    @PreAuthorize("hasAnyRole('admin', 'Coordinator')")
     public ResponseEntity<ResponseDTO<BusinessModel>> updateBusiness(@PathVariable String businessId,
             @RequestBody BusinessModel businessModel) {
+        log.info("Updating business with ID: {}", businessId);
         BusinessModel updatedBusiness = businessService.updateBusiness(businessId, businessModel);
+        log.info("Business updated: {}", businessId);
         return ResponseEntity.ok(new ResponseDTO<>(200, "Business updated successfully.", updatedBusiness));
     }
 
-    @PostMapping("/{businessId}/newAudit")
-    public ResponseEntity<ResponseDTO<String>> createAuditProcess(@PathVariable String businessId,
-            @RequestBody AuditModel auditModel) {
-        String auditProcessId = businessService.addAudit(businessId, auditModel);
-        return ResponseEntity.status(201)
-                .body(new ResponseDTO<>(201, "Audit process created successfully.", auditProcessId));
+    @DeleteMapping("/{businessId}")
+    @PreAuthorize("hasAnyRole('admin', 'Coordinator')")
+    public ResponseEntity<ResponseDTO<String>> deleteBusiness(@PathVariable String businessId) {
+        log.info("Deleting business with ID: {}", businessId);
+        businessService.deleteBusiness(businessId);
+        log.info("Business deleted: {}", businessId);
+        return ResponseEntity.ok(new ResponseDTO<>(200, "Business deleted successfully.", businessId));
     }
 
-    @DeleteMapping("/{businessId}")
-
-    public ResponseEntity<ResponseDTO<String>> deleteBusiness(@PathVariable String businessId) {
-        businessService.deleteBusiness(businessId);
-        return ResponseEntity.ok(new ResponseDTO<>(200, "Business deleted successfully.", businessId));
-    }    @GetMapping("/search")
+    @GetMapping("/search")
+    @PreAuthorize("hasAnyRole('admin', 'Coordinator', 'InternalAuditor', 'ExternalAuditor')")
     public ResponseEntity<ResponseDTO<List<BusinessModel>>> searchBusinesses(
             @RequestParam(required = false) String name) {
+        log.info("Searching businesses by name: {}", name);
         List<BusinessModel> businesses = businessService.findBusinessesByName(name);
+        log.info("Found {} businesses for search term '{}'", businesses.size(), name);
         return ResponseEntity.ok(new ResponseDTO<>(200, "Businesses retrieved successfully.", businesses));
     }
-
-    @PostMapping("/business/registerAuditors/{businessId}")
-    public ResponseEntity<ResponseDTO<BusinessModel>> registerAuditors(@PathVariable String businessId, 
-            @RequestBody List<AsociateModel> associates) {
-        BusinessModel updatedBusiness = businessService.registerAuditors(businessId, associates);
-        return ResponseEntity.ok(new ResponseDTO<>(200, "Auditors registered successfully.", updatedBusiness));
-    }
 }
+
+
