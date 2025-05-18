@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { environment } from "@/env/environment.dev";
 import { Business } from "@/types/Business";
 import BusinessDetail from "@/components/business/BusinessDetail";
+import { Bus } from "lucide-react";
 
 type BusinessPageProps = {
     params: {
@@ -29,18 +30,31 @@ export default async function BusinessPage({ params }: BusinessPageProps) {
         }
     );
 
+    const responseStats = await fetch(
+        `${environment.API_URL}/businesses/api/statistics/audits/${id}`,
+        {
+            cache: "no-store", // Don't cache this data
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }
+    );
+
     // Handle errors
-    if (!response.ok) {
-        console.error(`Failed to fetch business data: ${response.statusText}`);
+    if (!response.ok || !responseStats.ok) {
+        console.error(`Failed to fetch business data: 1. ${response.statusText}\n or 2. ${responseStats.statusText}`);
     }
 
     const data = await response.json();
+    const dataStats = await responseStats.json();
     const business: Business = data.data;
+    business.stats = dataStats.data;
 
+    console.log("Business data:", business);
+
+    
     return (
-        <div className="container mx-auto px-4 py-6 mt-20">
-
-
+        <div className="mx-1 px-4">
             <BusinessDetail business={business} />
         </div>
     );
