@@ -8,7 +8,6 @@ import { useApiClient } from "@/hooks/useApiClient";
 import { useAuth } from "@/lib/AuthContext";
 import { ResponseDTO } from "@/types/ResponseDTO";
 import { Business } from "@/types/Business";
-import { environment } from "@/env/environment.dev";
 
 export default function CreateAuditPage() {
 

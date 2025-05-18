@@ -186,4 +186,19 @@ public class BusinessService {
 
         return updatedBusiness;
     }
+
+    public AuditModel getAuditByRulesetId(String businessId, String rulesetId) {
+        BusinessModel business = businessRepository.findById(businessId)
+                .orElseThrow(() -> new BusinessNotFoundException("Business with ID " + businessId + " not found."));
+
+        if (business.getAudits() != null) {
+            return business.getAudits().stream()
+                    .filter(audit -> audit.getRulesetId().equals(rulesetId))
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException(
+                            "Audit with Ruleset ID " + rulesetId + " not found in business " + businessId));
+        }
+
+        throw new RuntimeException("No audits found for business " + businessId);
+    }
 }

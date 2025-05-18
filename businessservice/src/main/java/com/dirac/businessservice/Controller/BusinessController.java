@@ -91,4 +91,20 @@ public class BusinessController {
         log.info("Found {} businesses for search term '{}'", businesses.size(), name);
         return ResponseEntity.ok(new ResponseDTO<>(200, "Businesses retrieved successfully.", businesses));
     }
+
+    @GetMapping("/{businessId}/audit/{rulesetId}")
+    public ResponseEntity<ResponseDTO<AuditModel>> getAuditByRulesetId(
+            @PathVariable String businessId,
+            @PathVariable String rulesetId) {
+        log.info("Fetching audit with ruleset ID: {} for business: {}", rulesetId, businessId);
+        try {
+            AuditModel audit = businessService.getAuditByRulesetId(businessId, rulesetId);
+            log.info("Audit found for ruleset: {}", rulesetId);
+            return ResponseEntity.ok(new ResponseDTO<>(200, "Audit retrieved successfully.", audit));
+        } catch (Exception e) {
+            log.error("Error fetching audit: {}", e.getMessage());
+            return ResponseEntity.status(404)
+                    .body(new ResponseDTO<>(404, e.getMessage(), null));
+        }
+    }
 }
