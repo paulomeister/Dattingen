@@ -61,7 +61,6 @@ public class RulesetController {
     }
 
     @GetMapping("/ListAll")
-    @PreAuthorize("hasAnyRole('admin', 'Coordinator', 'InternalAuditor', 'ExternalAuditor')")
     public ResponseEntity<List<RulesetModel>> getAllRulesets() {
         log.info("Fetching all rulesets");
         List<RulesetModel> rulesets = rulesetService.getAllRulesets();
@@ -78,7 +77,6 @@ public class RulesetController {
     }
     
     // New Endpoint!
-
     @GetMapping("/controls/{rulesetId}/{controlId}")
     public ResponseEntity<Control> getControlByIdAndRuleset(
             @PathVariable String rulesetId,

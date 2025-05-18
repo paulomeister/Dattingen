@@ -15,10 +15,10 @@ import {
 
 import { Ruleset } from "@/types/Ruleset"
 import { useLanguage } from "@/lib/LanguageContext"
-import { environment } from "@/env/environment.dev"
+import { useApiClient } from "@/hooks/useApiClient"
 
 export default function ListNormatives() {
-
+  const api = useApiClient()
   const { t } = useLanguage()
   const [normatives, setNormatives] = useState<Ruleset[]>([])
   const [searchQuery, setSearchQuery] = useState("")
@@ -29,8 +29,13 @@ export default function ListNormatives() {
   useEffect(() => {
     const getNormatives = async () => {
       try {
-        const response = await fetch(`${environment.API_URL}/rulesets/api/ListAll`)
-        const data: Ruleset[] = await response.json()
+        const response = await api.get<Ruleset[]>("/rulesets/api/ListAll");
+        console.log("Response from API:", response)
+
+        const data: Ruleset[] = response || []
+
+
+
         setNormatives(data.filter((normative) => normative?.status?.toLowerCase() === "published"))
         setFilteredNormatives(data.filter((normative) => normative?.status?.toLowerCase() === "published"))
 
