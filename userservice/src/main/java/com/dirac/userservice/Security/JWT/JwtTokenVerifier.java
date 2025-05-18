@@ -76,12 +76,11 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
         }
         catch(JwtException e) {
 
-            throw new IllegalStateException(String.format("Current token \"%s\" is not trustworthy", token, e.getMessage()));
+            throw new IllegalStateException(String.format("Current token \"%s\" is not trustworthy", token));
 
         }
 
         filterChain.doFilter(request, response);
-
 
     }
 }
