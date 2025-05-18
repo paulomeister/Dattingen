@@ -47,3 +47,16 @@ build/
 
 ### VS Code ###
 .vscode/
+# --- Logs ---
+**/*.log
+**/*.log.*
+**/logs/
+**/*-logs/
+**/*service-logs/**
+auditprocessservice/logs/**
+businessservice/logs/**
+businessservice/businessservice-logs/**
+rulesetservice/logs/**
+securityservice/logs/**
+securityservice/securityservice-logs/**
+userservice/logs/**
