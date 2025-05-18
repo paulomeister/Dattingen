@@ -19,7 +19,7 @@ export interface AuditProcess {
   status: string;
   assignedIntAuditors: Inspector[];
   assignedExtAuditors: Inspector[];
-  assesment: Assesment;
+  assesment: Assesment[];
   startDate: string | Date;
   endDate: string | Date;
 }
@@ -45,6 +45,8 @@ export interface Assesment {
 }
 
 export enum AssesmentStatus {
-  NOT_EVALUATED,
-  EVALUATED,
+  PENDING,
+  COMPLIANT,
+  NON_COMPLIANT,
+  NOT_DONE,
 }

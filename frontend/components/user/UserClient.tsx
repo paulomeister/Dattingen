@@ -9,6 +9,7 @@ import ProfileSkeleton from './ProfileSkeleton'
 import ProfileError from './ProfileError'
 import ProfileNotFound from './ProfileNotFound'
 import ProfileContent from './ProfileContent'
+import { useApiClient } from '@/hooks/useApiClient'
 
 const UserClient = () => {
     const params = useParams()
@@ -18,18 +19,15 @@ const UserClient = () => {
     const [error, setError] = useState<string | null>(null)
     const username = params.username as string
 
+    const apiClient = useApiClient()
+
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
                 setLoading(true)
-                const response = await fetch(`${environment.API_URL}/users/api/search?username=${username}`)
-
-                if (!response.ok) {
-                    throw new Error('Failed to fetch user profile')
-                }
-
-                const data: ResponseDTO<UserDTO> = await response.json()
-                setUser(data.data)
+                const response = await apiClient.get<ResponseDTO<UserDTO>>(`/users/api/search?username=${username}`)
+                const user = response.data
+                setUser(user)
             } catch (err) {
                 console.error('Error fetching user profile:', err)
                 setError(err instanceof Error ? err.message : 'An error occurred while fetching user data')
@@ -49,7 +47,7 @@ const UserClient = () => {
     if (error) return <ProfileError error={error} />
     if (!user) return <ProfileNotFound />
 
-    return <ProfileContent user={user} isOwnProfile={isOwnProfile} authUser={authUser} auth={token}/>
+    return <ProfileContent user={user} isOwnProfile={isOwnProfile} authUser={authUser} auth={token} />
 }
 
 export default UserClient

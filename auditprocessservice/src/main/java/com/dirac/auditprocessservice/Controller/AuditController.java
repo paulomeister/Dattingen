@@ -28,7 +28,7 @@ public class AuditController {
   @Autowired
   private AuditProcessService auditProcessService;
 
-  @PostMapping("/get/")
+  @GetMapping("/get")
   public ResponseDTO<AuditProcessModel> getAuditProcess(@RequestParam String bussinessId,
       @RequestParam String rulesetId) {
     try {

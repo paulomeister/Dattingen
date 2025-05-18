@@ -65,7 +65,7 @@ public class AuditProcessService {
       for (Control control : controls) {
         Assesment assesment = new Assesment();
         assesment.controlId = control.getControlId();
-        assesment.status = AssesmentStatus.NOT_EVALUATED;
+        assesment.status = AssesmentStatus.PENDING;
         assesments.add(assesment);
       }
 
@@ -383,7 +383,7 @@ public class AuditProcessService {
     boolean allAssessed = true;
     if (auditProcess.getAssesment() != null) {
       for (Assesment assesment : auditProcess.getAssesment()) {
-        if (assesment.getStatus() == AssesmentStatus.NOT_EVALUATED) {
+        if (assesment.getStatus() == AssesmentStatus.PENDING) {
           allAssessed = false;
           break;
         }
