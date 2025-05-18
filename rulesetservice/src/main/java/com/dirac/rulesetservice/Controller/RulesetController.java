@@ -8,6 +8,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,7 +21,7 @@ import com.dirac.rulesetservice.Service.RulesetService;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
+@Slf4j // package: lombok.extern.slf4j
 @RestController
 @RequestMapping("/api")
 public class RulesetController {
@@ -31,11 +32,13 @@ public class RulesetController {
     private RulesetService rulesetService;
 
     @PostMapping(value = "/uploadFile")
+    @PreAuthorize("hasAnyRole('admin', 'Coordinator')")
     public ResponseAzure uploadFile(@RequestPart MultipartFile file) {
         return fileUtils.uploadFileInAzureStorage(file);
     }
 
     @GetMapping(value = "/downloadFile/{fileName}")
+    @PreAuthorize("hasAnyRole('admin', 'Coordinator', 'InternalAuditor', 'ExternalAuditor')")
     public ResponseEntity<InputStreamResource> downloadFile(
             @PathVariable("fileName") String fileName) {
         log.info("Downloading file " + fileName);
@@ -50,6 +53,7 @@ public class RulesetController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasAnyRole('admin', 'Coordinator')")
     public ResponseEntity<RulesetModel> createRuleset(@RequestBody RulesetModel ruleset) {
         log.info("Creating new ruleset: {}", ruleset.getName());
         RulesetModel created = rulesetService.createRuleset(ruleset);
@@ -73,7 +77,6 @@ public class RulesetController {
     }
     
     // New Endpoint!
-
     @GetMapping("/controls/{rulesetId}/{controlId}")
     public ResponseEntity<Control> getControlByIdAndRuleset(
             @PathVariable String rulesetId,
@@ -93,6 +96,7 @@ public class RulesetController {
     }
 
     @GetMapping("/ListCompulsoriness")
+    @PreAuthorize("hasAnyRole('admin', 'Coordinator', 'InternalAuditor', 'ExternalAuditor')")
     public ResponseEntity<List<String>> getAllCompulsoriness() {
         log.info("Fetching all compliance levels");
         List<String> complianceLevels = rulesetService.getAllCompulsoriness();
@@ -100,6 +104,7 @@ public class RulesetController {
     }
 
     @GetMapping("/ListCompulsoriness/es")
+    @PreAuthorize("hasAnyRole('admin', 'Coordinator', 'InternalAuditor', 'ExternalAuditor')")
     public ResponseEntity<List<String>> getAllCompulsorinessInSpanish() {
         log.info("Fetching all compliance levels");
         List<String> complianceLevels = rulesetService.getAllCompulsorinessInSpanish();
@@ -107,6 +112,7 @@ public class RulesetController {
     }
 
     @PutMapping("/update/{id}")
+    @PreAuthorize("hasAnyRole('admin', 'Coordinator')")
     public ResponseEntity<RulesetModel> updateRuleset(
             @PathVariable String id,
             @RequestBody RulesetModel ruleset) {
@@ -126,6 +132,7 @@ public class RulesetController {
      * @return Respuesta con mensaje de éxito y el Ruleset actualizado
      */
     @PutMapping("/publish/{id}")
+    @PreAuthorize("hasAnyRole('admin', 'Coordinator')")
     public ResponseEntity<?> publishRuleset(@PathVariable String id) {
         log.info("Publishing ruleset with id: {}", id);
         try {
@@ -150,6 +157,7 @@ public class RulesetController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAnyRole('admin', 'Coordinator')")
     public ResponseEntity<Void> deleteRuleset(@PathVariable String id) {
         log.info("Deleting ruleset with id: {}", id);
         if (rulesetService.getRulesetById(id).isPresent()) {
@@ -160,6 +168,7 @@ public class RulesetController {
     }
 
     @PostMapping("/{rulesetId}/controls")
+    @PreAuthorize("hasAnyRole('admin', 'Coordinator')")
     public ResponseEntity<?> addControl(
             @PathVariable String rulesetId,
             @RequestBody Control control) {
@@ -179,6 +188,7 @@ public class RulesetController {
     }
 
     @GetMapping("/controls/phase/{phase}")
+    @PreAuthorize("hasAnyRole('admin', 'Coordinator', 'InternalAuditor', 'ExternalAuditor')")
     public ResponseEntity<List<Control>> getControlsByPhase(
             @PathVariable PHVAPhase phase) {
         log.info("Fetching controls for PHVA phase: {}", phase);

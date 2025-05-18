@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -83,6 +83,20 @@ export function LoginForm() {
       setIsLoading(false)
     }
   }
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    const storedUser = localStorage.getItem("user");
+
+    console.log("Datos recuperados del localStorage:", { storedToken, storedUser });
+
+    if (storedToken) {
+      setToken(storedToken);
+    }
+    if (storedUser) {
+      setAuthUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   return (
     <Card className="border-[#14213d] shadow-2xl">

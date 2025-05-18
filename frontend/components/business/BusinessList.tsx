@@ -4,15 +4,16 @@ import { useEffect, useState } from "react";
 import { useLanguage } from "@/lib/LanguageContext";
 import { useSearchParams } from "next/navigation";
 import { Business } from "@/types/Business";
-import { environment } from "@/env/environment.dev";
 import BusinessItem from "./BusinessItem";
 import { Building2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card } from "@/components/ui/card";
 import { ResponseDTO } from "@/types/ResponseDTO";
+import { useApiClient } from "@/hooks/useApiClient";
 
 export default function BusinessList() {
     const { t } = useLanguage();
+    const api = useApiClient();
     const searchParams = useSearchParams();
     const query = searchParams.get("q") || "";
 
@@ -27,19 +28,13 @@ export default function BusinessList() {
 
             try {
                 const endpoint = query
-                    ? `${environment.API_URL}/businesses/api/search?name=${encodeURIComponent(query)}`
-                    : `${environment.API_URL}/businesses/api/`;
+                    ? `/businesses/api/search?name=${encodeURIComponent(query)}`
+                    : `/businesses/api/`;
 
-                const response = await fetch(endpoint);
-
-                if (!response.ok) {
-                    throw new Error(`Error: ${response.status}`);
-                }
-
-                const data: ResponseDTO<Business[]> = await response.json();
-                const businesses: Business[] = data.data || [];
-                if (data.status === 200 && businesses.length > 0) {
-                    setBusinesses(businesses);
+                const response = await api.get<ResponseDTO<Business[]>>(endpoint);
+                const data: Business[] = response.data || [];
+                if (response.status === 200 && data.length > 0) {
+                    setBusinesses(data);
                 } else {
                     setBusinesses([]);
                 }

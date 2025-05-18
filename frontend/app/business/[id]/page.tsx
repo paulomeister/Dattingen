@@ -1,58 +1,49 @@
-import { Metadata } from "next";
-import { environment } from "@/env/environment.dev";
-import { Business } from "@/types/Business";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+"use client";
+
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { useAuth } from "@/lib/AuthContext";
 import BusinessDetail from "@/components/business/BusinessDetail";
-import { Bus } from "lucide-react";
+import { useApiClient } from "@/hooks/useApiClient";
+import { ResponseDTO } from "@/types/ResponseDTO";
+import { Business } from "@/types/Business";
+import { StatisticsData } from "@/types/statistics";
 
-type BusinessPageProps = {
-    params: {
-        id: string;
-    };
-};
 
-export const metadata: Metadata = {
-    title: "Business Details | ACME Audits",
-    description: "View and manage your business details",
-};
+export default function BusinessClientPage() {
+    const apiClient = useApiClient();
 
-// This is a React Server Component that fetches the data
-export default async function BusinessPage({ params }: BusinessPageProps) {
-    const { id } = await params;
+    const { id } = useParams();
+    const [business, setBusiness] = useState<Business | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    // Server-side API request to fetch business data
-    const response = await fetch(
-        `${environment.API_URL}/businesses/api/${id}`,
-        {
-            cache: "no-store", // Don't cache this data
-            headers: {
-                "Content-Type": "application/json"
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                // Usa tus funciones de cliente API
+                const businessData: ResponseDTO<Business> = await apiClient.get(`/businesses/api/${id}`);
+                const statsData: StatisticsData = await apiClient.get(`/businesses/api/statistics/audits/681b6aa224f4b90209c40a1e`);
+
+
+                const business: Business = businessData.data;
+                business.stats = statsData;
+                setBusiness(business);
+            } catch (err: unknown) {
+                console.error("Error fetching data:", err);
+            } finally {
+                setLoading(false);
             }
         }
-    );
 
-    const responseStats = await fetch(
-        `${environment.API_URL}/businesses/api/statistics/audits/${id}`,
-        {
-            cache: "no-store", // Don't cache this data
-            headers: {
-                "Content-Type": "application/json"
-            }
-        }
-    );
+        fetchData();
+    }, []);
 
-    // Handle errors
-    if (!response.ok || !responseStats.ok) {
-        console.error(`Failed to fetch business data: 1. ${response.statusText}\n or 2. ${responseStats.statusText}`);
-    }
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error: {error}</p>;
+    if (!business) return <p>No data found</p>;
 
-    const data = await response.json();
-    const dataStats = await responseStats.json();
-    const business: Business = data.data;
-    business.stats = dataStats.data;
-
-    console.log("Business data:", business);
-
-    
     return (
         <div className="mx-1 px-4">
             <BusinessDetail business={business} />

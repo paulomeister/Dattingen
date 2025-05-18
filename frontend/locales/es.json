@@ -73,6 +73,7 @@
       "search": "ACME Inc",
       "clear": "Limpiar",
       "retry": "Reintentar más tarde...",
+      "info": "Información",
       "error": {
         "fetch": "Error al obtener empresas. Por favor intenta de nuevo."
       },
@@ -188,14 +189,43 @@
     "warning": "Atención"
   },
   "home": {
-    "hero": {
-      "title": "Muestra al Mundo Lo Que",
-      "titleBold": "Significas",
-      "description": "Certifica tu empresa con las mejores prácticas y estándares del mundo.",
-      "descriptionBold": "Sé la mejor versión de tu empresa.",
-      "startButton": "¡Comenzar!"
+  "hero": {
+    "title": "Muéstrale al Mundo Lo Que",
+    "titleBold": "Significas",
+    "description": "Certifica tu empresa con las mejores prácticas y estándares del mundo.",
+    "descriptionBold": "Sé la mejor versión de tu negocio.",
+    "startButton": "¡Empezar!"
+  },
+  "benefits": {
+    "title": "¿Por qué Certificarte con ACME?",
+    "description": "Nuestra plataforma te ayuda a agilizar auditorías, reducir costos y garantizar el cumplimiento con normas internacionales como ISO 27001, ISO 9001 y NIST SP 800-53.",
+    "cards": {
+      "fast": {
+        "title": "Auditorías Más Rápidas",
+        "description": "Simplifica tu proceso de certificación y reduce el trabajo manual con flujos de trabajo guiados."
+      },
+      "dashboard": {
+        "title": "Paneles en Tiempo Real",
+        "description": "Obtén visibilidad total del progreso de cumplimiento de tu organización con métricas dinámicas."
+      },
+      "standards": {
+        "title": "Normas Globales",
+        "description": "Alinea tu empresa con estándares clave como ISO 45001 y NIST usando nuestras herramientas multilingües y flexibles."
+      }
     }
   },
+  "gallery": {
+    "image1": "Proceso de Auditoría Estructurado",
+    "image2": "Panel de Cumplimiento en Tiempo Real",
+    "image3": "Distintivo de Certificación Profesional"
+  },
+  "cta": {
+    "title": "¿Listo para elevar tus estándares?",
+    "description": "Comienza hoy tu camino a la certificación y demuestra tu compromiso con la excelencia.",
+    "button": "¡Empezar!"
+  }
+  },
+
   "normatives": {
     "sidebar": {
       "ruleset": "Normativa",

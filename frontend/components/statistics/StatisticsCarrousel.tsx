@@ -33,6 +33,7 @@ interface StatisticsCarouselProps {
 }
 
 export default function StatisticsCarousel({ data }: StatisticsCarouselProps) {
+
   const { totalAudits, totalAuditsActive, meanAuditTime, audits } = data
   const [currentIndex, setCurrentIndex] = useState(0)
   const [touchStart, setTouchStart] = useState<number | null>(null)
@@ -42,11 +43,15 @@ export default function StatisticsCarousel({ data }: StatisticsCarouselProps) {
   const minSwipeDistance = 50
 
   const nextSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === audits.length - 1 ? 0 : prevIndex + 1))
+    if (audits?.length) {
+      setCurrentIndex((prevIndex) => (prevIndex === audits.length - 1 ? 0 : prevIndex + 1))
+    }
   }
 
   const prevSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === 0 ? audits.length - 1 : prevIndex - 1))
+    if (audits?.length) {
+      setCurrentIndex((prevIndex) => (prevIndex === 0 ? audits.length - 1 : prevIndex - 1))
+    }
   }
 
   const goToSlide = (index: number) => {
@@ -199,9 +204,8 @@ export default function StatisticsCarousel({ data }: StatisticsCarouselProps) {
             {audits.map((_, index) => (
               <button
                 key={index}
-                className={`w-3 h-3 rounded-full transition-all ${
-                  currentIndex === index ? "bg-gray-800 w-6" : "bg-gray-400"
-                }`}
+                className={`w-3 h-3 rounded-full transition-all ${currentIndex === index ? "bg-gray-800 w-6" : "bg-gray-400"
+                  }`}
                 onClick={() => goToSlide(index)}
                 aria-label={`Ir a la diapositiva ${index + 1}`}
               />

@@ -1,6 +1,7 @@
 package com.dirac.userservice;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.dirac.commons.exceptions.*;
@@ -17,6 +18,11 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+        public boolean isOwner(String id, String username) {
+        UserModel user = userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException(String.format("Username %s not found", username)));
+        return user != null && user.getUsername().equals(username);
+    }
 
     // Obtener todos los usuarios
     public List<UserModel> getAllUsers() {
