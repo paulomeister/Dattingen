@@ -1,6 +1,7 @@
 package com.dirac.auditprocessservice.Controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -201,29 +202,34 @@ public class AuditController {
   public ResponseDTO<AuditProcessModel.Assesment> updateAssessment(
       @RequestParam String auditProcessId,
       @RequestParam String controlId,
-      @RequestParam(required = false) String status,
-      @RequestParam(required = false) String comment) {
+      @RequestBody(required = false) AssessmentUpdateRequest updateRequest) {
     try {
-      if (status == null && comment == null) {
-        return new ResponseDTO<>(400, "At least one value must be provided for update (status or comment)", null);
+      if (updateRequest == null || (updateRequest.status == null && updateRequest.comment == null && updateRequest.evidence == null)) {
+        return new ResponseDTO<>(400, "At least one value must be provided for update (status, comment, or evidence)", null);
       }
       AssesmentStatus assessmentStatus = null;
-      if (status != null) {
+      if (updateRequest.status != null) {
         try {
-          assessmentStatus = AssesmentStatus.valueOf(status);
+          assessmentStatus = AssesmentStatus.valueOf(updateRequest.status);
         } catch (IllegalArgumentException e) {
           return new ResponseDTO<>(400,
               "Invalid status. Allowed values: " + java.util.Arrays.toString(AssesmentStatus.values()), null);
         }
       }
       AuditProcessModel.Assesment updatedAssesment = auditProcessService.updateAssesmentByControlIdAndReturnAssesment(
-          auditProcessId, controlId, assessmentStatus, comment);
+          auditProcessId, controlId, assessmentStatus, updateRequest.comment, updateRequest.evidence);
       return new ResponseDTO<>(200, "Assessment updated", updatedAssesment);
     } catch (NotFoundException e) {
       return new ResponseDTO<>(404, e.getMessage(), null);
     } catch (Exception e) {
       return new ResponseDTO<>(500, "Error updating assessment: " + e.getMessage(), null);
     }
+  }
+
+  public static class AssessmentUpdateRequest {
+    public String status;
+    public String comment;
+    public AuditProcessModel.Evidence evidence;
   }
 
   /**
@@ -282,6 +288,23 @@ public class AuditController {
       return new ResponseDTO<>(200, "Audit process canceled", updated);
     } catch (Exception e) {
       return new ResponseDTO<>(500, "Error canceling audit process: " + e.getMessage(), null);
+    }
+  }
+
+  /**
+   * Endpoint to get an AuditProcess by its ID
+   */
+  @GetMapping("/auditProcesses/getById")
+  public ResponseDTO<AuditProcessModel> getAuditProcessById(@RequestParam String auditProcessId) {
+    try {
+      Optional<AuditProcessModel> processOpt = auditProcessService.getAuditProcessById(auditProcessId);
+      if (processOpt.isPresent()) {
+        return new ResponseDTO<>(200, "Audit process found", processOpt.get());
+      } else {
+        return new ResponseDTO<>(404, "Audit process not found", null);
+      }
+    } catch (Exception e) {
+      return new ResponseDTO<>(500, "Error fetching audit process: " + e.getMessage(), null);
     }
   }
 

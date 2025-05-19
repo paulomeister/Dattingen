@@ -123,7 +123,19 @@ public class AuditProcessService {
       Assesment assesment = new Assesment();
       assesment.controlId = control.getControlId();
       assesment.status = AssesmentStatus.PENDING;
+      assesment.evidence = null;
       assesments.add(assesment);
+    }
+
+    // If input model has assessments with evidence, merge them in
+    if (auditProcess.getAssesments() != null && !auditProcess.getAssesments().isEmpty()) {
+      for (Assesment inputAssesment : auditProcess.getAssesments()) {
+        for (Assesment generated : assesments) {
+          if (generated.controlId.equals(inputAssesment.controlId) && inputAssesment.evidence != null) {
+            generated.evidence = inputAssesment.evidence;
+          }
+        }
+      }
     }
 
     if (auditProcess.getAssesments() == null) {
@@ -322,7 +334,7 @@ public class AuditProcessService {
   }
 
   public AuditProcessModel updateAssesmentByControlId(String auditProcessId, String controlId,
-      AssesmentStatus status, String comment) {
+      AssesmentStatus status, String comment, AuditProcessModel.Evidence evidence) {
     Optional<AuditProcessModel> auditProcessOptional = auditProcessRepository.findById(auditProcessId);
 
     if (!auditProcessOptional.isPresent()) {
@@ -343,6 +355,10 @@ public class AuditProcessService {
 
           if (comment != null) {
             assesment.setComment(comment);
+          }
+
+          if (evidence != null) {
+            assesment.setEvidence(evidence);
           }
 
           assesmentFound = true;
@@ -378,7 +394,7 @@ public class AuditProcessService {
 
   public AuditProcessModel.Assesment updateAssesmentByControlIdAndReturnAssesment(String auditProcessId,
       String controlId,
-      AssesmentStatus status, String comment) {
+      AssesmentStatus status, String comment, AuditProcessModel.Evidence evidence) {
     Optional<AuditProcessModel> auditProcessOptional = auditProcessRepository.findById(auditProcessId);
     if (!auditProcessOptional.isPresent()) {
       throw new NotFoundException("Audit process not found with ID: " + auditProcessId);
@@ -394,12 +410,27 @@ public class AuditProcessService {
           if (comment != null) {
             assesment.setComment(comment);
           }
+          if (evidence != null) {
+            assesment.setEvidence(evidence);
+          }
           auditProcessRepository.save(auditProcess);
           return assesment;
         }
       }
     }
     throw new NotFoundException("Assessment not found with controlId: " + controlId);
+  }
+
+  // Overload for backward compatibility
+  public AuditProcessModel.Assesment updateAssesmentByControlIdAndReturnAssesment(String auditProcessId,
+      String controlId,
+      AssesmentStatus status, String comment) {
+    return updateAssesmentByControlIdAndReturnAssesment(auditProcessId, controlId, status, comment, null);
+  }
+
+  public AuditProcessModel updateAssesmentByControlId(String auditProcessId, String controlId,
+      AssesmentStatus status, String comment) {
+    return updateAssesmentByControlId(auditProcessId, controlId, status, comment, null);
   }
 
   // Update,

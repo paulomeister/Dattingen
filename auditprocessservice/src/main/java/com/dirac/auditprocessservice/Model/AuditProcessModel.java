@@ -50,6 +50,7 @@ public class AuditProcessModel {
     public Date assesedIn;
     public Inspector internalAuditor;
     public Inspector externalAuditor;
+    public Evidence evidence;
     public String comment;
   }
 
