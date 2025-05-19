@@ -11,6 +11,7 @@ import ControlsAccordion from "@/components/audits/ControlsAccordion";
 import ControlScreen from "@/components/audits/ControlScreen";
 import { ResponseDTO } from "@/types/ResponseDTO";
 import { Assesment } from "@/types/Audit";
+import { Switch } from "@/components/ui/switch";
 
 // Interfaz para la respuesta de la API
 interface ApiResponse<T> {
@@ -45,6 +46,7 @@ export default function AuditDetailPage() {
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
   const [controls, setControls] = React.useState<RulesetControl[]>([]); // Cambiar el tipo según la estructura de los controles
+  const [isEvaluated, setIsEvaluated] = React.useState<boolean>(false);
   // Función para obtener la auditoría
   const fetchAudit = async (businessIdParam?: string) => {
     const businessIdToUse = businessIdParam || currentProcess?.businessId;
@@ -143,7 +145,6 @@ export default function AuditDetailPage() {
 
       const firstControl = controls[0];
 
-      console.log("First control:", firstControl);
 
       setSelectedControl(firstControl);
       // Buscar el assessment correspondiente al primer control
@@ -151,6 +152,33 @@ export default function AuditDetailPage() {
       setCurrentAssesment(found);
     }
   }, [controls, currentProcess]);
+
+  // Inicializar el estado del switch según el proceso
+  useEffect(() => {
+    if (currentProcess) {
+      setIsEvaluated(currentProcess.status === "EVALUATED");
+    }
+  }, [currentProcess]);
+
+  // Handler para cambiar el estado del proceso
+  const [switchLoading, setSwitchLoading] = React.useState(false);
+  const [switchError, setSwitchError] = React.useState<string | null>(null);
+  const handleSwitchChange = async (checked: boolean) => {
+    if (!currentProcess) return;
+    setIsEvaluated(checked);
+    setSwitchError(null);
+    setSwitchLoading(true);
+    try {
+      const newStatus = checked ? "EVALUATED" : "NOT_EVALUATED";
+      await apiClient.put(`/audits/api/auditProcesses/updateStatus?auditProcessId=${currentProcess._id}&status=${newStatus}`, {});
+      setCurrentProcess({ ...currentProcess, status: newStatus });
+    } catch {
+      setIsEvaluated(currentProcess.status === "EVALUATED");
+      setSwitchError("Error updating process status");
+    } finally {
+      setSwitchLoading(false);
+    }
+  };
 
   function handleControlClick(control: RulesetControl) {
     setSelectedControl(control);
@@ -193,7 +221,7 @@ export default function AuditDetailPage() {
               <span className="text-xs text-gray-500">{audit.name}</span>
               <div className="mt-2 flex flex-col gap-1">
                 <span className="text-xs font-semibold">
-                  {'Status'}: <span className="text-[var(--color-secondary-color)]">{audit.status}</span>
+                  {'Status'}: <span className="text-[var(--color-secondary-color)]">{isEvaluated ? "Evaluated" : "Pending external validation"}</span>
                 </span>
                 <span className="text-xs">
                   {'Start'}: {audit.startDate.toLocaleDateString()}
@@ -202,6 +230,30 @@ export default function AuditDetailPage() {
                   {'End'}: {audit.endDate.toLocaleDateString()}
                 </span>
               </div>
+              {/* Switch solo visible para ExternalAuditor */}
+              {user?.role === "ExternalAuditor" && (
+                <div className="flex items-center justify-end mt-4">
+                  <span className="mr-4 font-semibold text-lg text-primary-color">
+                    {isEvaluated ? "Evaluated" : "Mark as Evaluated"}
+                  </span>
+                  <Switch
+                    checked={isEvaluated}
+                    onCheckedChange={handleSwitchChange}
+                    className={
+                      isEvaluated
+                        ? "bg-green-500 border-green-500 shadow-lg scale-125"
+                        : "bg-red-400 border-red-400 shadow-lg scale-125"
+                    }
+                    disabled={switchLoading}
+                  />
+                  {switchLoading && (
+                    <span className="ml-2 text-xs text-gray-500">Updating...</span>
+                  )}
+                  {switchError && (
+                    <span className="ml-2 text-xs text-red-500">{switchError}</span>
+                  )}
+                </div>
+              )}
             </div>
             <div className="md:col-span-2">
               <ControlsAccordion controls={adaptControls(controls)} onControlClick={handleControlClick as (control: AccordionControl) => void} />
@@ -213,6 +265,7 @@ export default function AuditDetailPage() {
                 control={selectedControl}
                 currentProcess={currentProcess!}
                 assesment={currentAssesment}
+                readOnly={isEvaluated}
               />
             ) : (
               <div className="flex-1 bg-white rounded-2xl shadow-md p-6 flex items-center justify-center">

@@ -80,7 +80,6 @@ export default function CriterionForm({
 
     setIsSubmitting(true);
     try {
-      console.log("Form Data:", formData); // Verifica los datos
       await onSave(formData);
     } catch (error) {
       console.error("Error al guardar el control:", error);

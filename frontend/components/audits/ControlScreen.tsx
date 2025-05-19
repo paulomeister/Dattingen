@@ -11,11 +11,12 @@ interface Props {
     currentProcess: AuditProcess
     assesment: Assesment | null
     control: Control
+    readOnly?: boolean
 }
 
 type Status = keyof typeof AssesmentStatus
 
-export default function ControlScreen({ control, currentProcess, assesment }: Props) {
+export default function ControlScreen({ control, currentProcess, assesment, readOnly = false }: Props) {
     const [formData, setFormData] = useState({
         comments: "",
         status: "PENDING" as Status,
@@ -57,7 +58,7 @@ export default function ControlScreen({ control, currentProcess, assesment }: Pr
 
     // Handler para cambio de status por auditor externo
     function handleExternalStatusChange(newStatus: string) {
-        if (user?.role !== "ExternalAuditor") return;
+        if (readOnly || user?.role !== "ExternalAuditor") return;
         setFormData((prev) => ({ ...prev, status: newStatus as Status }));
         setSubmitSuccess(false);
         setSubmitError(null);
@@ -70,6 +71,7 @@ export default function ControlScreen({ control, currentProcess, assesment }: Pr
 
     // Handle any input change
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        if (readOnly) return;
         const { name, value } = e.target
         setFormData((prev) => ({ ...prev, [name]: value }))
     }
@@ -77,6 +79,7 @@ export default function ControlScreen({ control, currentProcess, assesment }: Pr
     // Nuevo handler para guardar cambios del auditor interno
     async function handleSave(e: FormEvent) {
         e.preventDefault();
+        if (readOnly) return;
         setIsSubmitting(true);
         setSubmitSuccess(false);
         setSubmitError(null);
@@ -104,10 +107,7 @@ export default function ControlScreen({ control, currentProcess, assesment }: Pr
     // Add isPending state based on assesment status
     const isPending = assesment?.status?.toString().toLowerCase() === "pending";
 
-    useEffect(() => {
-        console.log(assesment)
-    }, [assesment])
-
+  
     return (
         <form onSubmit={handleSave} className="p-6 space-y-6 bg-white rounded-2xl shadow-lg border border-gray-100">
             <header className="flex justify-between items-center flex-wrap gap-3 pb-4 border-b border-gray-100">
@@ -167,8 +167,8 @@ export default function ControlScreen({ control, currentProcess, assesment }: Pr
                         name="evidenceDescription"
                         placeholder="Descripción de la evidencia"
                         value={formData.evidenceDescription}
-                        readOnly={!isPending}
-                        disabled={user?.role !== "InternalAuditor" || !isPending}
+                        readOnly={readOnly || !isPending}
+                        disabled={readOnly || user?.role !== "InternalAuditor" || !isPending}
 
                         onChange={handleInputChange}
                         className="border border-gray-200 px-4 py-2 rounded-xl shadow-sm text-sm"
@@ -180,8 +180,8 @@ export default function ControlScreen({ control, currentProcess, assesment }: Pr
                         placeholder="URL de la evidencia"
                         value={formData.evidenceUrl}
                         onChange={handleInputChange}
-                        disabled={user?.role !== "InternalAuditor" || !isPending}
-                        readOnly={!isPending}
+                        disabled={readOnly || user?.role !== "InternalAuditor" || !isPending}
+                        readOnly={readOnly || !isPending}
                         className="border border-gray-200 px-4 py-2 rounded-xl shadow-sm text-sm"
                     />
                 </div>
@@ -210,7 +210,7 @@ export default function ControlScreen({ control, currentProcess, assesment }: Pr
                                                     ? "bg-primary-color text-white shadow scale-110"
                                                     : "border border-gray-300 text-gray-400 hover:border-gray-400"
                                                 }`}
-                                            disabled={user?.role !== "ExternalAuditor" || !isPending}
+                                            disabled={readOnly || user?.role !== "ExternalAuditor" || !isPending}
                                         >
                                             {buttonLabel}
                                         </button>
@@ -230,7 +230,7 @@ export default function ControlScreen({ control, currentProcess, assesment }: Pr
                         onChange={handleInputChange}
                         placeholder="Write your comments here..."
                         className="w-full border border-gray-200 px-4 py-2 rounded-xl shadow-sm resize-none text-sm"
-                        disabled={user?.role !== "ExternalAuditor" || !isPending}
+                        disabled={readOnly || user?.role !== "ExternalAuditor" || !isPending}
                     ></textarea>
 
                     {submitSuccess && (
@@ -247,7 +247,7 @@ export default function ControlScreen({ control, currentProcess, assesment }: Pr
                     {isPending && (
                         <button
                             type="submit"
-                            disabled={isSubmitting}
+                            disabled={readOnly || isSubmitting}
                             className={`mt-4 w-full h-10 rounded-full flex items-center justify-center text-base font-bold px-4
                                 ${isSubmitting ? "bg-gray-300 text-gray-500" : "bg-primary-color text-white hover:bg-secondary-color"}
                             `}

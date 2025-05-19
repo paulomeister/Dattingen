@@ -7,7 +7,7 @@ import { Ruleset } from "@/types/Ruleset";
 import { useApiClient } from "@/hooks/useApiClient";
 import { useAuth } from "@/lib/AuthContext";
 import { ResponseDTO } from "@/types/ResponseDTO";
-import { Business } from "@/types/Business";
+import type { Business } from "@/types/Business";
 
 export default function CreateAuditPage() {
 
@@ -18,21 +18,28 @@ export default function CreateAuditPage() {
 
   const rulesetId = typeof window !== 'undefined' ? window.location.pathname.split('/').pop() || '' : '';
   const [ruleset, setRuleset] = useState<Ruleset | null>(null);
-  const [business, setBusiness] = useState<Business | null>(null);
 
   useEffect(() => {
-
-
     const fetchBusiness = async () => {
       if (user) {
         try {
           const response = await apiClient.get<ResponseDTO<Business>>(`/businesses/api/${user.businessId}`);
-          setBusiness(response.data);
+          const businessData = response.data;
+          // Validar si ya existe una auditoría con este rulesetId
+          if (user.role !== "Coordinator") {
+            router.push("/audits");
+          }
+
+          if (businessData.audits.some((audit: { rulesetId: string }) => audit.rulesetId === rulesetId)) {
+            alert("You already have an audit with this ruleset.");
+            router.push("/audits");
+            return;
+          }
         } catch (error) {
           console.error("Error fetching business data:", error);
         }
       }
-    }
+    };
 
     if (user) {
       fetchBusiness();
@@ -49,21 +56,8 @@ export default function CreateAuditPage() {
     }
 
     fetchRulesetData();
-  }, []);
+  }, [user, apiClient, router, rulesetId]);
 
-
-  useEffect(() => {
-    if (business) {
-      const hasRulesetId = business.audits.some(audit => audit.rulesetId === rulesetId);
-
-      if (hasRulesetId) {
-        alert("You already have an audit with this ruleset."); // TODO Multiingual
-        router.push(`/audits/${rulesetId}`);
-      }
-
-
-    }
-  }, [business]);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -88,7 +82,7 @@ export default function CreateAuditPage() {
       const auditData: Audit = {
         name: formData.name,
         rulesetId: formData.rulesetId,
-        status: formData.status as AuditStatus,
+        status: AuditStatus.IN_PROGRESS, // Siempre IN_PROGRESS al crear
         startDate: new Date(formData.startDate),
         endDate: new Date(formData.endDate),
       };
@@ -102,12 +96,16 @@ export default function CreateAuditPage() {
 
   const createNewAudit = async (data: Audit) => {
     try {
-      const response = await apiClient.post<ResponseDTO<Audit>, Audit>(`/businesses/api/${user?.businessId}/newAudit`, data);
-      console.log(response)
-      router.push(`/audits/${rulesetId}`);
+      const res = await apiClient.post<ResponseDTO<Audit>, Audit>(`/businesses/api/${user?.businessId}/newAudit`, data);
+      if (res.status !== 200) {
+        throw new Error(res.message);
+      }
+      setTimeout(() => {
+        router.push(`/audits/processes/${rulesetId}`);
+      }, 2000);
     } catch (error) {
       console.error("Error creating audit:", error);
-      alert("Error creating audit. Please try again."); // TODO Multiingual
+      alert("Error creating audit." + error); // TODO Multiingual
     }
 
   }

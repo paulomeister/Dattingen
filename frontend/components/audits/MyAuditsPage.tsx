@@ -39,7 +39,6 @@ export function MyAuditsPage() {
           );
         });
 
-        console.log("userProcesses", userProcesses);
 
         const audits: AuditWithId[] = userProcesses.map((proc) => ({
           _id: proc._id,

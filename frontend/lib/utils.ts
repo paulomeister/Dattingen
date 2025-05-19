@@ -30,7 +30,6 @@ export const getUserRole = (
   role: string,
   language: string | undefined
 ): string => {
-  console.log(language);
 
   switch (role) {
     case "InternalAuditor":

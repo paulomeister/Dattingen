@@ -99,9 +99,6 @@ const RulesetCreator = ({ rulesetId, onUpdateSuccess }: RulesetCreatorProps) => 
     // Nueva función para manejar el guardado de un nuevo control
     const handleSaveControl = (control: Control) => {
 
-        console.log(control)
-
-
         // Asignar un ID único si no tiene uno
         if (!control.controlId) {
             const newId = controls.length > 0
@@ -190,7 +187,6 @@ const RulesetCreator = ({ rulesetId, onUpdateSuccess }: RulesetCreatorProps) => 
             }
 
             const publishData = await publishResponse.json();
-            console.log("Ruleset publicado:", publishData.message);
 
             toast.success(t('rulesets.creator.success.publish'));
             router.push(`/rulesets/get/${rulesetId}`);
