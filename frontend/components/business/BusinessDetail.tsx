@@ -25,8 +25,8 @@ export default function BusinessDetail({ business }: BusinessDetailProps) {
                 <div className="flex gap-6">
                     <div className="flex-col">
                         <div className="flex-col items-center justify-center gap-48">
-                            
-                            <h2 className="flex items-center justify-center gap-4 text-2xl font-semibold mb-4"> 
+
+                            <h2 className="flex items-center justify-center gap-4 text-2xl font-semibold mb-4">
                                 <Info size={24} />
                                 {t("business.page.info")}</h2>
                             <div>
@@ -56,11 +56,9 @@ export default function BusinessDetail({ business }: BusinessDetailProps) {
                 />
             </Card>
 
-            {/* Bottom right - Statistics section */}
-            <Card className="md:col-span-2 p-6 shadow-lg">
-                {/* <BusinessStatistics audits={business.audits || []} /> */}
+            {/* <Card className="md:col-span-2 p-6 shadow-lg">
                 <StatisticsView data={business.stats} />
-            </Card>
+            </Card> */}
         </div></>
     );
 }

@@ -19,7 +19,7 @@ export interface AuditProcess {
   status: string;
   assignedIntAuditors: Inspector[];
   assignedExtAuditors: Inspector[];
-  assesment: Assesment[];
+  assesments: Assesment[];
   startDate: string | Date;
   endDate: string | Date;
 }
@@ -35,12 +35,19 @@ export interface Inspector {
   name: string;
 }
 
+export interface Evidence {
+  description: string;
+  url: string;
+  addedDate: string | Date;
+}
+
 export interface Assesment {
   controlId: string;
   status: AssesmentStatus;
   assesedIn: string | Date;
   internalAuditor: Inspector;
   externalAuditor: Inspector;
+  evidence?: Evidence;
   comment: string;
 }
 

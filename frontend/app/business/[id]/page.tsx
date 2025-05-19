@@ -24,11 +24,11 @@ export default function BusinessClientPage() {
             try {
                 // Usa tus funciones de cliente API
                 const businessData: ResponseDTO<Business> = await apiClient.get(`/businesses/api/${id}`);
-                const statsData: StatisticsData = await apiClient.get(`/businesses/api/statistics/audits/681b6aa224f4b90209c40a1e`);
+                // const statsData: StatisticsData = await apiClient.get(`/businesses/api/statistics/audits/681b6aa224f4b90209c40a1e`);
 
 
                 const business: Business = businessData.data;
-                business.stats = statsData;
+                // business.stats = statsData;
                 setBusiness(business);
             } catch (err: unknown) {
                 console.error("Error fetching data:", err);
