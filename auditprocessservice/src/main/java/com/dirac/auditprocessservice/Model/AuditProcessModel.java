@@ -27,7 +27,7 @@ public class AuditProcessModel {
   private List<Inspector> assignedIntAuditors;
   private List<Inspector> assignedExtAuditors;
 
-  private List<Assesment> assesment;
+  private List<Assesment> assesments;
 
   private Date startDate;
   private Date endDate;
@@ -80,7 +80,7 @@ public class AuditProcessModel {
   }
 
   public enum AssesmentStatus {
-    NOT_EVALUATED,
+    PENDING,
     COMPLIANT,
     NON_COMPLIANT,
     NOT_DONE // Es un estado para cuando el auditor interno diga que no tiene ese criterio

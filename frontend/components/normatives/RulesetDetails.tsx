@@ -16,10 +16,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useLanguage } from "@/lib/LanguageContext";
+import { useRouter } from "next/navigation";
 
 // Component for the header section showing ruleset information
 export function RulesetHeader({ ruleset }: { ruleset: Ruleset }) {
   const { t } = useLanguage();
+  const router = useRouter()
 
   // Format date for display
   const formattedDate = ruleset.publishingDate ?
@@ -27,9 +29,8 @@ export function RulesetHeader({ ruleset }: { ruleset: Ruleset }) {
     'Not specified';
 
 
-  const handleSubmit = () => {
-    // Handle form submission logic here
-    alert("Join functionality not implemented yet");
+  const handleSubmit = (ruleset: Ruleset) => {
+    router.push(`/audits/create/${ruleset._id}`)
   }
 
 
@@ -39,7 +40,7 @@ export function RulesetHeader({ ruleset }: { ruleset: Ruleset }) {
         <div className="flex items-center justify-between flex-wrap gap-4">
           <h1 className="text-3xl md:text-4xl font-bold">{ruleset.name}</h1>
           <Button
-            onClick={() => handleSubmit()}
+            onClick={() => handleSubmit(ruleset)}
             className="bg-white text-primary-color hover:bg-white/90 font-bold py-2 px-6 rounded-full shadow-md hover:shadow-lg transition duration-200 transform hover:-translate-y-1"
             size="lg"
           >

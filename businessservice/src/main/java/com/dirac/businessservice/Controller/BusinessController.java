@@ -6,6 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.dirac.businessservice.DTOs.ResponseDTO;
+import com.dirac.businessservice.Model.AuditModel;
 import com.dirac.businessservice.Model.BusinessModel;
 import com.dirac.businessservice.Service.AuditStatisticsService;
 import com.dirac.businessservice.Service.BusinessService;
@@ -54,6 +55,14 @@ public class BusinessController {
         return ResponseEntity.status(201).body(new ResponseDTO<>(201, "Business created successfully.", savedBusiness));
     }
 
+    @PostMapping("/{businessId}/newAudit")
+    public ResponseEntity<ResponseDTO<String>> createAuditProcess(@PathVariable String businessId,
+            @RequestBody AuditModel auditModel) {
+        String auditProcessId = businessService.addAudit(businessId, auditModel);
+        return ResponseEntity.status(201)
+                .body(new ResponseDTO<>(201, "Audit process created successfully.", auditProcessId));
+    }
+
     @PutMapping("/{businessId}")
     @PreAuthorize("hasAnyRole('admin', 'Coordinator')")
 
@@ -81,5 +90,21 @@ public class BusinessController {
         List<BusinessModel> businesses = businessService.findBusinessesByName(name);
         log.info("Found {} businesses for search term '{}'", businesses.size(), name);
         return ResponseEntity.ok(new ResponseDTO<>(200, "Businesses retrieved successfully.", businesses));
+    }
+
+    @GetMapping("/{businessId}/audit/{rulesetId}")
+    public ResponseEntity<ResponseDTO<AuditModel>> getAuditByRulesetId(
+            @PathVariable String businessId,
+            @PathVariable String rulesetId) {
+        log.info("Fetching audit with ruleset ID: {} for business: {}", rulesetId, businessId);
+        try {
+            AuditModel audit = businessService.getAuditByRulesetId(businessId, rulesetId);
+            log.info("Audit found for ruleset: {}", rulesetId);
+            return ResponseEntity.ok(new ResponseDTO<>(200, "Audit retrieved successfully.", audit));
+        } catch (Exception e) {
+            log.error("Error fetching audit: {}", e.getMessage());
+            return ResponseEntity.status(404)
+                    .body(new ResponseDTO<>(404, e.getMessage(), null));
+        }
     }
 }
