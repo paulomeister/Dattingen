@@ -22,20 +22,46 @@ export default function AuditProcessListPage() {
         if (!businessId || !rulesetId) return;
         setLoading(true);
         setError(null);
-        apiClient
-            .get<{ data: AuditProcess[] }>(`audits/api/auditProcesses/getAll?businessId=${businessId}&rulesetId=${rulesetId}`)
-            .then((res) => {
-                // Ordenar por fecha de inicio descendente
-                const sorted = [...(res.data || [])].sort((a, b) =>
-                    new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
-                );
-                setProcesses(sorted);
-            })
-            .catch((err) => {
-                setError("Error fetching audit processes");
-            })
-            .finally(() => setLoading(false));
-    }, [businessId, rulesetId]);
+
+        if (user.role !== "ExternalAuditor") {
+
+            apiClient
+                .get<{ data: AuditProcess[] }>(`/audits/afpi/auditProcesses/getAll?businessId=${businessId}&rulesetId=${rulesetId}`)
+                .then((res) => {
+                    // Ordenar por fecha de inicio descendente
+                    const sorted = [...(res.data || [])].sort((a, b) =>
+                        new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+                    );
+                    setProcesses(sorted);
+                })
+                .catch(() => {
+                    setError("Error fetching audit processes");
+                })
+                .finally(() => setLoading(false));
+        } else {
+            apiClient
+                .get<{ data: AuditProcess[] }>(`/audits/api/`)
+                .then((res) => {
+                    // Filtrar: solo procesos NOT_EVALUATED donde el usuario es auditor externo
+                    const filtered = (res.data || []).filter(proc => {
+                        const isNotEvaluated = proc.status === "NOT_EVALUATED";
+                        const extAuditors = Array.isArray(proc.assignedExtAuditors) ? proc.assignedExtAuditors : [];
+                        const isUserExternal = extAuditors.some(aud => aud._id === user._id);
+                        return isNotEvaluated && isUserExternal;
+                    });
+                    // Ordenar por fecha de inicio descendente
+                    const sorted = [...filtered].sort((a, b) =>
+                        new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+                    );
+                    setProcesses(sorted);
+                })
+                .catch(() => {
+                    setError("Error fetching audit processes");
+                })
+                .finally(() => setLoading(false));
+        }
+
+    }, [businessId, rulesetId,  user?.role, user?._id]);
 
     if (!businessId) return <div className="p-8 text-center">No businessId found in user session.</div>;
     if (loading) return <div className="p-8 text-center">Loading audit processes...</div>;
@@ -52,7 +78,7 @@ export default function AuditProcessListPage() {
                         <Card
                             key={proc._id}
                             className="p-4 cursor-pointer hover:bg-primary-color/10 border border-primary-color transition"
-                            onClick={() => router.push(`/audits/${rulesetId}/${proc._id}`)}
+                            onClick={() => router.push(`/audits/processes/${rulesetId}/${proc._id}`)}
                         >
                             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
                                 <div>

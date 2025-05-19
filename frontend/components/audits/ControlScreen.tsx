@@ -5,6 +5,7 @@ import { Check, Upload, AlertCircle } from "lucide-react"
 import { Control } from "@/types/Ruleset"
 import { useAuth } from "@/lib/AuthContext"
 import { Assesment, AssesmentStatus, AuditProcess } from "@/types/Audit"
+import { useApiClient } from "@/hooks/useApiClient"
 
 interface Props {
     currentProcess: AuditProcess
@@ -22,15 +23,10 @@ export default function ControlScreen({ control, currentProcess, assesment }: Pr
         evidenceUrl: ""
     })
     const { user } = useAuth()
-    const [assesmentStatus, setAssesmentStatus] = useState<AssesmentStatus | null>(null)
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [submitSuccess, setSubmitSuccess] = useState(false)
     const [submitError, setSubmitError] = useState<string | null>(null)
-    const [isInternalAuditor, setIsInternalAuditor] = useState(false);
-    const [isExternalAuditor, setIsExternalAuditor] = useState(false);
-    // isPending y isEditable deben depender de formData.status
-    const isPending = formData.status === "PENDING";
-    const isEditable = isPending && (isInternalAuditor || isExternalAuditor);
+    const apiClient = useApiClient()
 
     // Rellenar los campos con el assesment recibido por props al cargar
     useEffect(() => {
@@ -41,25 +37,18 @@ export default function ControlScreen({ control, currentProcess, assesment }: Pr
                 evidenceDescription: assesment.evidence?.description || "",
                 evidenceUrl: assesment.evidence?.url || ""
             });
-            setAssesmentStatus(assesment.status);
         } else {
             setFormData({ comments: "", status: "PENDING", evidenceDescription: "", evidenceUrl: "" });
-            setAssesmentStatus(null);
         }
     }, [assesment]);
 
-    useEffect(() => {
-        setIsInternalAuditor(user?.role === "InternalAuditor");
-        setIsExternalAuditor(user?.role === "ExternalAuditor");
-    }, [user, assesmentStatus]);
-
     // Opciones de status según el rol
     let statusOptions: { value: string; label: string; icon: string }[] = [];
-    if (isInternalAuditor) {
+    if (user?.role === "InternalAuditor") {
         statusOptions = [
             { value: "NOT_DONE", label: "No Realizado / Not Done", icon: "✗✗" },
         ];
-    } else if (isExternalAuditor) {
+    } else if (user?.role === "ExternalAuditor") {
         statusOptions = [
             { value: "COMPLIANT", label: "Cumple / Compliant", icon: "✓" },
             { value: "NON_COMPLIANT", label: "No Cumple / Non-Compliant", icon: "✗" },
@@ -68,10 +57,8 @@ export default function ControlScreen({ control, currentProcess, assesment }: Pr
 
     // Handler para cambio de status por auditor externo
     function handleExternalStatusChange(newStatus: string) {
-        if (!isExternalAuditor || !isPending) return;
-        // Permitir cambiar entre opciones aunque ya esté seleccionada
+        if (user?.role !== "ExternalAuditor") return;
         setFormData((prev) => ({ ...prev, status: newStatus as Status }));
-        setAssesmentStatus(newStatus as unknown as AssesmentStatus);
         setSubmitSuccess(false);
         setSubmitError(null);
     }
@@ -94,25 +81,17 @@ export default function ControlScreen({ control, currentProcess, assesment }: Pr
         setSubmitSuccess(false);
         setSubmitError(null);
         try {
-            // Solo para auditor interno
-            if (isInternalAuditor && isEditable) {
+            if (user?.role === "InternalAuditor" || user?.role === "ExternalAuditor") {
                 const url = `/audits/api/assesments/update?auditProcessId=${currentProcess._id}&controlId=${control.controlId}`;
-                const body = {
+                await apiClient.put(url, {
                     status: formData.status,
                     comment: formData.comments,
                     evidence: {
                         description: formData.evidenceDescription,
                         url: formData.evidenceUrl
-                        // addedDate will be set by backend
                     }
-                };
-                const res = await fetch(url, {
-                    method: "PUT",
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body)
                 });
-                if (!res.ok) throw new Error("Failed to update assessment");
-                setAssesmentStatus(formData.status as unknown as AssesmentStatus);
+
                 setSubmitSuccess(true);
             }
         } catch {
@@ -121,6 +100,13 @@ export default function ControlScreen({ control, currentProcess, assesment }: Pr
             setIsSubmitting(false);
         }
     }
+
+    // Add isPending state based on assesment status
+    const isPending = assesment?.status?.toString().toLowerCase() === "pending";
+
+    useEffect(() => {
+        console.log(assesment)
+    }, [assesment])
 
     return (
         <form onSubmit={handleSave} className="p-6 space-y-6 bg-white rounded-2xl shadow-lg border border-gray-100">
@@ -181,83 +167,97 @@ export default function ControlScreen({ control, currentProcess, assesment }: Pr
                         name="evidenceDescription"
                         placeholder="Descripción de la evidencia"
                         value={formData.evidenceDescription}
+                        readOnly={!isPending}
+                        disabled={user?.role !== "InternalAuditor" || !isPending}
+
                         onChange={handleInputChange}
                         className="border border-gray-200 px-4 py-2 rounded-xl shadow-sm text-sm"
-                        disabled={!isEditable}
                     />
-                    <label className="text-xs font-semibold text-gray-600">URL de la evidencia</label>
+                    <label className="text-xs font-semibold text-gray-600">
+                        URL de la evidencia</label>
                     <input
                         name="evidenceUrl"
                         placeholder="URL de la evidencia"
                         value={formData.evidenceUrl}
                         onChange={handleInputChange}
+                        disabled={user?.role !== "InternalAuditor" || !isPending}
+                        readOnly={!isPending}
                         className="border border-gray-200 px-4 py-2 rounded-xl shadow-sm text-sm"
-                        disabled={!isEditable}
                     />
                 </div>
             </div>
 
-            {/* Status Picker */}
-            <div className="space-y-3">
-                <div className="flex flex-wrap items-center gap-4">
-                    {isExternalAuditor ? (
-                        <div className="flex gap-2">
-                            {statusOptions.map((s) => (
-                                <button
-                                    key={s.value}
-                                    type="button"
-                                    onClick={() => handleExternalStatusChange(s.value)}
-                                    className={`w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold
-                                        ${formData.status === s.value
-                                            ? "bg-primary-color text-white shadow scale-110"
-                                            : "border border-gray-300 text-gray-400 hover:border-gray-400"
-                                        }`}
-                                    disabled={!isEditable || isSubmitting}
-                                >
-                                    {s.icon}
-                                </button>
-                            ))}
+
+            <>
+                <div className="space-y-3">
+                    <div className="flex flex-wrap items-center gap-4">
+                        {user?.role === "ExternalAuditor" ? (
+                            <div className="flex gap-2">
+                                {statusOptions.map((s) => {
+                                    let buttonLabel = s.label;
+                                    if (s.value === "COMPLIANT") {
+                                        buttonLabel = user?.language === "en" ? "Compliant" : "Conformidad";
+                                    } else if (s.value === "NON_COMPLIANT") {
+                                        buttonLabel = user?.language === "en" ? "Non-compliant" : "No conformidad";
+                                    }
+                                    return (
+                                        <button
+                                            key={s.value}
+                                            type="button"
+                                            onClick={() => handleExternalStatusChange(s.value)}
+                                            className={`w-auto min-w-[120px] h-10 rounded-full flex items-center justify-center text-base font-bold px-4
+                                                ${formData.status === s.value
+                                                    ? "bg-primary-color text-white shadow scale-110"
+                                                    : "border border-gray-300 text-gray-400 hover:border-gray-400"
+                                                }`}
+                                            disabled={user?.role !== "ExternalAuditor" || !isPending}
+                                        >
+                                            {buttonLabel}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        ) : null}
+                    </div>
+                </div>
+
+                <div>
+                    <h3 className="text-primary-color font-semibold mb-2 text-sm">Comments</h3>
+                    <textarea
+                        name="comments"
+                        rows={3}
+                        value={formData.comments}
+                        onChange={handleInputChange}
+                        placeholder="Write your comments here..."
+                        className="w-full border border-gray-200 px-4 py-2 rounded-xl shadow-sm resize-none text-sm"
+                        disabled={user?.role !== "ExternalAuditor" || !isPending}
+                    ></textarea>
+
+                    {submitSuccess && (
+                        <div className="mt-2 p-2 bg-green-50 text-green-700 rounded flex items-center gap-2 text-sm">
+                            <Check size={16} /> Saved successfully!
                         </div>
-                    ) : null}
+                    )}
+                    {submitError && (
+                        <div className="mt-2 p-2 bg-red-50 text-red-700 rounded flex items-center gap-2 text-sm">
+                            <AlertCircle size={16} /> {submitError}
+                        </div>
+                    )}
+
+                    {isPending && (
+                        <button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className={`mt-4 w-full h-10 rounded-full flex items-center justify-center text-base font-bold px-4
+                                ${isSubmitting ? "bg-gray-300 text-gray-500" : "bg-primary-color text-white hover:bg-secondary-color"}
+                            `}
+                        >
+                            {isSubmitting ? "Saving..." : "Save Changes"}
+                        </button>
+                    )}
                 </div>
-            </div>
+            </>
 
-            {/* Comments */}
-            <div>
-                <h3 className="text-primary-color font-semibold mb-2 text-sm">Comments</h3>
-                <textarea
-                    name="comments"
-                    rows={3}
-                    value={formData.comments}
-                    onChange={handleInputChange}
-                    placeholder="Write your comments here..."
-                    className="w-full border border-gray-200 px-4 py-2 rounded-xl shadow-sm resize-none text-sm"
-                    readOnly={isInternalAuditor}
-                    disabled={!isEditable && !isExternalAuditor}
-                ></textarea>
-
-                {submitSuccess && (
-                    <div className="mt-2 p-2 bg-green-50 text-green-700 rounded flex items-center gap-2 text-sm">
-                        <Check size={16} /> Saved successfully!
-                    </div>
-                )}
-                {submitError && (
-                    <div className="mt-2 p-2 bg-red-50 text-red-700 rounded flex items-center gap-2 text-sm">
-                        <AlertCircle size={16} /> {submitError}
-                    </div>
-                )}
-
-                <div className="mt-4 flex justify-end">
-                    <button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className={`bg-primary-color text-white px-6 py-2 rounded-xl text-sm shadow-sm
-                        ${isSubmitting ? "opacity-70 cursor-not-allowed" : "hover:bg-primary-color/90"}`}
-                    >
-                        {isSubmitting ? "Saving..." : "Save"}
-                    </button>
-                </div>
-            </div>
-        </form>
+        </form >
     )
 }
