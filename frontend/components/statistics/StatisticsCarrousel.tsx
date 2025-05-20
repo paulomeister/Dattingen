@@ -140,10 +140,10 @@ export default function StatisticsCarousel({ data }: StatisticsCarouselProps) {
             <h2 className="text-2xl font-bold text-gray-800">{totalAuditsActive}</h2>
           </div>
 
-          <div className="bg-white p-4 rounded-2xl shadow col-span-1">
+          {/* <div className="bg-white p-4 rounded-2xl shadow col-span-1">
             <p className="text-gray-500 text-sm">Conjunto de Reglas</p>
             <h2 className="text-xl font-bold text-gray-800 truncate">{audit.rulesetName || "No especificado"}</h2>
-          </div>
+          </div> */}
 
           <div className="bg-white p-4 rounded-2xl shadow col-span-1">
             <p className="text-gray-500 text-sm">Duración Promedio</p>

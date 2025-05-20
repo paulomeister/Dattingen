@@ -43,7 +43,7 @@ export interface Evidence {
 
 export interface Assesment {
   controlId: string;
-  status: AssesmentStatus;
+  status: string;
   assesedIn: string | Date;
   internalAuditor: Inspector;
   externalAuditor: Inspector;
