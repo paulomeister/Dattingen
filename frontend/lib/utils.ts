@@ -30,7 +30,6 @@ export const getUserRole = (
   role: string,
   language: string | undefined
 ): string => {
-
   switch (role) {
     case "InternalAuditor":
       return language === "es" ? "Auditor Interno" : "Internal Auditor";
@@ -110,12 +109,12 @@ export async function registerAuditors(
 ): Promise<ResponseDTO<unknown>> {
   try {
     const response = await fetch(
-      `${environment.API_URL}/businesses/api/business/registerAuditors/${businessId}`,
+      `${environment.API_URL}/businesses/api/business/registerAssociate/${businessId}`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          ...(token && { Authorization: `Bearer ${token}` }),
+          ...(token && { Authorization: token }),
         },
         body: JSON.stringify(associates), // Enviar directamente la lista de AsociateModel
       }

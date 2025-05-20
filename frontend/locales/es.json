@@ -260,5 +260,20 @@
       "errorCompulsoriness": "La Obligatoriedad es obligatoria",
       "errorCycleStage": "La fase del ciclo es obligatoria"
     }
+  },
+  "audits": {
+    "myAudits": {
+      "status": "Estado:",
+      "inProgress": "En progreso",
+      "completed": "Completado",
+      "other": "Otro",
+      "details": "Ver detalles",
+      "createProcess": "Crear nuevo PROCESO de Auditoría"
+    },
+    "processList": {
+      "title": "Procesos de Auditoría",
+      "empty": "No se encontraron procesos de auditoría no evaluados.",
+      "assessments": "evaluaciones"
+    }
   }
 }

@@ -3,9 +3,10 @@ import { useApiClient } from '@/hooks/useApiClient'
 import { useAuth } from '@/lib/AuthContext'
 import React, { useState } from 'react'
 import { Inspector, AuditProcess } from '@/types/Audit'
-import InternalAuditorSelector from '@/components/audits/InternalAuditorSelector'
 import { UserDTO } from '@/types/User'
 import { useParams, useRouter } from "next/navigation";
+import AssociatesSelection from '@/components/business/AssociatesSelection'
+import { useLanguage } from '@/lib/LanguageContext'
 
 const Page = () => {
   const { user } = useAuth();
@@ -18,10 +19,12 @@ const Page = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitSuccess, setSubmitSuccess] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
+  const [dateError, setDateError] = useState<string | null>(null)
   const router = useRouter();
+  const { t } = useLanguage()
 
   if (user?.role !== "Coordinator") {
-    return <div className="p-8 text-center text-lg text-red-600">Access denied. Only Coordinators can plan audits.</div>
+    return <div className="p-8 text-center text-lg text-red-600">{t("common.accessDenied", "Access denied. Only Coordinators can plan audits.")}</div>
   }
 
   // Handler to receive selected auditors from InternalAuditorSelector and map to Inspector
@@ -39,11 +42,19 @@ const Page = () => {
     setIsSubmitting(true);
     setSubmitSuccess(false);
     setSubmitError(null);
+    setDateError(null);
+    // Validación de fechas
+    if (startDate && endDate && endDate < startDate) {
+      setDateError(t("audits.createAuditProcess.dateError", "End Date cannot be before Start Date"));
+      setIsSubmitting(false);
+      return;
+    }
     try {
       const payload: Partial<AuditProcess> = {
         businessId: user.businessId || "",
         rulesetId,
         assignedIntAuditors,
+        status: "NOT_EVALUATED",
         startDate,
         endDate,
         assesments: [],
@@ -52,7 +63,7 @@ const Page = () => {
       setSubmitSuccess(true);
       router.push('/audits/processes/' + rulesetId);
     } catch {
-      setSubmitError('Failed to create audit process');
+      setSubmitError(t("audits.createAuditProcess.submitError", "Failed to create audit process"));
     } finally {
       setIsSubmitting(false);
     }
@@ -60,12 +71,12 @@ const Page = () => {
 
   return (
     <div className="max-w-2xl mx-auto p-8 bg-white rounded-2xl shadow-lg mt-8">
-      <h1 className="text-2xl font-bold mb-6 text-primary-color">Plan Audit Process</h1>
+      <h1 className="text-2xl font-bold mb-6 text-primary-color">{t("audits.createAuditProcess.title", "Plan Audit Process")}</h1>
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Internal Auditors */}
         <div>
-          <label className="block font-semibold mb-2">Internal Auditors</label>
-          <InternalAuditorSelector onSelect={handleAuditorSelect} />
+          <label className="block font-semibold mb-2">{t("audits.createAuditProcess.internalAuditors", "Internal Auditors")}</label>
+          <AssociatesSelection onSelect={handleAuditorSelect} />
           <div className="flex flex-wrap gap-2 mt-2">
             {assignedIntAuditors.map(aud => (
               <span key={aud._id} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full flex items-center gap-2">
@@ -78,7 +89,7 @@ const Page = () => {
         {/* Dates */}
         <div className="flex gap-4">
           <div className="flex-1">
-            <label className="block font-semibold mb-2">Start Date</label>
+            <label className="block font-semibold mb-2">{t("audits.createAuditProcess.startDate", "Start Date")}</label>
             <input
               type="date"
               value={startDate}
@@ -88,7 +99,7 @@ const Page = () => {
             />
           </div>
           <div className="flex-1">
-            <label className="block font-semibold mb-2">End Date</label>
+            <label className="block font-semibold mb-2">{t("audits.createAuditProcess.endDate", "End Date")}</label>
             <input
               type="date"
               value={endDate}
@@ -98,6 +109,7 @@ const Page = () => {
             />
           </div>
         </div>
+        {dateError && <div className="text-red-600 mt-2">{dateError}</div>}
         {/* Submit */}
         <div className="flex justify-end">
           <button
@@ -105,10 +117,10 @@ const Page = () => {
             className="bg-primary-color text-white px-6 py-2 rounded-xl text-sm shadow-sm hover:bg-primary-color/90"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Creating..." : "Create Audit Process"}
+            {isSubmitting ? t("audits.createAuditProcess.creating", "Creating...") : t("audits.createAuditProcess.createButton", "Create Audit Process")}
           </button>
         </div>
-        {submitSuccess && <div className="text-green-600 mt-2">Audit process created successfully!</div>}
+        {submitSuccess && <div className="text-green-600 mt-2">{t("audits.createAuditProcess.success", "Audit process created successfully!")}</div>}
         {submitError && <div className="text-red-600 mt-2">{submitError}</div>}
       </form>
     </div>
