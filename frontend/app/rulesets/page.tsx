@@ -17,7 +17,7 @@ const RulesetsPage = () => {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    setIsAdmin(user?.role === "Admin")
+    setIsAdmin(user?.role === "admin")
   }, [user])
 
   return (

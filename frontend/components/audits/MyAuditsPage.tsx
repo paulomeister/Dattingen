@@ -108,7 +108,7 @@ export function MyAuditsPage() {
                     {t("audits.myAudits.details", "View details")}
                   </Button>
                 </Link>
-                {(user?.role === "Admin" ||
+                {(user?.role === "admin" ||
                   user?.role === "Coordinator") && (
                     <Link
                       href={`/audits/createAuditProcess/${audit.rulesetId}`}

@@ -15,7 +15,7 @@ import toast from "react-hot-toast"
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
-  language: z.enum(["en", "es", "fr"], {
+  language: z.enum(["en", "es"], {
     required_error: "Please select a language.",
   }),
 })
@@ -54,7 +54,7 @@ const ProfileEditForm = ({ user }: ProfileEditFormProps) => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          ...(token && { Authorization: `Bearer ${token}` }),
+          ...(token && { Authorization: `${token}` }),
         },
         body: JSON.stringify(updatedUser),
       })

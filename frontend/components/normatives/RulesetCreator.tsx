@@ -8,7 +8,6 @@ import { Plus } from "lucide-react";
 import { environment } from "@/env/environment.dev";
 import { Ruleset, Control } from "@/types/Ruleset";
 import { useRouter } from "next/navigation";
-import { updateRuleset } from "@/lib/utils";
 import FinishRulesetButton from "./FinishRulesetButton";
 import { useLanguage } from "@/lib/LanguageContext";
 import { toast } from "react-hot-toast";
@@ -26,14 +25,20 @@ const RulesetCreator = ({ rulesetId, onUpdateSuccess }: RulesetCreatorProps) => 
     const [fileUrl, setFileUrl] = useState<string | null>(null);
     // Nuevo estado para mantener los controles
     const [controls, setControls] = useState<Control[]>([]);
-    
+
     const router = useRouter();
 
     useEffect(() => {
         async function getFileUrl(): Promise<void> {
             const fileName: string = ruleset!.fileName; // Recibo del AzureResponse el atributo fileName
             // Mandamos a buscar el archivo a backend por su nmbre
-            const fileData = await fetch(`${environment.API_URL}/rulesets/api/downloadFile/${fileName}`);
+            const fileData = await fetch(`${environment.API_URL}/rulesets/api/downloadFile/${fileName}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": localStorage.getItem("token") || "",
+
+                },
+            });
 
             const fileRes = await fileData.blob();
 
@@ -61,7 +66,12 @@ const RulesetCreator = ({ rulesetId, onUpdateSuccess }: RulesetCreatorProps) => 
     useEffect(() => {
         const fetchRulesetData = async () => {
             try {
-                const res = await fetch(`${environment.API_URL}/rulesets/api/findbyid/${rulesetId}`);
+                const res = await fetch(`${environment.API_URL}/rulesets/api/findbyid/${rulesetId}`, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": localStorage.getItem("token") || "",
+                    },
+                });
                 if (!res.ok) {
                     throw new Error("Failed to fetch ruleset data");
                 }
@@ -137,7 +147,19 @@ const RulesetCreator = ({ rulesetId, onUpdateSuccess }: RulesetCreatorProps) => 
                 controls: controls
             };
 
-            const response = await updateRuleset(rulesetId as string, updatedRuleset);
+            const response = await fetch(
+                `${environment.API_URL}/rulesets/api/update/${rulesetId}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": localStorage.getItem("token") || "",
+                    },
+                    body: JSON.stringify(updatedRuleset),
+                }
+            );
+
+
 
             if (!response.ok) {
                 throw new Error('Failed to update ruleset');
@@ -171,6 +193,7 @@ const RulesetCreator = ({ rulesetId, onUpdateSuccess }: RulesetCreatorProps) => 
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': localStorage.getItem('token') || '',
                 },
                 body: JSON.stringify(updatedRuleset),
             });
@@ -179,6 +202,7 @@ const RulesetCreator = ({ rulesetId, onUpdateSuccess }: RulesetCreatorProps) => 
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': localStorage.getItem('token') || '',
                 }
             });
 
@@ -186,7 +210,7 @@ const RulesetCreator = ({ rulesetId, onUpdateSuccess }: RulesetCreatorProps) => 
                 throw new Error('Failed to publish ruleset');
             }
 
-            const publishData = await publishResponse.json();
+            await publishResponse.json();
 
             toast.success(t('rulesets.creator.success.publish'));
             router.push(`/rulesets/get/${rulesetId}`);
@@ -228,7 +252,7 @@ const RulesetCreator = ({ rulesetId, onUpdateSuccess }: RulesetCreatorProps) => 
 
             {/* Botón para finalizar la normativa */}
             <div className="flex justify-center mt-6 mb-12">
-                <FinishRulesetButton 
+                <FinishRulesetButton
                     rulesetId={rulesetId}
                     rulesetName={ruleset?.name || t('rulesets.creator.thisRuleset')}
                     onFinish={handleFinishRuleset}
@@ -239,8 +263,8 @@ const RulesetCreator = ({ rulesetId, onUpdateSuccess }: RulesetCreatorProps) => 
             {isCreating && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center 
                     bg-black/40 backdrop-blur-sm transition-opacity duration-200 ease-in-out opacity-100">
-                    <CreateNormativeItem 
-                        onClose={closeDialog} 
+                    <CreateNormativeItem
+                        onClose={closeDialog}
                         selectedText={selectedText}
                         onSaveControl={handleSaveControl}
                     />

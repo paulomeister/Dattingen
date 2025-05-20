@@ -62,7 +62,7 @@ export default function MiComponente({ params }: { params: Promise<{ id: string 
     };
 
     // Check if user has permission to access this page
-    const hasPermission = user?.role === 'Admin' || user?.role === 'Coordinator';
+    const hasPermission = user?.role === 'admin' || user?.role === 'Coordinator';
 
     if (!hasPermission) {
         return (
