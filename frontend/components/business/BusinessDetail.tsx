@@ -56,9 +56,9 @@ export default function BusinessDetail({ business }: BusinessDetailProps) {
                 />
             </Card>
 
-            {/* <Card className="md:col-span-2 p-6 shadow-lg">
-                <StatisticsView data={business.stats} />
-            </Card> */}
+            <Card className="md:col-span-2 p-6 shadow-lg">
+                <StatisticsView business={business}/>
+            </Card>
         </div></>
     );
 }

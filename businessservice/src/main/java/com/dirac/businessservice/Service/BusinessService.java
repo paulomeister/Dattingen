@@ -139,4 +139,15 @@ public class BusinessService {
         }
         throw new RuntimeException("No audits found for business " + businessId);
     }
+
+    public BusinessModel removeAssociateFromBusiness(String businessId, String associateId) {
+        BusinessModel business = businessRepository.findById(businessId)
+                .orElseThrow(() -> new BusinessNotFoundException("Business with ID " + businessId + " not found."));
+        if (business.getAssociates() != null) {
+            business.getAssociates().removeIf(associate -> associate.get_id().equals(associateId));
+        }
+        BusinessModel updatedBusiness = businessRepository.save(business);
+        // También podrías actualizar el businessId del usuario a null en el UserService vía API si lo deseas
+        return updatedBusiness;
+    }
 }

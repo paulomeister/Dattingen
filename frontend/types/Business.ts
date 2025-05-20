@@ -14,5 +14,4 @@ export interface Business {
   activity: string;
   associates: Associate[];
   audits: Audit[];
-  stats: StatisticsData;
 }

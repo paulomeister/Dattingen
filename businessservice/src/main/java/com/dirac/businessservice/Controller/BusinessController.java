@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import com.dirac.businessservice.DTOs.ResponseDTO;
 import com.dirac.businessservice.Model.AuditModel;
 import com.dirac.businessservice.Model.BusinessModel;
+import com.dirac.businessservice.Model.AsociateModel;
 import com.dirac.businessservice.Service.AuditStatisticsService;
 import com.dirac.businessservice.Service.BusinessService;
 
@@ -106,5 +107,25 @@ public class BusinessController {
             return ResponseEntity.status(404)
                     .body(new ResponseDTO<>(404, e.getMessage(), null));
         }
+    }
+
+    @PostMapping("/business/registerAssociate/{businessId}")
+    @PreAuthorize("hasAnyRole('admin', 'Coordinator')")
+    public ResponseEntity<ResponseDTO<BusinessModel>> registerAssociates(
+            @PathVariable String businessId,
+            @RequestBody List<AsociateModel> associates) {
+        log.info("Registering associates for business: {}", businessId);
+        BusinessModel updatedBusiness = businessService.registerAuditors(businessId, associates);
+        return ResponseEntity.ok(new ResponseDTO<>(200, "Associates registered successfully.", updatedBusiness));
+    }
+
+    @PreAuthorize("hasAnyRole('admin', 'Coordinator')")
+    @DeleteMapping("/business/{businessId}/removeAssociate/{associateId}")
+    public ResponseEntity<ResponseDTO<BusinessModel>> removeAssociateFromBusiness(
+            @PathVariable String businessId,
+            @PathVariable String associateId) {
+        log.info("Removing associate {} from business {}", associateId, businessId);
+        BusinessModel updatedBusiness = businessService.removeAssociateFromBusiness(businessId, associateId);
+        return ResponseEntity.ok(new ResponseDTO<>(200, "Associate removed successfully.", updatedBusiness));
     }
 }
