@@ -68,7 +68,7 @@ public class CustomUsernameAndPasswordAuthenticationFilter extends UsernamePassw
                 .subject(authResult.getName())
                 .claim("authorities", authResult.getAuthorities())
                 .issuedAt(new Date())
-                .expiration(java.sql.Date.valueOf(LocalDate.now().plusDays(jwtConfigurationVariables.getTokenExpirationAfterDays())))
+                .expiration(java.sql.Date.valueOf(LocalDate.now().plusDays(Long.parseLong(jwtConfigurationVariables.getTokenExpirationAfterDays()))))
                 .signWith(secretKey)
                 .compact();
 

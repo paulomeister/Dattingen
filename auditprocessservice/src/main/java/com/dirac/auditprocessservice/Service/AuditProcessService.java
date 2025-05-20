@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -32,9 +33,12 @@ public class AuditProcessService {
   private AuditProcessRepository auditProcessRepository;
   @Autowired
   private RestTemplate restTemplate;
-  private String apiGatewayUrl = "http://host.docker.internal:8090"; // Cambia esto a la URL de tu API Gateway
-  // Read All
 
+  @Value("${services.apigateway.url}")
+  private String apiGatewayUrl;
+
+
+  // Read All
   public List<AuditProcessModel> getAllAuditProcesses() {
     return auditProcessRepository.findAll();
   }

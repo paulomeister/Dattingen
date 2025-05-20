@@ -15,10 +15,10 @@ public class AuditStatisticsController {
     private AuditStatisticsService auditStatisticsService;
 
     @GetMapping("/{businessId}")
-    public ResponseEntity<ResponseDTO<AuditStatisticsResponseDTO>> getAuditStatisticsByBusiness(
+    public ResponseEntity<ResponseDTO<?>> getAuditStatisticsByBusiness(
             @PathVariable String businessId) {
-        AuditStatisticsResponseDTO auditStats = auditStatisticsService.getFormattedAuditStatistics(businessId);
-        return ResponseEntity.ok(new ResponseDTO<>(200, "Audit statistics retrieved successfully.", auditStats));
+        // AuditStatisticsResponseDTO auditStats = auditStatisticsService.getFormattedAuditStatistics(businessId);
+        return ResponseEntity.ok(new ResponseDTO<String>(200, "Audit statistics retrieved successfully.", ""));
     }
 
 }
