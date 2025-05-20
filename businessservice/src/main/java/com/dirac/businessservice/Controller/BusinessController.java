@@ -9,7 +9,6 @@ import com.dirac.businessservice.DTOs.ResponseDTO;
 import com.dirac.businessservice.Model.AuditModel;
 import com.dirac.businessservice.Model.BusinessModel;
 import com.dirac.businessservice.Model.AsociateModel;
-import com.dirac.businessservice.Service.AuditStatisticsService;
 import com.dirac.businessservice.Service.BusinessService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -23,9 +22,6 @@ public class BusinessController {
 
     @Autowired
     private BusinessService businessService;
-
-    @Autowired
-    private AuditStatisticsService auditStatisticsService;
 
     @GetMapping("/")
     public ResponseEntity<ResponseDTO<List<BusinessModel>>> getAllBusinesses() {
