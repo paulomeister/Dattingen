@@ -27,7 +27,7 @@ export default function BusinessAssociates({ associates, businessId }: BusinessA
   const [localAssociates, setLocalAssociates] = React.useState<MixedAssociate[]>(associates);
 
   // Solo admins y coordinadores pueden añadir auditores
-  const canAddAuditors = user?.role === 'Admin' || user?.role === 'Coordinator';  // Función para obtener el ID de un asociado sin importar su tipo
+  const canAddAuditors = user?.role === 'admin' || user?.role === 'Coordinator';  // Función para obtener el ID de un asociado sin importar su tipo
   const getAssociateId = (associate: MixedAssociate): string => {
     return associate._id;
   };

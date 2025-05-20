@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react'
 import { useAuth } from '@/lib/AuthContext'
 import { ResponseDTO } from '@/types/ResponseDTO'
 import { UserDTO } from '@/types/User'
-import { environment } from '@/env/environment.dev'
 import ProfileSkeleton from './ProfileSkeleton'
 import ProfileError from './ProfileError'
 import ProfileNotFound from './ProfileNotFound'
@@ -13,7 +12,7 @@ import { useApiClient } from '@/hooks/useApiClient'
 
 const UserClient = () => {
     const params = useParams()
-    const { user: authUser, token } = useAuth()
+    const { user: authUser } = useAuth()
     const [user, setUser] = useState<UserDTO | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
@@ -47,7 +46,7 @@ const UserClient = () => {
     if (error) return <ProfileError error={error} />
     if (!user) return <ProfileNotFound />
 
-    return <ProfileContent user={user} isOwnProfile={isOwnProfile} authUser={authUser} auth={token} />
+    return <ProfileContent user={user} isOwnProfile={isOwnProfile} authUser={authUser} />
 }
 
 export default UserClient

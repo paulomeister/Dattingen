@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import BusinessList from "@/components/business/BusinessList";
 import BusinessSearch from "@/components/business/BusinessSearch";
 import { Building2 } from "lucide-react";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
     title: "Businesses - ACME Audits",
@@ -21,8 +22,10 @@ export default function BusinessPage() {
                 </p>
             </div>
 
-            <BusinessSearch />
-            <BusinessList />
+            <Suspense>
+                <BusinessSearch />
+                <BusinessList />
+            </Suspense>
         </div>
     );
 }

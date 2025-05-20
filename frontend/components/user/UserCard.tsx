@@ -3,7 +3,7 @@
 import { UserDTO } from "@/types/User"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Building, Mail, User } from "lucide-react"
+import { Building, User } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { useLanguage } from "@/lib/LanguageContext"
 
@@ -28,16 +28,16 @@ export default function UserCard({ user }: UserCardProps) {
     const normalizeRole = (role: string): string => {
         // Asegurar que siempre se use el formato correcto, independientemente de cómo venga de la API
         if (typeof role !== 'string') return 'Unknown';
-        
+
         // Convertir a minúsculas para comparación
         const roleLower = role.toLowerCase();
-        
+
         // Mapear a los valores correctos del enum
-        if (roleLower === 'admin') return 'Admin';
+        if (roleLower === 'admin') return 'admin';
         if (roleLower === 'coordinator') return 'Coordinator';
         if (roleLower === 'internalauditor') return 'InternalAuditor';
         if (roleLower === 'externalauditor') return 'ExternalAuditor';
-        
+
         // Si no coincide con ninguno conocido, devolver el valor original
         return role;
     }
@@ -48,7 +48,7 @@ export default function UserCard({ user }: UserCardProps) {
     // Función para traducir el rol a un texto legible
     const getRoleLabel = (role: string) => {
         switch (role) {
-            case "Admin":
+            case "admin":
                 return t("user.roles.admin")
             case "Coordinator":
                 return t("user.roles.coordinator")
@@ -64,7 +64,7 @@ export default function UserCard({ user }: UserCardProps) {
     // Función para determinar el color del badge según el rol
     const getRoleBadgeColor = (role: string) => {
         switch (role) {
-            case "Admin":
+            case "admin":
                 return "bg-red-100 text-red-800 hover:bg-red-200"
             case "Coordinator":
                 return "bg-blue-100 text-blue-800 hover:bg-blue-200"
@@ -100,13 +100,8 @@ export default function UserCard({ user }: UserCardProps) {
                         <User className="h-4 w-4 mr-2 text-primary-color/70" />
                         <span className="text-gray-700">{user.username}</span>
                     </div>
-                    
-                    {user.email && (
-                        <div className="flex items-center text-sm">
-                            <Mail className="h-4 w-4 mr-2 text-primary-color/70" />
-                            <span className="text-gray-700">{user.email}</span>
-                        </div>
-                    )}
+
+
 
                     {user.businessId && (
                         <div className="flex items-center text-sm">

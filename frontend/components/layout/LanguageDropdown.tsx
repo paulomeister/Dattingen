@@ -10,18 +10,20 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Globe2 } from "lucide-react";
 import { useLanguage, Language } from "@/lib/LanguageContext";
-import { environment } from "@/env/environment.dev";
 import { useAuth } from "@/lib/AuthContext";
 import { UserDTO } from "@/types/User";
+import { useApiClient } from "@/hooks/useApiClient";
+import { ResponseDTO } from "@/types/ResponseDTO";
 
 const LanguageDropdown = () => {
   const { language, setLanguage } = useLanguage();
-  const { user, setAuthUser, token } = useAuth()
+  const { user, setAuthUser } = useAuth();
+  const apiClient = useApiClient();
 
   const languages = [
     { code: "en", label: "English", flag: "🇺🇸" },
     { code: "es", label: "Español", flag: "🇪🇸" },
-    { code: "fr", label: "Français", flag: "🇫🇷" },
+
   ];
 
   const handleLanguageChange = async (lang: Language) => {
@@ -29,22 +31,15 @@ const LanguageDropdown = () => {
 
     if (!user) return
 
-    const response = await fetch(`${environment.API_URL}/users/api/${user._id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        ...(token && { Authorization: `Bearer ${token}` }),
-      },
-      body: JSON.stringify({
-        "language": lang,
-      })
+    const response: ResponseDTO<UserDTO> = await apiClient.put(`/users/api/${user._id}`, {
+      language: lang,
     })
 
-    if (!response.ok) {
+    if (response.status >= 300) {
       console.error("Failed to update language preference");
     } else {
-      const user: UserDTO = await response.json()
-      setAuthUser(user)
+      const user: UserDTO = response.data;
+      setAuthUser(user);
     }
   }
 

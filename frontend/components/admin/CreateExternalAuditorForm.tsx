@@ -30,7 +30,7 @@ const formSchema = z.object({
     password: z.string().min(6, {
         message: "Password must be at least 6 characters",
     }),
-    language: z.enum(["en", "es", "fr"], {
+    language: z.enum(["en", "es"], {
         required_error: "Please select a language",
     }),
 })
@@ -86,7 +86,6 @@ export function CreateExternalAuditorForm() {
     const languageOptions = [
         { value: "en", label: t("admin.createUser.form.language.options.english") },
         { value: "es", label: t("admin.createUser.form.language.options.spanish") },
-        { value: "fr", label: t("admin.createUser.form.language.options.french") },
     ]
 
     return (

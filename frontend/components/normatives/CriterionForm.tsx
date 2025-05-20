@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { environment } from "@/env/environment.dev";
+// import { environment } from "@/env/environment.dev";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { BookOpen, Save, Trash2, AlertTriangle } from "lucide-react";
@@ -9,9 +9,10 @@ import { Button } from "../ui/button";
 import { useAuth } from "@/lib/AuthContext";
 import { Control as RulesetControl, PHVAPhase, Ruleset } from "@/types/Ruleset";
 import { useLanguage } from "@/lib/LanguageContext";
+import { useApiClient } from "@/hooks/useApiClient";
 
 interface Props {
-  ruleset: Ruleset | null,
+  ruleset?: Ruleset | null,
   criterion?: RulesetControl;
   onSave: (data: RulesetControl) => void;
   onDelete?: (controlId: string) => void;
@@ -29,6 +30,7 @@ export default function CriterionForm({
   const [compulsoriness, setCompulsoriness] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cycleStageOptions, setCycleStageOptions] = useState<string[]>([]);
+  const apiClient = useApiClient();
 
   // Estado para los valores del formulario
   const [formData, setFormData] = useState<RulesetControl>({
@@ -91,8 +93,8 @@ export default function CriterionForm({
   const fetchCompulsoriness = async () => {
     try {
       const isSpanish = user?.language === "es";
-      const res = await fetch(`${environment.API_URL}/rulesets/api/ListCompulsoriness${isSpanish ? "/es" : ""}`);
-      const data = await res.json();
+      const endpoint = `/rulesets/api/ListCompulsoriness${isSpanish ? "/es" : ""}`;
+      const data = await apiClient.get<string[]>(endpoint);
       setCompulsoriness(data);
     } catch (error) {
       console.error("Error al obtener los términos de Obligatoriedad:", error);

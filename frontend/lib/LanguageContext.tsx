@@ -6,7 +6,7 @@ import esTranslations from "@/locales/es.json";
 import { UserDTO } from "@/types/User";
 import { environment } from "@/env/environment.dev";
 
-export type Language = "en" | "es" ;
+export type Language = "en" | "es";
 
 type LanguageContextType = {
   language: Language;
@@ -56,18 +56,23 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   //  that can handle nested paths and fallbacks
   const t = (key: string, fallback?: string): string => {
     try {
-      const keys : string[] = key.split(".");
-      let result = translations[language];
+      const keys: string[] = key.split(".");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let result: any = translations[language];
 
-      // Navigate through the nested objects
+      // Navegar por los objetos anidados
       for (const k of keys) {
-        if (result[k] === undefined) {
+        if (typeof result !== "object" || !(k in result)) {
           console.warn(`Translation key not found: ${key}`);
           return fallback || key;
         }
         result = result[k];
       }
 
+      if (typeof result !== "string") {
+        console.warn(`Translation value for key '${key}' is not a string.`);
+        return fallback || key;
+      }
       return result;
     } catch (error) {
       console.error(`Error translating key: ${key}`, error);
@@ -97,6 +102,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
+              "Authorization": localStorage.getItem("token") || "", // Add token if needed
               // Add authentication headers if needed
             },
             body: JSON.stringify({ language: newLanguage }),

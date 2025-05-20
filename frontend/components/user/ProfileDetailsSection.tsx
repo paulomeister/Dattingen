@@ -9,7 +9,6 @@ import { ResponseDTO } from '@/types/ResponseDTO';
 
 interface ProfileDetailsSectionProps {
     user: UserDTO,
-    token: string | null
 }
 
 const ProfileDetailsSection = ({ user }: ProfileDetailsSectionProps) => {
@@ -21,7 +20,8 @@ const ProfileDetailsSection = ({ user }: ProfileDetailsSectionProps) => {
 
         const fetchBusiness = async () => {
             try {
-                const response = await fetch(`${environment.API_URL}/businesses/api/${user.businessId}`)
+                const response = await fetch(`${environment.API_URL}/businesses/api/${user.businessId}`,
+                  { headers: { 'Authorization': localStorage.getItem('token') || '' } })
                 if (!response.ok) throw new Error('Failed to fetch business data')
                 const data: ResponseDTO<Business> = await response.json()
                 setBusiness(data.data)

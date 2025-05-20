@@ -25,7 +25,7 @@ const CompactAuditorSelector = ({ onSelect, buttonLabel = "Seleccionar auditor" 
             setLoading(true);
             const response = await fetch(`${environment.API_URL}/users/api/search?role=InternalAuditor`, {
                 headers: {
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `${token}`
                 }
             });
 

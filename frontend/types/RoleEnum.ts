@@ -3,4 +3,4 @@ export type RoleEnum =
   | "InternalAuditor"
   | "Coordinator"
   | "ExternalAuditor"
-  | "Admin";
+  | "admin";

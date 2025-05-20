@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
-import { Textarea } from "../ui/textarea";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "../ui/select";
 import { Ruleset } from "@/types/Ruleset";
 import { useAuth } from "@/lib/AuthContext";
@@ -86,16 +85,7 @@ export default function RulesetForm({ onSave }: Props) {
                     {errors.status && <p className="text-sm text-red-500">{errors.status.message}</p>}
                 </div>
 
-                <div>
-                    <Label htmlFor="description" className="text-sm font-medium text-primary-color">Description</Label>
-                    <Textarea
-                        id="description"
-                        {...register("description")}
-                        rows={4}
-                        placeholder="Enter a description"
-                        className="border-tertiary-color/30 focus:border-primary-color/50 focus:ring-primary-color/20 transition-all resize-none"
-                    />
-                </div>
+
 
             </div>
 

@@ -5,6 +5,7 @@ import { UserDTO } from '@/types/User';
 import { useAuth } from '@/lib/AuthContext';
 import { useApiClient } from '@/hooks/useApiClient';
 import { Business } from '@/types/Business';
+import { environment } from '@/env/environment.dev';
 
 interface InternalAuditorSelectorProps {
     onSelect?: (selectedAuditors: UserDTO[]) => void;
@@ -30,9 +31,9 @@ const InternalAuditorSelector = ({ onSelect, selectedAuditors: initialSelectedAu
                 const currentAssociateIds = (business?.associates?.map(a => a._id).filter(Boolean) as string[]) || [];
 
                 // 2. Obtener todos los InternalAuditors
-                const response = await fetch('http://localhost:8090/users/api/roles/InternalAuditor/users', {
+                const response = await fetch(`${environment.API_URL}/users/api/roles/InternalAuditor/users`, {
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `${token}`
                     }
                 });
                 if (!response.ok) {
@@ -42,7 +43,8 @@ const InternalAuditorSelector = ({ onSelect, selectedAuditors: initialSelectedAu
                 let auditorsList: UserDTO[] = [];
                 if (data.status === 200 && Array.isArray(data.data)) {
                     // 3. Filtrar los que NO estén en business.associates
-                    auditorsList = data.data.filter((aud: UserDTO) => !currentAssociateIds.includes(aud._id));
+                    const validAssociateIds = currentAssociateIds.filter((id): id is string => typeof id === "string");
+                    auditorsList = data.data.filter((aud: UserDTO) => typeof aud._id === "string" && !validAssociateIds.includes(aud._id));
                 }
                 setAuditors(auditorsList);
             } catch (err) {
@@ -54,7 +56,7 @@ const InternalAuditorSelector = ({ onSelect, selectedAuditors: initialSelectedAu
         };
 
         fetchAuditors();
-    }, [token, user?.businessId]);
+    }, [token, user?.businessId, apiClient]);
 
     const filteredAuditors = auditors.filter(auditor =>
         auditor.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||

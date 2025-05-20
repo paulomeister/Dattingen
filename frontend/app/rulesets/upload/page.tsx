@@ -7,16 +7,16 @@ import { Drawer, DrawerClose, DrawerContent, DrawerHeader, DrawerTitle, DrawerTr
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import RulesetForm from "@/components/normatives/RulesetForm"; // Asegúrate de importar tu formulario aquí.
-import { environment } from "@/env/environment.dev"; // Asumiendo que tienes esto para las URLs de tu API
 import Link from "next/link";
 import { Ruleset } from "@/types/Ruleset";
+import { useApiClient } from "@/hooks/useApiClient";
 
 export default function CreateNormativesPage() {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [fileConfirmed, setFileConfirmed] = useState(false); // Estado para confirmar el archivo cargado
   const router = useRouter();
-
+  const apiClient = useApiClient();
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
   };
@@ -43,20 +43,12 @@ export default function CreateNormativesPage() {
   const handleSave = async (data: Partial<Ruleset>) => {
     if (uploadedFile && data) {
       try {
-        // Primero subimos el archivo
+        // Subir el archivo usando apiClient.upload
         const formData = new FormData();
         formData.append("file", uploadedFile);
-
-        const uploadResponse = await fetch(`${environment.API_URL}/rulesets/api/uploadFile`, {
-          method: "POST",
-          body: formData,
-        });
-
-
-        const dataInfo = await uploadResponse.json(); // Suponemos que el nombre del archivo es el texto retornado
+        const dataInfo = await apiClient.upload<{ fileName: string }>(`/rulesets/api/uploadFile`, formData);
         const name: string = dataInfo.fileName;
-        const fileName = name.replace("Rulesets/", "")
-
+        const fileName = name.replace("Rulesets/", "");
 
         // Ahora, usamos los datos del formulario para completar el ruleset
         const completeRulesetData = {
@@ -64,18 +56,10 @@ export default function CreateNormativesPage() {
           fileName,   // Añadimos el nombre del archivo
         };
 
-        // Enviar el ruleset al endpoint
-        const createResponse = await fetch(`${environment.API_URL}/rulesets/api/create`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(completeRulesetData),
-        });
+        // Usar apiClient.post para crear el ruleset
+        const responseData = await apiClient.post<Ruleset, typeof completeRulesetData>(`/rulesets/api/create`, completeRulesetData);
 
-        const responseData: Ruleset = await createResponse.json();
-
-        if (createResponse.ok) {
+        if (responseData && responseData._id) {
           console.log("Ruleset created successfully!");
           router.push(`/rulesets/create/${responseData._id}`);
           setFileConfirmed(true);
