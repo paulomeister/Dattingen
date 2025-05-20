@@ -4,47 +4,36 @@ import { useState, useEffect } from 'react';
 import { UserDTO } from '@/types/User';
 import { useAuth } from '@/lib/AuthContext';
 import { useApiClient } from '@/hooks/useApiClient';
-import { Business } from '@/types/Business';
+import { ResponseDTO } from '@/types/ResponseDTO';
 
-interface InternalAuditorSelectorProps {
+interface AssociatesSelectionProps {
     onSelect?: (selectedAuditors: UserDTO[]) => void;
     selectedAuditors?: UserDTO[];
 }
 
-const InternalAuditorSelector = ({ onSelect, selectedAuditors: initialSelectedAuditors }: InternalAuditorSelectorProps) => {
+const AssociatesSelection = ({ onSelect, selectedAuditors: initialSelectedAuditors }: AssociatesSelectionProps) => {
     const [auditors, setAuditors] = useState<UserDTO[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedAuditors, setSelectedAuditors] = useState<UserDTO[]>(initialSelectedAuditors || []);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const { token, user } = useAuth();
-    const apiClient = useApiClient();
+    const { user } = useAuth();
+    const apiClient = useApiClient()
 
     useEffect(() => {
         const fetchAuditors = async () => {
             try {
                 setLoading(true);
-                // 1. Obtener business del usuario autenticado
-                const businessRes = await apiClient.get<{ data: Business }>(`/businesses/api/${user?.businessId}`);
-                const business = businessRes.data;
-                const currentAssociateIds = (business?.associates?.map(a => a._id).filter(Boolean) as string[]) || [];
+                const response = await apiClient.get<ResponseDTO<UserDTO[]>>('/users/api/roles/InternalAuditor/users')
 
-                // 2. Obtener todos los InternalAuditors
-                const response = await fetch('http://localhost:8090/users/api/roles/InternalAuditor/users', {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-                if (!response.ok) {
-                    throw new Error(`Error: ${response.status}`);
+
+                if (response.status === 200 || response.status === 201
+                    && Array.isArray(response.data)) {
+                    setAuditors(response.data.filter(aud => aud.businessId === user?.businessId));
+                } else {
+
+                    setAuditors([]);
                 }
-                const data = await response.json();
-                let auditorsList: UserDTO[] = [];
-                if (data.status === 200 && Array.isArray(data.data)) {
-                    // 3. Filtrar los que NO estén en business.associates
-                    auditorsList = data.data.filter((aud: UserDTO) => !currentAssociateIds.includes(aud._id));
-                }
-                setAuditors(auditorsList);
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Error al cargar auditores');
                 console.error('Error fetching auditors:', err);
@@ -54,7 +43,7 @@ const InternalAuditorSelector = ({ onSelect, selectedAuditors: initialSelectedAu
         };
 
         fetchAuditors();
-    }, [token, user?.businessId]);
+    }, []);
 
     const filteredAuditors = auditors.filter(auditor =>
         auditor.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -130,4 +119,4 @@ const InternalAuditorSelector = ({ onSelect, selectedAuditors: initialSelectedAu
     );
 };
 
-export default InternalAuditorSelector;
+export default AssociatesSelection;

@@ -7,6 +7,8 @@ import { useAuth } from "@/lib/AuthContext";
 import { ResponseDTO } from "@/types/ResponseDTO";
 import { Button } from "@/components/ui/button";
 import { FileText, PlusCircle } from "lucide-react";
+import { Ruleset } from "@/types/Ruleset";
+import { useLanguage } from "@/lib/LanguageContext";
 
 // Define un tipo extendido para la UI
 interface AuditWithId extends Audit {
@@ -17,6 +19,7 @@ export function MyAuditsPage() {
   const [audits, setAudits] = useState<AuditWithId[]>([]);
   const apiClient = useApiClient();
   const { user } = useAuth();
+  const { t } = useLanguage();
 
   useEffect(() => {
     // Evita el bucle infinito: solo ejecuta si user._id está definido
@@ -35,23 +38,35 @@ export function MyAuditsPage() {
             : [];
           return (
             intAuditors.some((aud) => aud._id === user._id) ||
-            extAuditors.some((aud) => aud._id === user._id)
+            extAuditors.some((aud) => aud._id === user._id) ||
+            proc.businessId === user.businessId
           );
         });
 
 
-        const audits: AuditWithId[] = userProcesses.map((proc) => ({
-          _id: proc._id,
-          name: proc.rulesetId, // O usa un campo más descriptivo si existe
-          rulesetId: proc.rulesetId,
-          status:
-            proc.status === "IN_PROGRESS"
-              ? 0
-              : proc.status === "COMPLETED"
-                ? 1
-                : 2,
-          startDate: new Date(proc.startDate),
-          endDate: new Date(proc.endDate),
+        const audits: AuditWithId[] = await Promise.all(userProcesses.map(async (proc) => {
+          let rulesetName = proc.rulesetId;
+          try {
+            const rulesetRes = await apiClient.get<Ruleset>(`/rulesets/api/findbyid/${proc.rulesetId}`);
+
+            console.log("Ruleset response:", rulesetRes);
+            if (rulesetRes && rulesetRes.name) {
+              rulesetName = rulesetRes.name;
+            }
+          } catch { }
+          return {
+            _id: proc._id,
+            name: rulesetName,
+            rulesetId: proc.rulesetId,
+            status:
+              proc.status === "IN_PROGRESS"
+                ? 0
+                : proc.status === "COMPLETED"
+                  ? 1
+                  : 2,
+            startDate: new Date(proc.startDate),
+            endDate: new Date(proc.endDate),
+          };
         }));
         setAudits(audits);
       } catch {
@@ -60,7 +75,7 @@ export function MyAuditsPage() {
     };
     fetchBusinessAudits();
     // Solo depende de user._id y apiClient
-  }, [user?._id]);
+  }, [user?._id, user?.businessId, apiClient]);
 
   return (
     <div className="flex flex-col md:flex-row">
@@ -77,16 +92,20 @@ export function MyAuditsPage() {
                 {audit.name}
               </h4>
               <p className="text-sm text-gray-500 mb-4">
-                Status:{" "}
+                {t("audits.myAudits.status", "Status:")}{" "}
                 <span className="capitalize font-medium text-gray-700">
-                  {audit.status}
+                  {audit.status === 0
+                    ? t("audits.myAudits.inProgress", "In Progress")
+                    : audit.status === 1
+                      ? t("audits.myAudits.completed", "Completed")
+                      : t("audits.myAudits.other", "Other")}
                 </span>
               </p>
               <div className="flex flex-col gap-2 mt-auto">
                 <Link href={`/audits/processes/${audit.rulesetId}`} className="w-full">
                   <Button className="w-full flex items-center justify-center gap-2 bg-primary-color text-white hover:bg-secondary-color transition-all duration-200 shadow-md text-sm font-semibold rounded-xl py-2">
                     <FileText className="h-4 w-4" />
-                    Ver detalles
+                    {t("audits.myAudits.details", "View details")}
                   </Button>
                 </Link>
                 {(user?.role === "Admin" ||
@@ -100,7 +119,7 @@ export function MyAuditsPage() {
                         className="w-full flex items-center justify-center gap-2 border-primary-color text-primary-color hover:bg-primary-color hover:text-white transition-all duration-200 shadow text-sm font-semibold rounded-xl py-2"
                       >
                         <PlusCircle className="h-4 w-4" />
-                        Crear nueva auditoría
+                        {t("audits.myAudits.createProcess")}
                       </Button>
                     </Link>
                   )}
