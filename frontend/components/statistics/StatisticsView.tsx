@@ -80,7 +80,7 @@ function buildStatisticsData(auditResponses: AuditProcess[][]): StatisticsData {
     // Calculate conformity statistics
     const totalControls = assesments.length;
     const compliantControls = assesments.filter(a => a.status == "COMPLIANT").length;
-    const nonCompliantControls = assesments.filter(a => a.status == "COMPLIANT").length;
+    const nonCompliantControls = assesments.filter(a => a.status == "NON_COMPLIANT").length;
 
     // Calculate PHVA statistics
     const phvaInformities = {
