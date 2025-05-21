@@ -4,7 +4,7 @@ services:
     container_name: frontend_dev
     build:
       context: ./frontend
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     init: true
     volumes:
     - ./frontend:/app
