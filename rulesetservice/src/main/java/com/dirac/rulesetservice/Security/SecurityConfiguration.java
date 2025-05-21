@@ -2,6 +2,7 @@ package com.dirac.rulesetservice.Security;
 
 import com.dirac.rulesetservice.Security.JWT.JwtConfigurationVariables;
 import com.dirac.rulesetservice.Security.JWT.JwtTokenVerifier;
+import org.springframework.beans.factory.annotation.Value;
 import com.dirac.rulesetservice.Security.Logging.LoggingSecurityFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +27,8 @@ public class SecurityConfiguration {
 
     private final SecretKey secretKey;
     private final JwtConfigurationVariables jwtConfigurationVariables;
+    @Value("${application.origins.url}")
+    private String origins;
 
     public SecurityConfiguration(SecretKey secretKey, JwtConfigurationVariables jwtConfigurationVariables) {
         this.secretKey = secretKey;
@@ -55,10 +58,11 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(
-                "http://localhost:3000",  // Frontend URL
-                "http://localhost:8090"   // API Gateway URL
-        ));
+        if (origins != null && !origins.isBlank()) {
+            configuration.setAllowedOrigins(Arrays.asList(origins.split(",")));
+        } else {
+            configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://apigateway:8090"));
+        }
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type", "Content-Length", "Accept", "X-Requested-With"));
