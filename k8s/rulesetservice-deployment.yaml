@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: rulesetservice
-          image: <your-acr>.azurecr.io/rulesetservice:prod
+          image: dattingen.azurecr.io/rulesetservice:prod
           ports:
             - containerPort: 8082
           envFrom:

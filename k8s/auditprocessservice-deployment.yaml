@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: auditprocessservice
-          image: <your-acr>.azurecr.io/auditprocessservice:prod
+          image: dattingen.azurecr.io/auditprocessservice:prod
           ports:
             - containerPort: 8081
           envFrom:

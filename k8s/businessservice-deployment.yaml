@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: businessservice
-          image: <your-acr>.azurecr.io/businessservice:prod
+          image: dattingen.azurecr.io/businessservice:prod
           ports:
             - containerPort: 8080
           envFrom:
