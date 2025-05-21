@@ -27,7 +27,7 @@ export default function CriterionForm({
 }: Props) {
   const { user } = useAuth();
   const { t } = useLanguage();
-  const [compulsoriness, setCompulsoriness] = useState<string[]>([]);
+  const [compulsoriness, setCompulsoriness] = useState<{ en: string; es: string }[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cycleStageOptions, setCycleStageOptions] = useState<string[]>([]);
   const apiClient = useApiClient();
@@ -92,10 +92,19 @@ export default function CriterionForm({
 
   const fetchCompulsoriness = async () => {
     try {
-      const isSpanish = user?.language === "es";
-      const endpoint = `/rulesets/api/ListCompulsoriness${isSpanish ? "/es" : ""}`;
-      const data = await apiClient.get<string[]>(endpoint);
-      setCompulsoriness(data);
+      // Obtener ambas listas: inglés y español
+      const enList = await apiClient.get<string[]>(`/rulesets/api/ListCompulsoriness`);
+      let esList: string[] = enList;
+      if (user?.language === "es") {
+        try {
+          esList = await apiClient.get<string[]>(`/rulesets/api/ListCompulsoriness/es`);
+        } catch {
+          esList = enList;
+        }
+      }
+      // Mapear a objetos { en, es }
+      const mapped = enList.map((en, i) => ({ en, es: esList[i] || en }));
+      setCompulsoriness(mapped);
     } catch (error) {
       console.error("Error al obtener los términos de Obligatoriedad:", error);
     }
@@ -154,8 +163,8 @@ export default function CriterionForm({
             </SelectTrigger>
             <SelectContent>
               {compulsoriness.map((term) => (
-                <SelectItem key={term} value={term}>
-                  {term}
+                <SelectItem key={term.en} value={term.en}>
+                  {user?.language === "es" ? term.es : term.en}
                 </SelectItem>
               ))}
             </SelectContent>
