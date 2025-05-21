@@ -12,6 +12,7 @@ import { ClipboardCheck, ClipboardEdit, Beaker, ClipboardList } from "lucide-rea
 import { updateRuleset } from "@/lib/utils";
 import { useLanguage } from "@/lib/LanguageContext";
 import { toast } from "react-hot-toast";
+import { environment } from "@/env/environment.dev";
 
 // Componente para mostrar un criterio en un acordeón
 const CriterionAccordion = ({ criterion, ruleset }: { criterion: Control, ruleset: Ruleset | null }) => {
@@ -42,7 +43,20 @@ const CriterionAccordion = ({ criterion, ruleset }: { criterion: Control, rulese
       const updatedRuleset = { ...ruleset };
       updatedRuleset.controls[index] = data;
       try {
-        await updateRuleset(updatedRuleset._id as string, updatedRuleset);
+        const res = await fetch(
+          `${environment.API_URL}/rulesets/api/update/${updatedRuleset?._id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Authorization": localStorage.getItem("token") || "",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedRuleset),
+          }
+        );
+        if (res.status !== 200 && res.status !== 201) {
+          throw new Error("ERROR TOKEN");
+        }
         toast.success(t('normatives.criterionAccordion.saveSuccess'));
       } catch (exc) {
         console.error("Error at Control Update", exc);

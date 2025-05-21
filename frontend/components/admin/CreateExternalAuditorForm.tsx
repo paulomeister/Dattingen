@@ -84,8 +84,8 @@ export function CreateExternalAuditorForm() {
 
     // Create language options for the select field
     const languageOptions = [
-        { value: "en", label: t("admin.createUser.form.language.options.english") },
-        { value: "es", label: t("admin.createUser.form.language.options.spanish") },
+        { value: "en", label: t("admin.createUser.form.language.options.english", "English") },
+        { value: "es", label: t("admin.createUser.form.language.options.spanish", "Spanish") },
     ]
 
     return (
@@ -105,17 +105,17 @@ export function CreateExternalAuditorForm() {
                     <FormInputField
                         form={form}
                         name="username"
-                        label={t("admin.createUser.form.username.label")}
-                        placeholder={t("admin.createUser.form.username.placeholder")}
-                        description={t("admin.createUser.form.username.description")}
+                        label={t("admin.createUser.form.username.label", "Username")}
+                        placeholder={t("admin.createUser.form.username.placeholder", "Username")}
+                        description={t("admin.createUser.form.username.description", "Unique username for the auditor")}
                     />
 
                     <FormInputField
                         form={form}
                         name="name"
-                        label={t("admin.createUser.form.name.label")}
-                        placeholder={t("admin.createUser.form.name.placeholder")}
-                        description={t("admin.createUser.form.name.description")}
+                        label={t("admin.createUser.form.name.label", "Full Name")}
+                        placeholder={t("admin.createUser.form.name.placeholder", "Full name")}
+                        description={t("admin.createUser.form.name.description", "The auditor's full name")}
                     />
                 </div>
 
@@ -124,26 +124,26 @@ export function CreateExternalAuditorForm() {
                         form={form}
                         name="email"
                         type="email"
-                        label={t("admin.createUser.form.email.label")}
-                        placeholder={t("admin.createUser.form.email.placeholder")}
-                        description={t("admin.createUser.form.email.description")}
+                        label={t("admin.createUser.form.email.label", "Email")}
+                        placeholder={t("admin.createUser.form.email.placeholder", "Email address")}
+                        description={t("admin.createUser.form.email.description", "Professional email address")}
                     />
 
                     <FormInputField
                         form={form}
                         name="password"
                         type="password"
-                        label={t("admin.createUser.form.password.label")}
-                        placeholder={t("admin.createUser.form.password.placeholder")}
-                        description={t("admin.createUser.form.password.description")}
+                        label={t("admin.createUser.form.password.label", "Password")}
+                        placeholder={t("admin.createUser.form.password.placeholder", "Password")}
+                        description={t("admin.createUser.form.password.description", "Minimum 6 characters")}
                     />
                 </div>
 
                 <FormSelectField
                     form={form}
                     name="language"
-                    label={t("admin.createUser.form.language.label")}
-                    description={t("admin.createUser.form.language.description")}
+                    label={t("admin.createUser.form.language.label", "Preferred Language")}
+                    description={t("admin.createUser.form.language.description", "Default language for the user interface")}
                     options={languageOptions}
                 />
 
@@ -152,7 +152,7 @@ export function CreateExternalAuditorForm() {
                         type="submit"
                         className="w-full bg-secondary-color hover:bg-primary-color text-white transition-all duration-300 shadow-md hover:shadow-lg"
                     >
-                        {t("admin.createUser.form.submit.label")}
+                        {t("admin.createUser.form.submit.label", "Create External Auditor")}
                     </Button>
                 </div>
             </form>

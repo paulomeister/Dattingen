@@ -18,15 +18,15 @@ export default function CreateExternalAuditorPage() {
   return (
     <div className="container mx-auto py-10 px-4 sm:px-6 md:px-8">
       <h1 className="text-3xl font-bold text-primary-color mb-6">
-        {t("admin.createUser.title")}
+        {t("admin.createUser.title", "Create External Auditor")}
       </h1>
       <Card className="shadow-lg border-primary-color/20">
         <CardHeader className="bg-secondary-color/5">
           <CardTitle className="text-primary-color">
-            {t("admin.createUser.cardTitle")}
+            {t("admin.createUser.cardTitle", "New External Auditor")}
           </CardTitle>
           <CardDescription>
-            {t("admin.createUser.cardDescription")}
+            {t("admin.createUser.cardDescription", "Create a new external auditor user account")}
           </CardDescription>
         </CardHeader>
         <CardContent className="pt-6">
