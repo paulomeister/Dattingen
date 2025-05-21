@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -26,6 +27,8 @@ public class SecurityConfiguration {
 
     private final SecretKey secretKey;
     private final JwtConfigurationVariables jwtConfigurationVariables;
+    @Value("${application.origins.url}")
+    private String origins;
 
     public SecurityConfiguration(SecretKey secretKey, JwtConfigurationVariables jwtConfigurationVariables) {
         this.secretKey = secretKey;
@@ -55,10 +58,11 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(
-                "http://localhost:3000",  // Frontend URL
-                "http://localhost:8090"   // API Gateway URL
-        ));
+        if (origins != null && !origins.isBlank()) {
+            configuration.setAllowedOrigins(Arrays.asList(origins.split(",")));
+        } else {
+            configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://apigateway:8090"));
+        }
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type", "Content-Length", "Accept", "X-Requested-With"));
