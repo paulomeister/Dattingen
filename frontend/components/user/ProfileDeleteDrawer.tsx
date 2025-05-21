@@ -34,7 +34,7 @@ const ProfileDeleteDrawer = ({ user }: ProfileEditDrawerProps) => {
             const response = await fetch(`${environment.API_URL}/users/api/${user._id}`, {
                 method: 'DELETE',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Authorization': localStorage.getItem('token') || '',
                 }
             })
 

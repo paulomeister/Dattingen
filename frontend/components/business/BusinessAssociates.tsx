@@ -27,7 +27,7 @@ export default function BusinessAssociates({ associates, businessId }: BusinessA
   const [localAssociates, setLocalAssociates] = React.useState<MixedAssociate[]>(associates);
 
   // Solo admins y coordinadores pueden añadir auditores
-  const canAddAuditors = user?.role === 'Admin' || user?.role === 'Coordinator';  // Función para obtener el ID de un asociado sin importar su tipo
+  const canAddAuditors = user?.role === 'admin' || user?.role === 'Coordinator';  // Función para obtener el ID de un asociado sin importar su tipo
   const getAssociateId = (associate: MixedAssociate): string => {
     return associate._id;
   };
@@ -48,6 +48,7 @@ export default function BusinessAssociates({ associates, businessId }: BusinessA
     setRemovingId(associateId);
     try {
       await apiClient.del(`/businesses/api/business/${businessId}/removeAssociate/${associateId}`);
+      await apiClient.del(`/users/api/removeFromBusiness/${associateId}`);
       setLocalAssociates((prev) => prev.filter(a => getAssociateId(a) !== associateId));
     } catch (err) {
       console.error("Error removing associate", err);

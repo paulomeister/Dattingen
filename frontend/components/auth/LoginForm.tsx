@@ -21,7 +21,7 @@ export function LoginForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
-  const { user, setAuthUser, setToken } = useAuth()
+  const { setAuthUser, setToken, logout } = useAuth()
   const { t } = useLanguage()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -44,7 +44,7 @@ export function LoginForm() {
 
         try {
 
-          const userResponse: Response = await fetch(`${environment.API_URL}/users/api/search?username=${username}`, {
+          const userResponse: Response = await fetch(`${environment.API_URL}/users/api/search?username=${username.toLowerCase()}`, {
             headers: {
               'Content-Type': 'application/json',
               'Authorization': token
@@ -52,15 +52,21 @@ export function LoginForm() {
           });
           const response: ResponseDTO<UserDTO> = await userResponse.json();
           const user = response.data;
+
+          if (response.status !== 200 && response.status !== 201) {
+            toast.error("ERROR");
+            router.push("/")
+            return;
+          }
+
           setToken(token);
           setAuthUser(user);
 
           const isFirstTime = JSON.parse(localStorage.getItem('firstTime')!) === "true";
 
-
-
           if (user?.role?.toLowerCase() === 'coordinator' && isFirstTime) {
             localStorage.setItem("firstTime", JSON.stringify("false"));
+            logout()
             return router.push('/business/create');
           }
 
@@ -87,16 +93,13 @@ export function LoginForm() {
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     const storedUser = localStorage.getItem("user");
-
-    console.log("Datos recuperados del localStorage:", { storedToken, storedUser });
-
     if (storedToken) {
       setToken(storedToken);
     }
     if (storedUser) {
       setAuthUser(JSON.parse(storedUser));
     }
-  }, []);
+  }, [setAuthUser, setToken]);
 
   return (
     <Card className="border-[#14213d] shadow-2xl">

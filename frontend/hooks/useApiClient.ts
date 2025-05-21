@@ -54,5 +54,16 @@ export function useApiClient() {
       });
       return handleResponse<T>(res);
     },
+
+    upload: async <T>(endpoint: string, formData: FormData) => {
+      const uploadHeaders: Record<string, string> = {};
+      if (token) uploadHeaders["Authorization"] = token;
+      const res = await fetch(buildUrl(endpoint), {
+        method: "POST",
+        headers: Object.keys(uploadHeaders).length > 0 ? uploadHeaders : undefined,
+        body: formData,
+      });
+      return handleResponse<T>(res);
+    },
   };
 }

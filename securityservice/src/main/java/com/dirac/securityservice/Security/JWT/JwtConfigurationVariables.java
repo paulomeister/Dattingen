@@ -15,7 +15,7 @@ public class JwtConfigurationVariables {
 
     private String secretKey;
     private String tokenPrefix;
-    private Integer tokenExpirationAfterDays;
+    private String tokenExpirationAfterDays;
 
     public String getAuthorizationHeader() {
 

@@ -31,9 +31,10 @@ export default function UserSearch() {
         setIsInitialState(false)
 
         try {
-            const response = await fetch(`${environment.API_URL}/users/api/search/users?q=${searchTerm}`)
+            const response = await fetch(`${environment.API_URL}/users/api/search/users?q=${searchTerm}`,
+                { headers: { 'Authorization': localStorage.getItem('token') || '' } })
 
-               const data = await response.json()
+            const data = await response.json()
 
             // Manejar el caso de un solo usuario o múltiples usuarios
             if (data.status === 200) {

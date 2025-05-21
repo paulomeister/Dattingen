@@ -60,7 +60,7 @@
         "coordinator": "Coordinador",
         "auditor": "Auditor"
       },
-      "successMessage": "¡Registro exitoso!",
+      "successMessage": "¡Registro exitoso!, ahora INICIA SESIÓN",
       "errorMessage": "Error en el registro. Por favor intenta de nuevo."
     }
   },
@@ -77,7 +77,9 @@
       "error": {
         "fetch": "Error al obtener empresas. Por favor intenta de nuevo."
       },
-      "emptyTitle": "No se encontraron empresas"
+      "emptyTitle": "No se encontraron empresas",
+      "members": "miembros",
+      "audits": "auditorías"
     },
     "create": {
       "title": "Crear Empresa",
@@ -94,7 +96,17 @@
       "empty": "No hay usuarios asociados con esta empresa"
     },
     "audits": "Auditorías",
-    "statistics": "Estadísticas"
+    "statistics": "Estadísticas",
+    "selectAud": {
+      "accessDenied": "Acceso denegado",
+      "noPermission": "No tienes permiso para acceder a esta página.",
+      "title": "Seleccionar Auditores Internos",
+      "description": "Selecciona los auditores internos para asignar a esta empresa. Serán responsables de realizar auditorías internas.",
+      "success": "Los auditores han sido registrados exitosamente. Redirigiendo...",
+      "submitting": "Enviando...",
+      "registerAuditors": "Registrar Auditores ({count})",
+      "noAuditorSelected": "Por favor selecciona al menos un auditor"
+    }
   },
   "rulesets": {
     "rulesets": "Conjuntos de Normas",
@@ -106,24 +118,24 @@
     "descriptionBrowse": "Accede a nuestra lista completa de estándares internacionales, marcos de trabajo y guías de cumplimiento listos para ser auditados.",
     "clickToBrowse": "La mayoría de usuarios comienzan aquí 🔍",
     "upload": {
-      "title": "Subir Normativas",
-      "subtitle": "Comienza con los pergaminos del futuro",
-      "description": "¡Sube un documento de un conjunto de normas certificado y haz magia!",
-      "nothingUploaded": "Todavía no se ha subido nada :(",
-      "buttonOpenDrawer": "Subir Conjunto de Normas",
-      "drawerTitle": "Selecciona el Archivo Requerido",
-      "requirementsTitle": "¡REQUISITOS!",
-      "onlyPdf": "Solo Archivo PDF",
-      "editable": "Archivo Editable",
-      "dragFile": "Arrastra AQUÍ tu archivo.",
-      "confirmTitle": "¿Estás seguro de que usarás este archivo?",
-      "yes": "¡Sí!",
-      "no": "No",
-      "done": "Hecho",
-      "cancel": "Cancelar",
+      "title": "Crear Normativa",
+      "subtitle": "Sube un archivo y crea una nueva normativa.",
+      "nothingUploaded": "Todavía no se ha subido ningún archivo",
+      "buttonOpenDrawer": "Subir Archivo",
+      "drawerTitle": "Subir Archivo",
+      "requirementsTitle": "Requisitos para el archivo",
+      "onlyPdf": "Solo PDF",
+      "editable": "Editable",
+      "dragFile": "Arrastra tu archivo aquí",
+      "confirmTitle": "Archivo Confirmado",
+      "done": "Archivo Subido",
       "goBack": "Volver"
     },
-    "create": {},
+    "create": {
+      "title": "Crear Nueva Normativa",
+      "subtitle": "Sube y anota documentos para crear normativas de auditoría personalizadas",
+      "errorNoId": "Error: rulesetId no encontrado en la URL"
+    },
     "list": {
       "title": "¡Busca los Conjuntos de Normas más Populares!",
       "noRulesets": "No se encontró ningún Conjunto de Normas que coincida con tus criterios de búsqueda.",
@@ -169,9 +181,34 @@
       }
     }
   },
-  "statistics": {},
+  "statistics": {
+    "loading": "Cargando estadísticas...",
+    "title": "Estadísticas de la Organización",
+    "carousel": {
+      "noAuditData": "No hay datos de auditorías disponibles",
+      "totalAudits": "Auditorías Totales",
+      "activeAudits": "Auditorías Activas",
+      "meanDuration": "Duración Promedio",
+      "conformities": "% Conformidades",
+      "nonConformities": "% No Conformidades",
+      "trend": "Tendencia de Conformidades",
+      "noTrendData": "No hay datos de tendencia disponibles",
+      "phvaMostNonConformities": "PHVA con más No Conformidades",
+      "phva": {
+        "plan": "Planear (P)",
+        "doPhase": "Hacer (H)",
+        "check": "Verificar (V)",
+        "act": "Actuar (A)",
+        "undetermined": "No determinado"
+      },
+      "prev": "Anterior",
+      "next": "Siguiente",
+      "goToSlide": "Ir a la diapositiva {index}"
+    }
+  },
   "user": {
     "profile": {
+      "business": "Empresa",
       "delete": "Eliminar Cuenta",
       "deleting": "Eliminando Cuenta...",
       "edit": "Editar Perfil",
@@ -179,6 +216,7 @@
       "deleteConfirmationMessage": "Esta acción no se puede deshacer. Eliminará permanentemente tu cuenta y tus datos de nuestros servidores.",
       "confirmationQuestion": "¿Estás seguro de que deseas eliminar tu cuenta?",
       "cancel": "Cancelar",
+      "language": "Lenguaje",
       "success": "¡Usuario eliminado con éxito!",
       "error": "Error al eliminar el usuario. Por favor, inténtalo de nuevo."
     }
@@ -269,6 +307,7 @@
     "other": "Otra",
     "details": "Ver detalles",
     "createProcess": "Crear Proceso de Auditoría",
+    
     "dashboardTitle": "Panel de Mis Auditorías",
     "dashboardSubtitle": "Gestiona tus auditorías activas y accede a sus ciclos, filtros y estados.",
     "createAudit": "Crear Auditoría",
@@ -299,6 +338,19 @@
     "submit": "Crear Auditoría",
     "error": "Error al crear la auditoría.",
     "duplicate": "Ya existe una auditoría con este conjunto de reglas."
-    }
+    },
+  "compactAuditorSelector": {
+    "buttonLabel": "Seleccionar auditor",
+    "title": "Seleccionar Auditor Interno",
+    "searchPlaceholder": "Buscar por nombre o usuario...",
+    "loading": "Cargando...",
+    "error": "Error al cargar auditores",
+    "noAuditors": "No se encontraron auditores"
+  },
+  "selectAuditors": {
+    "title": "Selección de Auditores Internos",
+    "selectedTitle": "Auditores Seleccionados",
+    "hideList": "Ocultar lista"
+  }
   }
 }

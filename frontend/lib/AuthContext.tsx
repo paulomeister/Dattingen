@@ -28,11 +28,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     useEffect(() => {
+
         // Guardar token y usuario en localStorage al cambiar
         if (token) {
             localStorage.setItem("token", token);
         }
         if (user) {
+            
             localStorage.setItem("user", JSON.stringify(user));
         }
     }, [token, user]);

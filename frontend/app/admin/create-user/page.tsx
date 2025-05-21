@@ -11,7 +11,7 @@ export default function CreateExternalAuditorPage() {
   const { t } = useLanguage()
 
   // Only allow admin users to access this page
-  if (!user || user.role !== "Admin") {
+  if (!user || user.role !== "admin") {
     redirect("/")
   }
 

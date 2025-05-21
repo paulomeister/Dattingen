@@ -11,6 +11,7 @@ import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { environment } from "@/env/environment.dev";
 import { useAuth } from "@/lib/AuthContext";
+import { RoleEnum } from "@/types/RoleEnum";
 
 export function RegisterForm() {
   // Language
@@ -24,7 +25,7 @@ export function RegisterForm() {
     email: "",
     language: "en",
     password: "",
-    role: "InternalAuditor",
+    role: "InternalAuditor" as RoleEnum,
     securityQuestion: {
       securityQuestion: "What is your favorite color?",
       securityAnswer: "blue"
@@ -101,8 +102,8 @@ export function RegisterForm() {
             placeholder={t("auth.register.emailPlaceholder")}
           />
           <RoleSelector
-            value={userRegister.role}
-            onChange={(v) => handleChange("role", v)}
+            value={userRegister.role as RoleEnum}
+            onChange={(v) => handleChange("role", v as RoleEnum)}
           />
           <LanguageSelector
             value={userRegister.language}

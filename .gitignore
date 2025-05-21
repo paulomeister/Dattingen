@@ -60,3 +60,7 @@ rulesetservice/logs/**
 securityservice/logs/**
 securityservice/securityservice-logs/**
 userservice/logs/**
+
+*/k8s/global-secrets.yaml
+./k8s/global-secrets.yaml
+k8s\global-secrets.yaml

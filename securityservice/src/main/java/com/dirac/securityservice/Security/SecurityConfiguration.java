@@ -85,8 +85,8 @@ public class SecurityConfiguration {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of(
-            "http://localhost:3000",  // Frontend URL
-            "http://localhost:8090"   // API Gateway URL
+            "http://localhost:3000",  // TODO: set frontend ingress public IP
+            "http://apigateway:8090"   // API Gateway URL
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowCredentials(true);

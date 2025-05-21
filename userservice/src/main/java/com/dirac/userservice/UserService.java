@@ -147,9 +147,19 @@ public class UserService {
         if (updatedUser.getLanguage() != null) {
             existingUser.setLanguage(updatedUser.getLanguage());
         }
+        if (updatedUser.getBusinessId() != null) {
+            existingUser.setBusinessId(updatedUser.getBusinessId());
+        }
 
         return userRepository.save(existingUser);
 
+    }
+
+    public UserModel removeUserBusinessId(String _id) {
+        UserModel user = userRepository.findById(_id)
+                .orElseThrow(() -> new ResourceNotFoundException("User", _id));
+        user.setBusinessId(null);
+        return userRepository.save(user);
     }
 
     // Eliminar un usuario
@@ -174,7 +184,6 @@ public class UserService {
         } catch (Exception e) {
             throw new RuntimeException("Error checking auditor assignment before delete: " + e.getMessage(), e);
         }
-
 
         userRepository.deleteById(_id);
     }

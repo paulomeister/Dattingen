@@ -1,0 +1,153 @@
+services:
+  frontend:
+    image: frontend:prod
+    container_name: frontend_prod
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    networks:
+      - frontend
+  apigateway:
+    image: apigateway:prod
+    container_name: apigateway_prod
+    build:
+      context: ./apigateway
+      dockerfile: Dockerfile
+      target: prod
+    ports:
+      - "8090:8090"
+    restart: unless-stopped
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod 
+      - SPRING_DEVTOOLS_RESTART_ADDITIONAL_PATHS=/app # Path to watch for changes
+    networks:
+      - frontend
+      - backend
+  businessservice:
+    env_file:
+      - .env
+    image: businessservice:prod
+    container_name: businessservice_prod
+    build:
+      context: ./businessservice
+      dockerfile: Dockerfile
+      target: prod
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    networks:
+      - backend
+  auditprocessservice:
+    env_file:
+      - .env
+    image: auditprocessservice:prod
+    container_name: auditprocessservice_prod
+    build:
+      context: ./auditprocessservice
+      dockerfile: Dockerfile
+      target: prod
+    ports:
+      - "8081:8081"
+    restart: unless-stopped
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    networks:
+      - backend
+  userservice:
+    env_file:
+      - .env
+    image: userservice:prod
+    container_name: userservice_prod
+    build:
+      context: ./userservice
+      dockerfile: Dockerfile
+      target: prod
+    ports:
+      - "8083:8083"
+    restart: unless-stopped
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    networks:
+      - backend
+  rulesetservice:
+    env_file:
+      - .env
+    image: rulesetservice:prod
+    container_name: rulesetservice_prod
+    build:
+      context: ./rulesetservice
+      dockerfile: Dockerfile
+      target: prod
+    ports:
+      - "8082:8082"
+    restart: unless-stopped
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    networks:
+      - backend
+  securityservice:
+    env_file:
+      - .env
+    image: securityservice:prod
+    container_name: securityservice_prod
+    build:
+      context: ./securityservice
+      dockerfile: Dockerfile
+      target: prod
+    ports:
+      - "8084:8084"
+    restart: unless-stopped
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    networks:
+      - backend
+  #elasticsearch:
+  #  image: elastic/elasticsearch:9.0.1
+  #  environment:
+  #    - discovery.type=single-node
+  #   - xpack.security.enabled=false
+  # ports:
+  #   - "9200:9200"
+  #  volumes:
+  #    - elasticsearch-data:/usr/share/elasticsearch/data
+  #  networks:
+  #   - backend
+  #kibana:
+  #  image: elastic/kibana:9.0.1
+  #  environment:
+  #    - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+  #  ports:
+  #    - "5601:5601"
+  #  depends_on:
+  #    - elasticsearch
+  #  networks:
+  #    - backend
+  #filebeat:
+  #  image: filebeatservice:dev
+  #  container_name: filebeatservice_dev
+  # build:
+  #    context: ./filebeat
+  #    dockerfile: Dockerfile
+  #    target: dev
+  #  user: root
+  #  depends_on:
+  #    - elasticsearch
+  #  volumes:
+  #    - ./businessservice/logs:/app/businessservice-logs:ro
+  #    - ./rulesetservice/logs:/app/rulesetservice-logs:ro
+  #    - ./auditprocessservice/logs:/app/auditprocessservice-logs:ro
+  #    - ./userservice/logs:/app/userservice-logs:ro
+  #    - ./securityservice/logs:/app/securityservice-logs:ro
+  #  networks:
+  #    - backend
+networks:
+  backend:
+  frontend:
+#volumes:
+#  elasticsearch-data:
+  

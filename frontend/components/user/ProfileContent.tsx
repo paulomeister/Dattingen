@@ -11,11 +11,10 @@ import ProfileDeleteDrawer from './ProfileDeleteDrawer'
 interface ProfileContentProps {
     user: UserDTO
     isOwnProfile: boolean
-    authUser: UserDTO | null
-    token: string | null
+    authUser?: UserDTO | null
 }
 
-const ProfileContent = ({ user, isOwnProfile, authUser, token }: ProfileContentProps) => {
+const ProfileContent = ({ user, isOwnProfile, authUser }: ProfileContentProps) => {
     // Helper function to get role badge color
     const getRoleBadgeClass = (role: string) => {
         switch (role) {
@@ -54,7 +53,7 @@ const ProfileContent = ({ user, isOwnProfile, authUser, token }: ProfileContentP
                 </CardHeader>
 
                 <CardContent className="p-6">
-                    <ProfileDetailsSection user={user} token={token} />
+                    <ProfileDetailsSection user={user} />
                 </CardContent>
 
                 <CardFooter className="bg-gray-50 dark:bg-gray-900 p-4 text-center text-sm text-gray-500">

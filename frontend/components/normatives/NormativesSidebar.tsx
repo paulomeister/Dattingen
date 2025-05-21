@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useImperativeHandle, forwardRef, useRef } from "react";
+import React, { useState, useEffect, useImperativeHandle, forwardRef, } from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -35,7 +35,7 @@ const NormativesSidebar = forwardRef<NormativesSidebarRef, NormativesSidebarProp
 
   // Estado de carga
   const [loading, setLoading] = useState(true);
-  
+
   // Contador de actualizaciones para forzar la recarga
   const [updateCounter, setUpdateCounter] = useState(0);
 
@@ -50,7 +50,13 @@ const NormativesSidebar = forwardRef<NormativesSidebarRef, NormativesSidebarProp
   const fetchCompulsoriness = async () => {
     try {
       const isSpanish = user?.language === "es";
-      const res = await fetch(`${environment.API_URL}/rulesets/api/ListCompulsoriness${isSpanish ? "/es" : ""}`);
+      const res = await fetch(`${environment.API_URL}/rulesets/api/ListCompulsoriness${isSpanish ? "/es" : ""}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": localStorage.getItem("token") || "",
+        },
+      });
       const data = await res.json();
       setCompulsoriness(data);  // Actualizar el estado con los datos obtenidos
     } catch (error) {
@@ -70,7 +76,12 @@ const NormativesSidebar = forwardRef<NormativesSidebarRef, NormativesSidebarProp
     try {
       // Añadir un parámetro timestamp para evitar caché
       const timestamp = new Date().getTime();
-      const res = await fetch(`${environment.API_URL}/rulesets/api/findbyid/${rulesetId}?t=${timestamp}`);
+      const res = await fetch(`${environment.API_URL}/rulesets/api/findbyid/${rulesetId}?t=${timestamp}`, {
+        method: "GET",
+        headers: {
+          "Authorization": localStorage.getItem("token") || "",
+        }
+      });
       const data = await res.json();
       setRuleset(data);  // Actualizar el estado con los datos obtenidos
       if (data.controls) {
@@ -112,7 +123,7 @@ const NormativesSidebar = forwardRef<NormativesSidebarRef, NormativesSidebarProp
         ) : (
           <>
             <SidebarGroup>
-              <CriterionsSection items={criterions} ruleset={ruleset}/>
+              <CriterionsSection items={criterions} ruleset={ruleset} />
             </SidebarGroup>
           </>
         )}

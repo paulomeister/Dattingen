@@ -23,6 +23,9 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
+import { useApiClient } from "@/hooks/useApiClient";
+import { ResponseDTO } from "@/types/ResponseDTO";
+import { UserDTO } from "@/types/User";
 
 // Form schema validation
 const formSchema = z.object({
@@ -37,6 +40,7 @@ export default function BusinessCreationForm() {
     const { user, token } = useAuth();
     const { t } = useLanguage();
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const apiClient = useApiClient()
 
     // Initialize form
     const form = useForm<FormValues>({
@@ -65,14 +69,16 @@ export default function BusinessCreationForm() {
             };
 
             // Send API request to create business
-            const response = await fetch(`${environment.API_URL}/businesses/api/`, {
+            const response = await fetch(`${environment.API_URL}/businesses/api/saveBusiness`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    ...(token && { Authorization: token }),
+                    "Authorization": token!,
                 },
                 body: JSON.stringify(business),
             });
+
+
 
             if (!response.ok) {
                 throw new Error("Failed to create business");
@@ -84,7 +90,18 @@ export default function BusinessCreationForm() {
                 throw new Error(result.message || "Failed to create business");
             }
 
-            toast.success(t("business.create.success"))
+            const otherResponse: ResponseDTO<UserDTO> = await apiClient.put(`/users/api/${user!._id}`, {
+                businessId: result.data._id,
+            });
+
+            if (otherResponse.status !== 200 && otherResponse.status !== 201) {
+                throw new Error("Failed to associate user with business");
+            }
+
+            localStorage.setItem("user", JSON.stringify(otherResponse.data));
+
+
+            toast.success(t("business.create.success"));
 
             // Redirect to dashboard or business page
             router.push('/');

@@ -19,7 +19,7 @@ export const getUserImage = (role: RoleEnum | undefined): string => {
       return "/images/avatars/coordinator.png";
     case "ExternalAuditor":
       return "/images/avatars/external_auditor.png";
-    case "Admin":
+    case "admin":
       return "/images/avatars/admin.png";
     default:
       return "/images/avatars/default.jpg";
@@ -37,7 +37,7 @@ export const getUserRole = (
       return language === "es" ? "Coordinador" : "Coordinator";
     case "ExternalAuditor":
       return language === "es" ? "Auditor Externo" : "External Auditor";
-    case "Admin":
+    case "admin":
       return language === "es" ? "Administrador" : "Admin";
     default:
       return language === "es" ? "Usuario" : "User";
@@ -52,7 +52,7 @@ export async function createUser(
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      ...(token && { Authorization: `Bearer ${token}` }),
+      ...(token && { Authorization: `${token}` }),
     },
     body: JSON.stringify(user),
   });

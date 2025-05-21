@@ -68,7 +68,7 @@ public class UserController {
                 .map(userService::toUserDTO)
                 .collect(Collectors.toList());
         log.info("Found {} users matching query '{}'", userDTOs.size(), q);
-        return ResponseEntity.ok(new ResponseDTO<>(200, 
+        return ResponseEntity.ok(new ResponseDTO<>(200,
                 "Found " + userDTOs.size() + " users matching: " + q, userDTOs));
     }
 
@@ -111,11 +111,13 @@ public class UserController {
 
     // Crear nuevo usuario
     // | WARNING: user creation should only happen upon credentials creation
-    // (see securityservice/src/main/java/com/dirac/securityservice/Controller/CredentialsController.java)
+    // (see
+    // securityservice/src/main/java/com/dirac/securityservice/Controller/CredentialsController.java)
     @PostMapping("/")
     @PreAuthorize("hasRole('admin')")
     public ResponseEntity<ResponseDTO<UserDTO>> createUser(@RequestBody UserModel user) {
         log.info("Creating user with username: {}", user.getUsername());
+        user.setUsername(user.getUsername().toLowerCase());
         UserDTO userDTO = userService.toUserDTO(userService.createUser(user));
         log.info("User created with _id: {}", userDTO.get_id());
         return ResponseEntity.status(201)
@@ -146,6 +148,15 @@ public class UserController {
         UserDTO userDTO = userService.toUserDTO(userService.updateUser(_id, updatedUser));
         log.info("User updated: _id={}", _id);
         return ResponseEntity.ok(new ResponseDTO<>(200, "User Updated!", userDTO));
+    }
+
+    @DeleteMapping("/removeFromBusiness/{_id}")
+    @PreAuthorize("hasAnyRole('admin', 'Coordinator')")
+    public ResponseEntity<ResponseDTO<Object>> removeUserFromBusiness(@PathVariable String _id) {
+        log.info("Removing user from business with _id: {}", _id);
+        userService.removeUserBusinessId(_id);
+        log.info("User removed from business with _id: {}", _id);
+        return ResponseEntity.ok(new ResponseDTO<>(200, "User removed from business", null));
     }
 
     // Eliminar usuario

@@ -77,6 +77,8 @@
         "fetch": "Error fetching companies. Please try again."
       },
       "emptyTitle": "No Businesses found"
+
+      
     },
     "create": {
       "title": "Create Company",
@@ -93,8 +95,17 @@
       "empty": "No users associated with this business"
     },
     "audits": "Audits",
-    "statistics": "Statistics"
-    
+    "statistics": {},
+    "selectAud": {
+      "accessDenied": "Access Denied",
+      "noPermission": "You do not have permission to access this page.",
+      "title": "Select Internal Auditors",
+      "description": "Select internal auditors to assign to this business. They will be responsible for conducting internal audits.",
+      "success": "Auditors have been successfully registered. Redirecting...",
+      "submitting": "Submitting...",
+      "registerAuditors": "Register Auditors ({count})",
+      "noAuditorSelected": "Please select at least one auditor"
+    }
   },
   "rulesets": {
     "rulesets": "Rulesets",
@@ -106,24 +117,24 @@
     "descriptionBrowse": "Access our complete list of international standards, frameworks, and compliance guides ready to be audited.",
     "clickToBrowse": "Most users start here 🔍",
     "upload": {
-      "title": "Upload Normatives",
-      "subtitle": "Start with the scrolls of the future",
-      "description": "Upload a document of a Certified Ruleset and make magic!",
-      "nothingUploaded": "Anything uploaded yet :(",
-      "buttonOpenDrawer": "Upload Ruleset",
-      "drawerTitle": "Select the Required File",
-      "requirementsTitle": "REQUIREMENTS!",
-      "onlyPdf": "PDF File Only",
-      "editable": "Editable File",
-      "dragFile": "Drag HERE your file.",
-      "confirmTitle": "Are you sure you'll use this file?",
-      "yes": "Yes!",
-      "no": "No",
-      "done": "Done",
-      "cancel": "Cancel",
+      "title": "Create Ruleset",
+      "subtitle": "Upload a file and create a new ruleset.",
+      "nothingUploaded": "No file uploaded yet",
+      "buttonOpenDrawer": "Upload File",
+      "drawerTitle": "Upload File",
+      "requirementsTitle": "Requirements for the file",
+      "onlyPdf": "PDF only",
+      "editable": "Editable",
+      "dragFile": "Drag your file here",
+      "confirmTitle": "File Confirmed",
+      "done": "File Uploaded",
       "goBack": "Go Back"
     },
-    "create": {},
+    "create": {
+      "title": "Create New Ruleset",
+      "subtitle": "Upload and annotate documents to create custom audit rulesets",
+      "errorNoId": "Error: rulesetId not found in URL"
+    },
     "list": {
       "title": "Search the Most Trending Rulesets!",
       "noRulesets": "Any Ruleset was found matching your search criteria.",
@@ -208,10 +219,47 @@
     "submit": "Create Audit",
     "error": "Error creating audit.",
     "duplicate": "You already have an audit with this ruleset."
+  },
+  "compactAuditorSelector": {
+    "buttonLabel": "Select Auditor",
+    "title": "Select Internal Auditor",
+    "searchPlaceholder": "Search by name or username...",
+    "loading": "Loading...",
+    "error": "Error loading auditors",
+    "noAuditors": "No auditors found"
+  },
+  "selectAuditors": {
+    "title": "Internal Auditors Selection",
+    "selectedTitle": "Selected Auditors",
+    "hideList": "Hide list"
   }
 },
 
-  "statistics": {},
+  "statistics": {
+    "loading": "Loading statistics...",
+    "title": "Organizational Statistics",
+    "carousel": {
+      "noAuditData": "No audit data available",
+      "totalAudits": "Total Audits",
+      "activeAudits": "Active Audits",
+      "meanDuration": "Mean Duration",
+      "conformities": "% Conformities",
+      "nonConformities": "% Non-Conformities",
+      "trend": "Conformity Trend",
+      "noTrendData": "No trend data available",
+      "phvaMostNonConformities": "PHVA with Most Non-Conformities",
+      "phva": {
+        "plan": "Plan (P)",
+        "doPhase": "Do (D)",
+        "check": "Check (C)",
+        "act": "Act (A)",
+        "undetermined": "Undetermined"
+      },
+      "prev": "Previous",
+      "next": "Next",
+      "goToSlide": "Go to slide {index}"
+    }
+  },
   "admin": {
     "createUser": {
       "title": "Create External Auditor",
