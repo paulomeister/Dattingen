@@ -60,7 +60,7 @@
         "coordinator": "Coordinador",
         "auditor": "Auditor"
       },
-      "successMessage": "¡Registro exitoso!",
+      "successMessage": "¡Registro exitoso!, ahora INICIA SESIÓN",
       "errorMessage": "Error en el registro. Por favor intenta de nuevo."
     }
   },

@@ -5,6 +5,7 @@ import { UserDTO } from '@/types/User';
 import { useAuth } from '@/lib/AuthContext';
 import { useApiClient } from '@/hooks/useApiClient';
 import { ResponseDTO } from '@/types/ResponseDTO';
+import { Business } from '@/types/Business';
 
 interface AssociatesSelectionProps {
     onSelect?: (selectedAuditors: UserDTO[]) => void;
@@ -24,12 +25,11 @@ const AssociatesSelection = ({ onSelect, selectedAuditors: initialSelectedAudito
         const fetchAuditors = async () => {
             try {
                 setLoading(true);
-                const response = await apiClient.get<ResponseDTO<UserDTO[]>>('/users/api/roles/InternalAuditor/users')
-
+                const response = await apiClient.get<ResponseDTO<Business>>(`/businesses/api/${user?.businessId}`)
 
                 if (response.status === 200 || response.status === 201
                     && Array.isArray(response.data)) {
-                    setAuditors(response.data.filter(aud => aud.businessId === user?.businessId));
+                    setAuditors(response.data.associates as UserDTO[]);
                 } else {
 
                     setAuditors([]);
@@ -53,7 +53,6 @@ const AssociatesSelection = ({ onSelect, selectedAuditors: initialSelectedAudito
             ? selectedAuditors.filter(a => a._id !== auditor._id)
             : [...selectedAuditors, auditor];
 
-        console.log("Selected auditors:", newSelected);
 
 
         setSelectedAuditors(newSelected);

@@ -42,9 +42,14 @@ const InternalAuditorSelector = ({ onSelect, selectedAuditors: initialSelectedAu
                 const data = await response.json();
                 let auditorsList: UserDTO[] = [];
                 if (data.status === 200 && Array.isArray(data.data)) {
-                    // 3. Filtrar los que NO estén en business.associates
+                    // 3. Filtrar los que NO estén en business.associates y que tengan businessId === null
                     const validAssociateIds = currentAssociateIds.filter((id): id is string => typeof id === "string");
-                    auditorsList = data.data.filter((aud: UserDTO) => typeof aud._id === "string" && !validAssociateIds.includes(aud._id));
+                    auditorsList = data.data.filter(
+                        (aud: UserDTO) =>
+                            typeof aud._id === "string" &&
+                            !validAssociateIds.includes(aud._id) &&
+                            aud.businessId === null // <-- Solo los que no tienen businessId asignado
+                    );
                 }
                 setAuditors(auditorsList);
             } catch (err) {
@@ -56,7 +61,7 @@ const InternalAuditorSelector = ({ onSelect, selectedAuditors: initialSelectedAu
         };
 
         fetchAuditors();
-    }, [token, user?.businessId, apiClient]);
+    }, [token, user?.businessId,]);
 
     const filteredAuditors = auditors.filter(auditor =>
         auditor.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -66,7 +71,6 @@ const InternalAuditorSelector = ({ onSelect, selectedAuditors: initialSelectedAu
             ? selectedAuditors.filter(a => a._id !== auditor._id)
             : [...selectedAuditors, auditor];
 
-        console.log("Selected auditors:", newSelected);
 
 
         setSelectedAuditors(newSelected);

@@ -72,7 +72,6 @@ const ProfileEditForm = ({ user }: ProfileEditFormProps) => {
 
       // Update the auth context with new user data
       setAuthUser(result.data)
-
       // Save updated user to localStorage
       localStorage.setItem('user', JSON.stringify(result.data))
 
