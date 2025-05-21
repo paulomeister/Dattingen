@@ -77,6 +77,8 @@
         "fetch": "Error fetching companies. Please try again."
       },
       "emptyTitle": "No Businesses found"
+
+      
     },
     "create": {
       "title": "Create Company",
@@ -86,14 +88,25 @@
       "activity": "Business Activity",
       "activityPlaceholder": "Describe the main activities of your company",
       "success": "Company created successfully!",
-      "error": "Error creating company. Please try again."
+      "error": "Error creating company. Please try again.",
+      "button": "Create Company"
     },
     "associates": {
       "title": "Associates",
       "empty": "No users associated with this business"
     },
     "audits": "Audits",
-    "statistics": "Statistics"
+    "statistics": {},
+    "selectAud": {
+      "accessDenied": "Access Denied",
+      "noPermission": "You do not have permission to access this page.",
+      "title": "Select Internal Auditors",
+      "description": "Select internal auditors to assign to this business. They will be responsible for conducting internal audits.",
+      "success": "Auditors have been successfully registered. Redirecting...",
+      "submitting": "Submitting...",
+      "registerAuditors": "Register Auditors ({count})",
+      "noAuditorSelected": "Please select at least one auditor"
+    }
   },
   "rulesets": {
     "rulesets": "Rulesets",
@@ -105,24 +118,24 @@
     "descriptionBrowse": "Access our complete list of international standards, frameworks, and compliance guides ready to be audited.",
     "clickToBrowse": "Most users start here 🔍",
     "upload": {
-      "title": "Upload Normatives",
-      "subtitle": "Start with the scrolls of the future",
-      "description": "Upload a document of a Certified Ruleset and make magic!",
-      "nothingUploaded": "Anything uploaded yet :(",
-      "buttonOpenDrawer": "Upload Ruleset",
-      "drawerTitle": "Select the Required File",
-      "requirementsTitle": "REQUIREMENTS!",
-      "onlyPdf": "PDF File Only",
-      "editable": "Editable File",
-      "dragFile": "Drag HERE your file.",
-      "confirmTitle": "Are you sure you'll use this file?",
-      "yes": "Yes!",
-      "no": "No",
-      "done": "Done",
-      "cancel": "Cancel",
+      "title": "Create Ruleset",
+      "subtitle": "Upload a file and create a new ruleset.",
+      "nothingUploaded": "No file uploaded yet",
+      "buttonOpenDrawer": "Upload File",
+      "drawerTitle": "Upload File",
+      "requirementsTitle": "Requirements for the file",
+      "onlyPdf": "PDF only",
+      "editable": "Editable",
+      "dragFile": "Drag your file here",
+      "confirmTitle": "File Confirmed",
+      "done": "File Uploaded",
       "goBack": "Go Back"
     },
-    "create": {},
+    "create": {
+      "title": "Create New Ruleset",
+      "subtitle": "Upload and annotate documents to create custom audit rulesets",
+      "errorNoId": "Error: rulesetId not found in URL"
+    },
     "list": {
       "title": "Search the Most Trending Rulesets!",
       "noRulesets": "Any Ruleset was found matching your search criteria.",
@@ -169,21 +182,98 @@
     }
   },
   "audits": {
-    "myAudits": {
-      "status": "Status:",
-      "inProgress": "In Progress",
-      "completed": "Completed",
-      "other": "Other",
-      "details": "View details",
-      "createProcess": "Create Audit PROCESS"
-    },
-    "processList": {
-      "title": "Audit Processes",
-      "empty": "No Non Evaluated Audit Processes found.",
-      "assessments": "assessments"
+  "myAudits": {
+    "status": "Status:",
+    "inProgress": "In Progress",
+    "completed": "Completed",
+    "other": "Other",
+    "details": "View details",
+    "createProcess": "Create Audit PROCESS",
+
+    "dashboardTitle": "My Audits Dashboard",
+    "dashboardSubtitle": "Manage your active audits and access their cycles, filters, and statuses.",
+    "createAudit": "Create Audit",
+    "notEvaluated": "Not Evaluated",
+    "evaluated": "Evaluated",
+    "canceled": "Canceled",
+    "noAudits": "No audits found for this category.",
+    "viewDetails": "View Details",
+    "filters": "Filters",
+    "all": "All",
+    "title": "Audit Title",
+    "date": "Created Date"
+  },
+  "processList": {
+    "title": "Audit Processes",
+    "empty": "No Non Evaluated Audit Processes found.",
+    "assessments": "assessments"
+  },
+  "create": {
+    "title": "Create New Audit",
+    "subtitle": "Fill in the fields to register a new audit.",
+    "rulesetName": "Ruleset Name:",
+    "auditName": "Audit Name",
+    "auditNamePlaceholder": "Enter audit name",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "status": "Initial Status",
+    "submit": "Create Audit",
+    "error": "Error creating audit.",
+    "duplicate": "You already have an audit with this ruleset."
+  },
+  "compactAuditorSelector": {
+    "buttonLabel": "Select Auditor",
+    "title": "Select Internal Auditor",
+    "searchPlaceholder": "Search by name or username...",
+    "loading": "Loading...",
+    "error": "Error loading auditors: ",
+    "noAuditors": "No internal auditors found",
+    "noAuditorSelected": "No auditor selected",
+    "selectedCount": "{count} auditor(s) selected"
+  },
+  "selectAuditors": {
+    "title": "Internal Auditors Selection",
+    "selectedTitle": "Selected Auditors",
+    "hideList": "Hide list"
+  },
+  "createAuditProcess": {
+    "title": "Plan Audit Process",
+    "internalAuditors": "Internal Auditors",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "dateError": "End Date cannot be before Start Date",
+    "submitError": "Failed to create audit process",
+    "creating": "Creating...",
+    "createButton": "Create Audit Process",
+    "success": "Audit process created successfully!"
+  }
+},
+
+  "statistics": {
+    "loading": "Loading statistics...",
+    "title": "Organizational Statistics",
+    "carousel": {
+      "noAuditData": "No audit data available",
+      "totalAudits": "Total Audits",
+      "activeAudits": "Active Audits",
+      "meanDuration": "Mean Duration",
+      "conformities": "% Conformities",
+      "nonConformities": "% Non-Conformities",
+      "trend": "Conformity Trend",
+      "noTrendData": "No trend data available",
+      "phvaMostNonConformities": "PHVA with Most Non-Conformities",
+      "phva": {
+        "plan": "Plan (P)",
+        "doPhase": "Do (D)",
+        "check": "Check (C)",
+        "act": "Act (A)",
+        "undetermined": "Undetermined"
+      },
+      "prev": "Previous",
+      "next": "Next",
+      "goToSlide": "Go to slide {index}"
     }
   },
-  "statistics": {},
   "admin": {
     "createUser": {
       "title": "Create External Auditor",

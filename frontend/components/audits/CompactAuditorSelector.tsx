@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { UserDTO } from '@/types/User';
 import { useAuth } from '@/lib/AuthContext';
 import { environment } from '@/env/environment.dev';
+import { useLanguage } from '@/lib/LanguageContext';
 
 interface CompactAuditorSelectorProps {
     onSelect: (auditor: UserDTO) => void;
@@ -11,6 +12,7 @@ interface CompactAuditorSelectorProps {
 }
 
 const CompactAuditorSelector = ({ onSelect, buttonLabel = "Seleccionar auditor" }: CompactAuditorSelectorProps) => {
+    const { t } = useLanguage();
     const [auditors, setAuditors] = useState<UserDTO[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [isOpen, setIsOpen] = useState(false);
@@ -75,14 +77,14 @@ const CompactAuditorSelector = ({ onSelect, buttonLabel = "Seleccionar auditor" 
                 onClick={handleOpen}
                 className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium"
             >
-                {buttonLabel}
+                {t("audits.compactAuditorSelector.buttonLabel", buttonLabel)}
             </button>
 
             {isOpen && (
                 <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center">
                     <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md mx-4">
                         <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-bold">Seleccionar Auditor Interno</h3>
+                            <h3 className="text-lg font-bold">{t("audits.compactAuditorSelector.title", "Seleccionar Auditor Interno")}</h3>
                             <button
                                 onClick={handleClose}
                                 className="text-gray-500 hover:text-gray-700"
@@ -94,7 +96,7 @@ const CompactAuditorSelector = ({ onSelect, buttonLabel = "Seleccionar auditor" 
                         <div className="mb-4">
                             <input
                                 type="text"
-                                placeholder="Buscar por nombre o usuario..."
+                                placeholder={t("audits.compactAuditorSelector.searchPlaceholder", "Buscar por nombre o usuario...")}
                                 className="w-full px-4 py-2 border rounded-lg"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -102,12 +104,12 @@ const CompactAuditorSelector = ({ onSelect, buttonLabel = "Seleccionar auditor" 
                         </div>
 
                         <div className="border rounded-lg overflow-y-auto max-h-64 mb-4">
-                            {loading && <div className="p-4 text-center">Cargando...</div>}
+                            {loading && <div className="p-4 text-center">{t("audits.compactAuditorSelector.loading", "Cargando...")}</div>}
 
-                            {error && <div className="p-4 text-red-500">{error}</div>}
+                            {error && <div className="p-4 text-red-500">{t("audits.compactAuditorSelector.error", error)}</div>}
 
                             {!loading && !error && filteredAuditors.length === 0 && (
-                                <div className="p-4 text-gray-500 text-center">No se encontraron auditores</div>
+                                <div className="p-4 text-gray-500 text-center">{t("audits.compactAuditorSelector.noAuditors", "No se encontraron auditores")}</div>
                             )}
 
                             {!loading && !error && filteredAuditors.length > 0 && (
@@ -131,7 +133,7 @@ const CompactAuditorSelector = ({ onSelect, buttonLabel = "Seleccionar auditor" 
                                 onClick={handleClose}
                                 className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-gray-800"
                             >
-                                Cancelar
+                                {t("common.cancel", "Cancelar")}
                             </button>
                         </div>
                     </div>

@@ -1,3 +1,4 @@
+/*
 package com.dirac.businessservice.DTOs;
 
 import java.util.Map;
@@ -9,6 +10,8 @@ import lombok.NoArgsConstructor;
 /**
  * DTO para estadísticas de auditorías
  */
+
+/*
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,3 +38,5 @@ public class AuditStatsDTO {
     // Última actualización
     private String lastUpdated;
 }
+
+*/

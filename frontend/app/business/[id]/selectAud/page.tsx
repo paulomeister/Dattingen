@@ -9,8 +9,10 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/button';
 import { Associate } from '@/types/Associate';
 import { useApiClient } from '@/hooks/useApiClient';
+import { useLanguage } from '@/lib/LanguageContext';
 
 export default function MiComponente({ params }: { params: Promise<{ id: string }> }) {
+    const { t } = useLanguage();
     const { id: businessId } = use(params); // 🔥 Aquí se desenvuelve el Promise
     const { token, user } = useAuth();
     const [selectedAuditors, setSelectedAuditors] = useState<UserDTO[]>([]);
@@ -76,8 +78,8 @@ export default function MiComponente({ params }: { params: Promise<{ id: string 
         return (
             <div className="container mx-auto px-4 py-8 mt-20">
                 <div className="bg-red-50 border border-red-200 text-red-800 rounded-lg p-4">
-                    <h2 className="text-lg font-semibold">Access Denied</h2>
-                    <p>You do not have permission to access this page.</p>
+                    <h2 className="text-lg font-semibold">{t("business.selectAud.accessDenied", "Access Denied")}</h2>
+                    <p>{t("business.selectAud.noPermission", "You do not have permission to access this page.")}</p>
                 </div>
             </div>
         );
@@ -86,20 +88,20 @@ export default function MiComponente({ params }: { params: Promise<{ id: string 
     return (
         <div className="container mx-auto px-4 py-8 mt-20">
             <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
-                <h1 className="text-2xl font-bold mb-6">Select Internal Auditors</h1>
+                <h1 className="text-2xl font-bold mb-6">{t("business.selectAud.title", "Select Internal Auditors")}</h1>
                 <p className="mb-6 text-gray-600">
-                    Select internal auditors to assign to this business. They will be responsible for conducting internal audits.
+                    {t("business.selectAud.description", "Select internal auditors to assign to this business. They will be responsible for conducting internal audits.")}
                 </p>
 
                 {error && (
                     <div className="bg-red-50 border border-red-200 text-red-800 rounded-lg p-4 mb-6">
-                        {error}
+                        {t(error)}
                     </div>
                 )}
 
                 {success && (
                     <div className="bg-green-50 border border-green-200 text-green-800 rounded-lg p-4 mb-6">
-                        Auditors have been successfully registered. Redirecting...
+                        {t("business.selectAud.success", "Auditors have been successfully registered. Redirecting...")}
                     </div>
                 )}
 
@@ -113,7 +115,7 @@ export default function MiComponente({ params }: { params: Promise<{ id: string 
                         className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-gray-800"
                         disabled={isSubmitting}
                     >
-                        Cancel
+                        {t("common.cancel", "Cancel")}
                     </button>
                     <Button
                         onClick={handleSubmit}
@@ -123,7 +125,9 @@ export default function MiComponente({ params }: { params: Promise<{ id: string 
                             : 'bg-primary-color hover:bg-secondary-color'
                             }`}
                     >
-                        {isSubmitting ? 'Submitting...' : `Register Auditors (${selectedAuditors.length})`}
+                        {isSubmitting
+                            ? t("business.selectAud.submitting", "Submitting...")
+                            : t("business.selectAud.registerAuditors", `Register Auditors (${selectedAuditors.length})`).replace("{count}", selectedAuditors.length.toString())}
                     </Button>
                 </div>
             </div>

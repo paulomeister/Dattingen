@@ -6,6 +6,7 @@ import { ResponseDTO } from "@/types/ResponseDTO";
 import { AuditData, StatisticsData, TrendCompliances } from "@/types/statistics";
 import { ChartColumn } from "lucide-react"
 import { useEffect, useState } from "react";
+import { useLanguage } from "@/lib/LanguageContext";
 
 interface BusinessDetailProps {
   business: Business;
@@ -14,6 +15,7 @@ interface BusinessDetailProps {
 
 function StatisticsView({ business }: BusinessDetailProps) {
   const apiClient = useApiClient();
+  const { t } = useLanguage();
   // Cambiar a useState
   const [statisticsData, setStatisticsData] = useState<StatisticsData | null>(null);
 
@@ -47,14 +49,14 @@ function StatisticsView({ business }: BusinessDetailProps) {
 
   // Añadir loading state
   if (!statisticsData) {
-    return <div>Loading statistics...</div>;
+    return <div>{t("statistics.loading", "Loading statistics...")}</div>;
   }
 
   return (
     <div className="max-w-7xl mx-auto p-2">
       <h1 className="flex items-center justify-center gap-4 scroll-m-20 text-3xl font-bold tracking-tight lg:text-4xl mb-8">
         <ChartColumn size={32} />
-        Estadísticas de la Organización
+        {t("statistics.title", "Organizational Statistics")}
       </h1>
 
       <div className="mb-12">

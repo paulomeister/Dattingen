@@ -35,13 +35,13 @@ export default function BusinessDetail({ business }: BusinessDetailProps) {
                             </div>
 
                             <div>
-                                <h3 className="text-lg font-semibold">{t("business.page.teamSize")}</h3>
-                                <p className="text-gray-700">{business.associates?.length || 0} members</p>
+                                <h3 className="text-lg font-semibold">{t("business.page.teamSize", "Team Size")}</h3>
+                                <p className="text-gray-700">{business.associates?.length || 0} {t("business.page.members", "members")}</p>
                             </div>
 
                             <div>
-                                <h3 className="text-lg font-semibold">{t("business.page.auditsCount")}</h3>
-                                <p className="text-gray-700">{business.audits?.length || 0} audits</p>
+                                <h3 className="text-lg font-semibold">{t("business.page.auditsCount", "Audits Count")}</h3>
+                                <p className="text-gray-700">{business.audits?.length || 0} {t("business.page.auditsLabel", "audits")}</p>
                             </div>
                         </div>
                     </div>

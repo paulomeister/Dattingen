@@ -53,7 +53,8 @@ public class BusinessController {
     }
 
     @PostMapping("/{businessId}/newAudit")
-    public ResponseEntity<ResponseDTO<String>> createAuditProcess(@PathVariable String businessId,
+    public ResponseEntity<ResponseDTO<String>> createAuditProcess(
+            @PathVariable String businessId,
             @RequestBody AuditModel auditModel) {
         String auditProcessId = businessService.addAudit(businessId, auditModel);
         return ResponseEntity.status(201)
@@ -62,8 +63,8 @@ public class BusinessController {
 
     @PutMapping("/{businessId}")
     @PreAuthorize("hasAnyRole('admin', 'Coordinator')")
-
-    public ResponseEntity<ResponseDTO<BusinessModel>> updateBusiness(@PathVariable String businessId,
+    public ResponseEntity<ResponseDTO<BusinessModel>> updateBusiness(
+            @PathVariable String businessId,
             @RequestBody BusinessModel businessModel) {
         log.info("Updating business with ID: {}", businessId);
         BusinessModel updatedBusiness = businessService.updateBusiness(businessId, businessModel);
@@ -115,8 +116,8 @@ public class BusinessController {
         return ResponseEntity.ok(new ResponseDTO<>(200, "Associates registered successfully.", updatedBusiness));
     }
 
-    @PreAuthorize("hasAnyRole('admin', 'Coordinator')")
     @DeleteMapping("/business/{businessId}/removeAssociate/{associateId}")
+    @PreAuthorize("hasAnyRole('admin', 'Coordinator')")
     public ResponseEntity<ResponseDTO<BusinessModel>> removeAssociateFromBusiness(
             @PathVariable String businessId,
             @PathVariable String associateId) {

@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import TrendCompliancesChart from "@/components/statistics/TrendCompliancesChart"
 import type { TrendCompliances } from "@/types/statistics"
+import { useLanguage } from "@/lib/LanguageContext"
 
 type AuditData = {
   rulesetName: string
@@ -33,6 +34,7 @@ interface StatisticsCarouselProps {
 }
 
 export default function StatisticsCarousel({ data }: StatisticsCarouselProps) {
+  const { t } = useLanguage()
 
   const { totalAudits, totalAuditsActive, meanAuditTime, audits } = data
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -94,7 +96,7 @@ export default function StatisticsCarousel({ data }: StatisticsCarouselProps) {
   if (!audits || audits.length === 0) {
     return (
       <div className="p-6 bg-gray-50 rounded-xl shadow text-center">
-        <p className="text-gray-500">No hay datos de auditorías disponibles</p>
+        <p className="text-gray-500">{t("statistics.carousel.noAuditData", "No audit data available")}</p>
       </div>
     )
   }
@@ -109,16 +111,16 @@ export default function StatisticsCarousel({ data }: StatisticsCarouselProps) {
   )[0]
 
   const phvaMapping: Record<string, string> = {
-    plan: "Planear (P)",
-    doPhase: "Hacer (H)",
-    check: "Verificar (V)",
-    act: "Actuar (A)",
+    plan: t("statistics.carousel.phva.plan", "Plan (P)"),
+    doPhase: t("statistics.carousel.phva.doPhase", "Do (D)"),
+    check: t("statistics.carousel.phva.check", "Check (C)"),
+    act: t("statistics.carousel.phva.act", "Act (A)"),
   }
 
   const phvaWithMostInconformities =
     phvaKeyWithMostInconformities && phvaMapping[phvaKeyWithMostInconformities]
       ? phvaMapping[phvaKeyWithMostInconformities]
-      : "No determinado"
+      : t("statistics.carousel.phva.undetermined", "Undetermined")
 
   return (
     <div className="relative w-full overflow-hidden">
@@ -131,46 +133,41 @@ export default function StatisticsCarousel({ data }: StatisticsCarouselProps) {
       >
         <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6 bg-gray-50 rounded-xl shadow">
           <div className="bg-white p-4 rounded-2xl shadow col-span-1">
-            <p className="text-gray-500 text-sm">Auditorías Totales</p>
+            <p className="text-gray-500 text-sm">{t("statistics.carousel.totalAudits", "Total Audits")}</p>
             <h2 className="text-2xl font-bold text-gray-800">{totalAudits}</h2>
           </div>
 
           <div className="bg-white p-4 rounded-2xl shadow col-span-1">
-            <p className="text-gray-500 text-sm">Auditorías Activas</p>
+            <p className="text-gray-500 text-sm">{t("statistics.carousel.activeAudits", "Active Audits")}</p>
             <h2 className="text-2xl font-bold text-gray-800">{totalAuditsActive}</h2>
           </div>
 
-          {/* <div className="bg-white p-4 rounded-2xl shadow col-span-1">
-            <p className="text-gray-500 text-sm">Conjunto de Reglas</p>
-            <h2 className="text-xl font-bold text-gray-800 truncate">{audit.rulesetName || "No especificado"}</h2>
-          </div> */}
-
           <div className="bg-white p-4 rounded-2xl shadow col-span-1">
-            <p className="text-gray-500 text-sm">Duración Promedio</p>
+            <p className="text-gray-500 text-sm">{t("statistics.carousel.meanDuration", "Mean Duration")}</p>
             <h2 className="text-2xl font-bold text-gray-800">{meanAuditTime} hrs</h2>
           </div>
 
           <div className="bg-white p-4 rounded-2xl shadow col-span-1">
-            <p className="text-gray-500 text-sm">% Conformidades</p>
+            <p className="text-gray-500 text-sm">{t("statistics.carousel.conformities", "% Conformities")}</p>
             <h2 className="text-2xl font-bold text-green-600">{audit.conformityProcess.toFixed(1)}%</h2>
           </div>
 
           <div className="bg-white p-4 rounded-2xl shadow col-span-1">
-            <p className="text-gray-500 text-sm">% No Conformidades</p>
+            <p className="text-gray-500 text-sm">{t("statistics.carousel.nonConformities", "% Non-Conformities")}</p>
             <h2 className="text-2xl font-bold text-red-600">{audit.nonConformityProcess.toFixed(1)}%</h2>
           </div>
 
           <div className="bg-white p-4 rounded-2xl shadow col-span-1 md:col-span-2">
-            <h3 className="text-lg font-semibold mb-2">Tendencia de Conformidades</h3>
+            <h3 className="text-lg font-semibold mb-2">{t("statistics.carousel.trend", "Conformity Trend")}</h3>
             {audit.conformityTendency && audit.conformityTendency.length > 0 ? (
               <TrendCompliancesChart data={audit.conformityTendency} />
             ) : (
-              <p className="text-gray-500 text-center py-10">No hay datos de tendencia disponibles</p>
+              <p className="text-gray-500 text-center py-10">{t("statistics.carousel.noTrendData", "No trend data available")}</p>
             )}
           </div>
 
           <div className="bg-white p-4 rounded-2xl shadow col-span-1">
-            <h3 className="text-lg font-semibold mb-2">PHVA con más No Conformidades</h3>
+            <h3 className="text-lg font-semibold mb-2">{t("statistics.carousel.phvaMostNonConformities", "PHVA with Most Non-Conformities")}</h3>
             <p className="text-xl font-bold text-red-500">{phvaWithMostInconformities}</p>
           </div>
         </div>
@@ -186,7 +183,7 @@ export default function StatisticsCarousel({ data }: StatisticsCarouselProps) {
             onClick={prevSlide}
           >
             <ChevronLeft className="h-6 w-6" />
-            <span className="sr-only">Anterior</span>
+            <span className="sr-only">{t("statistics.carousel.prev", "Previous")}</span>
           </Button>
 
           <Button
@@ -196,7 +193,7 @@ export default function StatisticsCarousel({ data }: StatisticsCarouselProps) {
             onClick={nextSlide}
           >
             <ChevronRight className="h-6 w-6" />
-            <span className="sr-only">Siguiente</span>
+            <span className="sr-only">{t("statistics.carousel.next", "Next")}</span>
           </Button>
 
           {/* Indicators */}
@@ -207,7 +204,7 @@ export default function StatisticsCarousel({ data }: StatisticsCarouselProps) {
                 className={`w-3 h-3 rounded-full transition-all ${currentIndex === index ? "bg-gray-800 w-6" : "bg-gray-400"
                   }`}
                 onClick={() => goToSlide(index)}
-                aria-label={`Ir a la diapositiva ${index + 1}`}
+                aria-label={t("statistics.carousel.goToSlide", "Go to slide {index}").replace("{index}", (index + 1).toString())}
               />
             ))}
           </div>

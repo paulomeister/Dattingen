@@ -8,9 +8,10 @@ import { useApiClient } from "@/hooks/useApiClient";
 import { useAuth } from "@/lib/AuthContext";
 import { ResponseDTO } from "@/types/ResponseDTO";
 import type { Business } from "@/types/Business";
+import { useLanguage } from "@/lib/LanguageContext";
 
 export default function CreateAuditPage() {
-
+  const { t } = useLanguage();
   const { user } = useAuth()
   const apiClient = useApiClient();
   const router = useRouter();
@@ -105,7 +106,7 @@ export default function CreateAuditPage() {
       }, 2000);
     } catch (error) {
       console.error("Error creating audit:", error);
-      alert("Error creating audit." + error); // TODO Multiingual
+      alert(t("audits.create.error", "Error creating audit.") + (error ? ` ${error}` : ""));
     }
 
   }
@@ -116,33 +117,32 @@ export default function CreateAuditPage() {
       <div className="w-full max-w-3xl bg-white rounded-2xl shadow-xl p-8 space-y-8">
         {/* Header */}
         <div className="bg-gradient-to-r from-[var(--color-primary-color)] to-[var(--color-secondary-color)] text-white rounded-xl p-6 shadow text-center">
-
-          <h1 className="text-2xl font-bold">Create New Audit</h1>
+          <h1 className="text-2xl font-bold">{t("audits.create.title", "Create New Audit")}</h1>
           <p className="text-sm text-[var(--color-contrast-2-color)] mt-1">
-            Fill in the fields to register a new audit.
+            {t("audits.create.subtitle", "Fill in the fields to register a new audit.")}
           </p>
         </div>
         <form className="space-y-6" onSubmit={handleSubmit}>
           <div className="flex items-center justify-center gap-5">
-            <span className="text-gray-500">Ruleset Name:</span>
+            <span className="text-gray-500">{t("audits.create.rulesetName", "Ruleset Name:")}</span>
             <span className="text-primary-color font-semibold">{ruleset?.name}</span>
           </div>
           <div>
-            <label className="block font-semibold text-gray-700 mb-1">Audit Name</label>
+            <label className="block font-semibold text-gray-700 mb-1">{t("audits.create.auditName", "Audit Name")}</label>
             <input
               type="text"
               name="name"
               value={formData.name}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-xl shadow-sm"
-              placeholder="Enter audit name"
+              placeholder={t("audits.create.auditNamePlaceholder", "Enter audit name")}
               required
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block font-semibold text-gray-700 mb-1">Start Date</label>
+              <label className="block font-semibold text-gray-700 mb-1">{t("audits.create.startDate", "Start Date")}</label>
               <input
                 type="date"
                 name="startDate"
@@ -153,7 +153,7 @@ export default function CreateAuditPage() {
               />
             </div>
             <div>
-              <label className="block font-semibold text-gray-700 mb-1">End Date</label>
+              <label className="block font-semibold text-gray-700 mb-1">{t("audits.create.endDate", "End Date")}</label>
               <input
                 type="date"
                 name="endDate"
@@ -166,7 +166,7 @@ export default function CreateAuditPage() {
           </div>
 
           <div>
-            <label className="block font-semibold text-gray-700 mb-1">Initial Status</label>
+            <label className="block font-semibold text-gray-700 mb-1">{t("audits.create.status", "Initial Status")}</label>
             <select
               name="status"
               value={formData.status}
@@ -174,7 +174,7 @@ export default function CreateAuditPage() {
               className="w-full px-4 py-2 border border-gray-300 rounded-xl shadow-sm"
               required
             >
-              <option value={AuditStatus.IN_PROGRESS}>{AuditStatus.IN_PROGRESS}</option>
+              <option value={AuditStatus.IN_PROGRESS}>{t("audits.myAudits.inProgress", "In Progress")}</option>
             </select>
           </div>
 
@@ -182,7 +182,7 @@ export default function CreateAuditPage() {
             type="submit"
             className="bg-[var(--color-primary-color)] text-white px-6 py-2 rounded-2xl hover:bg-[var(--color-secondary-color)] transition shadow"
           >
-            Create Audit
+            {t("audits.create.submit", "Create Audit")}
           </button>
         </form>
       </div>

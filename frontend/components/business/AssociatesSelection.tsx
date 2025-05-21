@@ -6,6 +6,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { useApiClient } from '@/hooks/useApiClient';
 import { ResponseDTO } from '@/types/ResponseDTO';
 import { Business } from '@/types/Business';
+import { useLanguage } from "@/lib/LanguageContext";
 
 interface AssociatesSelectionProps {
     onSelect?: (selectedAuditors: UserDTO[]) => void;
@@ -20,6 +21,7 @@ const AssociatesSelection = ({ onSelect, selectedAuditors: initialSelectedAudito
     const [error, setError] = useState<string | null>(null);
     const { user } = useAuth();
     const apiClient = useApiClient()
+    const { t } = useLanguage();
 
     useEffect(() => {
         const fetchAuditors = async () => {
@@ -63,18 +65,18 @@ const AssociatesSelection = ({ onSelect, selectedAuditors: initialSelectedAudito
         }
     };
 
-    if (loading) return <div className="flex justify-center p-8">Cargando auditores internos...</div>;
-    if (error) return <div className="text-red-500 p-4">Error: {error}</div>;
+    if (loading) return <div className="flex justify-center p-8">{t("audits.compactAuditorSelector.loading", "Cargando auditores internos...")}</div>;
+    if (error) return <div className="text-red-500 p-4">{t("audits.compactAuditorSelector.error", "Error: ")}{error}</div>;
 
     return (
         <div className="bg-white rounded-lg shadow p-6 max-w-2xl mx-auto">
-            <h2 className="text-xl font-bold mb-4">Seleccionar Auditores Internos</h2>
+            <h2 className="text-xl font-bold mb-4">{t("audits.compactAuditorSelector.title", "Seleccionar Auditores Internos")}</h2>
 
             {/* Campo de búsqueda */}
             <div className="mb-4">
                 <input
                     type="text"
-                    placeholder="Buscar por nombre o usuario..."
+                    placeholder={t("audits.compactAuditorSelector.searchPlaceholder", "Buscar por nombre o usuario...")}
                     className="w-full px-4 py-2 border rounded-lg"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -84,14 +86,13 @@ const AssociatesSelection = ({ onSelect, selectedAuditors: initialSelectedAudito
             {/* Lista de auditores */}
             <div className="border rounded-lg overflow-y-auto max-h-80 mb-4">
                 {filteredAuditors.length === 0 ? (
-                    <div className="p-4 text-gray-500">No se encontraron auditores internos</div>
+                    <div className="p-4 text-gray-500">{t("audits.compactAuditorSelector.noAuditors", "No se encontraron auditores internos")}</div>
                 ) : (
                     <ul className="divide-y">
                         {filteredAuditors.map(auditor => (
                             <li
                                 key={auditor._id}
-                                className={`p-3 flex items-center hover:bg-gray-50 cursor-pointer transition-colors ${selectedAuditors.some(a => a._id === auditor._id) ? 'bg-purple-50' : ''
-                                    }`}
+                                className={`p-3 flex items-center hover:bg-gray-50 cursor-pointer transition-colors ${selectedAuditors.some(a => a._id === auditor._id) ? 'bg-purple-50' : ''}`}
                                 onClick={() => toggleAuditorSelection(auditor)}
                             >
                                 <div className="flex-1">
@@ -108,11 +109,12 @@ const AssociatesSelection = ({ onSelect, selectedAuditors: initialSelectedAudito
                         ))}
                     </ul>
                 )}
-            </div>            {/* Información de selección */}
+            </div>
+            {/* Información de selección */}
             <div className="mb-4 text-sm text-gray-700">
                 {selectedAuditors.length === 0
-                    ? 'Ningún auditor seleccionado'
-                    : `${selectedAuditors.length} auditor(es) seleccionado(s)`}
+                    ? t("audits.compactAuditorSelector.noAuditorSelected", "Ningún auditor seleccionado")
+                    : t("audits.compactAuditorSelector.selectedCount", "{count} auditor(es) seleccionado(s)").replace("{count}", selectedAuditors.length.toString())}
             </div>
         </div>
     );
