@@ -262,18 +262,43 @@
     }
   },
   "audits": {
-    "myAudits": {
-      "status": "Estado:",
-      "inProgress": "En progreso",
-      "completed": "Completado",
-      "other": "Otro",
-      "details": "Ver detalles",
-      "createProcess": "Crear nuevo PROCESO de Auditoría"
+  "myAudits": {
+    "status": "Estado:",
+    "inProgress": "En Progreso",
+    "completed": "Completada",
+    "other": "Otra",
+    "details": "Ver detalles",
+    "createProcess": "Crear Proceso de Auditoría",
+    "dashboardTitle": "Panel de Mis Auditorías",
+    "dashboardSubtitle": "Gestiona tus auditorías activas y accede a sus ciclos, filtros y estados.",
+    "createAudit": "Crear Auditoría",
+    "notEvaluated": "No Evaluadas",
+    "evaluated": "Evaluadas",
+    "canceled": "Canceladas",
+    "noAudits": "No se encontraron auditorías para esta categoría.",
+    "viewDetails": "Ver Detalles",
+    "filters": "Filtros",
+    "all": "Todas",
+    "title": "Título de Auditoría",
+    "date": "Fecha de Creación"
     },
-    "processList": {
-      "title": "Procesos de Auditoría",
-      "empty": "No se encontraron procesos de auditoría no evaluados.",
-      "assessments": "evaluaciones"
+  "processList": {
+    "title": "Procesos de Auditoría",
+    "empty": "No se encontraron procesos de auditoría no evaluados.",
+    "assessments": "evaluaciones"
+    },
+  "create": {
+    "title": "Crear Nueva Auditoría",
+    "subtitle": "Rellena los campos para registrar una nueva auditoría.",
+    "rulesetName": "Nombre del Conjunto de Reglas:",
+    "auditName": "Nombre de Auditoría",
+    "auditNamePlaceholder": "Ingresa el nombre de la auditoría",
+    "startDate": "Fecha de Inicio",
+    "endDate": "Fecha de Finalización",
+    "status": "Estado Inicial",
+    "submit": "Crear Auditoría",
+    "error": "Error al crear la auditoría.",
+    "duplicate": "Ya existe una auditoría con este conjunto de reglas."
     }
   }
 }

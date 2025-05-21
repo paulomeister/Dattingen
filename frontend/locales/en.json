@@ -94,6 +94,7 @@
     },
     "audits": "Audits",
     "statistics": "Statistics"
+    
   },
   "rulesets": {
     "rulesets": "Rulesets",
@@ -169,20 +170,47 @@
     }
   },
   "audits": {
-    "myAudits": {
-      "status": "Status:",
-      "inProgress": "In Progress",
-      "completed": "Completed",
-      "other": "Other",
-      "details": "View details",
-      "createProcess": "Create Audit PROCESS"
-    },
-    "processList": {
-      "title": "Audit Processes",
-      "empty": "No Non Evaluated Audit Processes found.",
-      "assessments": "assessments"
-    }
+  "myAudits": {
+    "status": "Status:",
+    "inProgress": "In Progress",
+    "completed": "Completed",
+    "other": "Other",
+    "details": "View details",
+    "createProcess": "Create Audit PROCESS",
+
+    "dashboardTitle": "My Audits Dashboard",
+    "dashboardSubtitle": "Manage your active audits and access their cycles, filters, and statuses.",
+    "createAudit": "Create Audit",
+    "notEvaluated": "Not Evaluated",
+    "evaluated": "Evaluated",
+    "canceled": "Canceled",
+    "noAudits": "No audits found for this category.",
+    "viewDetails": "View Details",
+    "filters": "Filters",
+    "all": "All",
+    "title": "Audit Title",
+    "date": "Created Date"
   },
+  "processList": {
+    "title": "Audit Processes",
+    "empty": "No Non Evaluated Audit Processes found.",
+    "assessments": "assessments"
+  },
+  "create": {
+    "title": "Create New Audit",
+    "subtitle": "Fill in the fields to register a new audit.",
+    "rulesetName": "Ruleset Name:",
+    "auditName": "Audit Name",
+    "auditNamePlaceholder": "Enter audit name",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "status": "Initial Status",
+    "submit": "Create Audit",
+    "error": "Error creating audit.",
+    "duplicate": "You already have an audit with this ruleset."
+  }
+},
+
   "statistics": {},
   "admin": {
     "createUser": {

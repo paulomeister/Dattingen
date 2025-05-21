@@ -1,3 +1,4 @@
+/*
 package com.dirac.businessservice.Model;
 
 import java.util.HashMap;
@@ -10,6 +11,8 @@ import lombok.NoArgsConstructor;
 /**
  * Modelo para estadísticas de auditorías
  */
+
+/*
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -39,3 +42,5 @@ public class AuditStatistics {
     // Fecha de la última actualización de las estadísticas
     private String lastUpdated;
 }
+
+*/

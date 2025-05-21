@@ -145,45 +145,45 @@ services:
     restart: unless-stopped
     networks:
       - backend
-  elasticsearch:
-    image: elastic/elasticsearch:9.0.1
-    environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
-    ports:
-      - "9200:9200"
-    volumes:
-      - elasticsearch-data:/usr/share/elasticsearch/data
-    networks:
-      - backend
-  kibana:
-    image: elastic/kibana:9.0.1
-    environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-    ports:
-      - "5601:5601"
-    depends_on:
-      - elasticsearch
-    networks:
-      - backend
-  filebeat:
-    image: filebeatservice:dev
-    container_name: filebeatservice_dev
-    build:
-      context: ./filebeat
-      dockerfile: Dockerfile
-      target: dev
-    user: root
-    depends_on:
-      - elasticsearch
-    volumes:
-      - ./businessservice/logs:/app/businessservice-logs:ro
-      - ./rulesetservice/logs:/app/rulesetservice-logs:ro
-      - ./auditprocessservice/logs:/app/auditprocessservice-logs:ro
-      - ./userservice/logs:/app/userservice-logs:ro
-      - ./securityservice/logs:/app/securityservice-logs:ro
-    networks:
-      - backend
+  # elasticsearch:
+  #   image: elastic/elasticsearch:9.0.1
+  #   environment:
+  #     - discovery.type=single-node
+  #     - xpack.security.enabled=false
+  #   ports:
+  #     - "9200:9200"
+  #   volumes:
+  #     - elasticsearch-data:/usr/share/elasticsearch/data
+  #   networks:
+  #     - backend
+  # kibana:
+  #   image: elastic/kibana:9.0.1
+  #   environment:
+  #     - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+  #   ports:
+  #     - "5601:5601"
+  #   depends_on:
+  #     - elasticsearch
+  #   networks:
+  #     - backend
+  # filebeat:
+  #   image: filebeatservice:dev
+  #   container_name: filebeatservice_dev
+  #   build:
+  #     context: ./filebeat
+  #     dockerfile: Dockerfile
+  #     target: dev
+  #   user: root
+  #   depends_on:
+  #     - elasticsearch
+  #   volumes:
+  #     - ./businessservice/logs:/app/businessservice-logs:ro
+  #     - ./rulesetservice/logs:/app/rulesetservice-logs:ro
+  #     - ./auditprocessservice/logs:/app/auditprocessservice-logs:ro
+  #     - ./userservice/logs:/app/userservice-logs:ro
+  #     - ./securityservice/logs:/app/securityservice-logs:ro
+  #   networks:
+  #     - backend
 networks:
   backend:
   frontend:

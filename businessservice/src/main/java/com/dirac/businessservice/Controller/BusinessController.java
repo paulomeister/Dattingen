@@ -24,8 +24,7 @@ public class BusinessController {
     @Autowired
     private BusinessService businessService;
 
-    @Autowired
-    private AuditStatisticsService auditStatisticsService;
+
 
     @GetMapping("/")
     public ResponseEntity<ResponseDTO<List<BusinessModel>>> getAllBusinesses() {

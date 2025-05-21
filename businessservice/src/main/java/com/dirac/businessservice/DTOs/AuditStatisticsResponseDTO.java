@@ -1,3 +1,4 @@
+/*
 package com.dirac.businessservice.DTOs;
 
 import java.util.List;
@@ -49,3 +50,5 @@ public class AuditStatisticsResponseDTO {
         private Integer cantidadConformidades;
     }
 }
+
+*/
