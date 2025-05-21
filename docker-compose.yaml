@@ -1,15 +1,15 @@
 services:
-  frontend:
-    image: frontend:prod
-    container_name: frontend_prod
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    restart: unless-stopped
-    networks:
-      - frontend
+  # frontend:
+  #   image: frontend:prod
+  #   container_name: frontend_prod
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "3000:3000"
+  #   restart: unless-stopped
+  #   networks:
+  #     - frontend
   apigateway:
     image: apigateway:prod
     container_name: apigateway_prod

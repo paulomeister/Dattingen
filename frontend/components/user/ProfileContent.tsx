@@ -1,12 +1,15 @@
 import React from 'react'
 import { UserDTO } from '@/types/User'
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import ProfileDetailsSection from './ProfileDetailsSection'
 import ProfileEditDrawer from './ProfileEditDrawer'
 import { getUserImage } from '@/lib/utils'
 import ProfileDeleteDrawer from './ProfileDeleteDrawer'
+import { Button } from '../button'
+import { useRouter } from 'next/navigation'
+import { useLanguage } from "@/lib/LanguageContext";
 
 interface ProfileContentProps {
     user: UserDTO
@@ -15,6 +18,10 @@ interface ProfileContentProps {
 }
 
 const ProfileContent = ({ user, isOwnProfile, authUser }: ProfileContentProps) => {
+
+    const router = useRouter()
+    const { t } = useLanguage();
+
     // Helper function to get role badge color
     const getRoleBadgeClass = (role: string) => {
         switch (role) {
@@ -46,22 +53,28 @@ const ProfileContent = ({ user, isOwnProfile, authUser }: ProfileContentProps) =
 
                     {isOwnProfile && authUser && (
                         <div className="flex items-center justify-center">
+                            {user.role === 'Coordinator' && !user.businessId && (
+                                <Button
+                                    className="bg-gradient-to-r from-primary-color via-secondary-color to-primary-color bg-[length:200%_200%] animate-gradient-x text-white rounded-lg px-4 py-2 mr-2 border-0 shadow-md transition-all duration-300"
+                                    onClick={() => {
+                                        router.push(`/business/create/`)
+                                    }}
+                                    variant="outline">
+                                    {t("business.create.button", "Crear Empresa")}
+                                </Button>
+                            )}
                             <ProfileDeleteDrawer user={authUser} />
                             <ProfileEditDrawer user={authUser} />
                         </div>
                     )}
                 </CardHeader>
 
+
                 <CardContent className="p-6">
+
                     <ProfileDetailsSection user={user} />
                 </CardContent>
 
-                <CardFooter className="bg-gray-50 dark:bg-gray-900 p-4 text-center text-sm text-gray-500">
-                    {isOwnProfile ?
-                        'This is your profile. You can edit your information by clicking the edit button.' :
-                        `You are viewing ${user.name}'s profile.`
-                    }
-                </CardFooter>
             </Card>
         </div>
     )

@@ -1,6 +1,5 @@
 "use client"
 
-import { Metadata } from "next"
 import BusinessList from "@/components/business/BusinessList"
 import BusinessSearch from "@/components/business/BusinessSearch"
 import { Building2 } from "lucide-react"

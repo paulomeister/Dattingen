@@ -88,7 +88,8 @@
       "activity": "Business Activity",
       "activityPlaceholder": "Describe the main activities of your company",
       "success": "Company created successfully!",
-      "error": "Error creating company. Please try again."
+      "error": "Error creating company. Please try again.",
+      "button": "Create Company"
     },
     "associates": {
       "title": "Associates",
@@ -225,13 +226,26 @@
     "title": "Select Internal Auditor",
     "searchPlaceholder": "Search by name or username...",
     "loading": "Loading...",
-    "error": "Error loading auditors",
-    "noAuditors": "No auditors found"
+    "error": "Error loading auditors: ",
+    "noAuditors": "No internal auditors found",
+    "noAuditorSelected": "No auditor selected",
+    "selectedCount": "{count} auditor(s) selected"
   },
   "selectAuditors": {
     "title": "Internal Auditors Selection",
     "selectedTitle": "Selected Auditors",
     "hideList": "Hide list"
+  },
+  "createAuditProcess": {
+    "title": "Plan Audit Process",
+    "internalAuditors": "Internal Auditors",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "dateError": "End Date cannot be before Start Date",
+    "submitError": "Failed to create audit process",
+    "creating": "Creating...",
+    "createButton": "Create Audit Process",
+    "success": "Audit process created successfully!"
   }
 },
 
