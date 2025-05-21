@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: userservice
-          image: <your-acr>.azurecr.io/userservice:prod
+          image: dattingen.azurecr.io/userservice:prod
           ports:
             - containerPort: 8083
           envFrom:

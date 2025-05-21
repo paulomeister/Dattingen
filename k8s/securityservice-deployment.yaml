@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: securityservice
-          image: <your-acr>.azurecr.io/securityservice:prod
+          image: dattingen.azurecr.io/securityservice:prod
           ports:
             - containerPort: 8084
           envFrom:

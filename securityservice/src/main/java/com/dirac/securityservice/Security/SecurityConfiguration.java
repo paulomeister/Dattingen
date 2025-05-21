@@ -4,6 +4,7 @@ import com.dirac.securityservice.Security.JWT.CustomUsernameAndPasswordAuthentic
 import com.dirac.securityservice.Security.JWT.JwtConfigurationVariables;
 import com.dirac.securityservice.Service.UsersRetrievalService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -40,6 +41,9 @@ public class SecurityConfiguration {
     private final UsersRetrievalService usersRetrievalService;
     private final SecretKey secretKey;
     private final JwtConfigurationVariables jwtConfigurationVariables;
+
+    @Value("${application.origins.url}")
+    private String origins;
 
     @Autowired
     public SecurityConfiguration(PasswordEncoder passwordEncoder, UsersRetrievalService usersRetrievalService, SecretKey secretKey, JwtConfigurationVariables jwtConfigurationVariables) {
@@ -84,10 +88,11 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(
-            "http://localhost:3000",  // TODO: set frontend ingress public IP
-            "http://apigateway:8090"   // API Gateway URL
-        ));
+        if (origins != null && !origins.isBlank()) {
+            configuration.setAllowedOrigins(Arrays.asList(origins.split(",")));
+        } else {
+            configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://apigateway:8090"));
+        }
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type", "Content-Length", "Accept", "X-Requested-With"));
