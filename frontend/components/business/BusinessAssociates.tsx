@@ -48,6 +48,7 @@ export default function BusinessAssociates({ associates, businessId }: BusinessA
     setRemovingId(associateId);
     try {
       await apiClient.del(`/businesses/api/business/${businessId}/removeAssociate/${associateId}`);
+      await apiClient.del(`/users/api/removeFromBusiness/${associateId}`);
       setLocalAssociates((prev) => prev.filter(a => getAssociateId(a) !== associateId));
     } catch (err) {
       console.error("Error removing associate", err);

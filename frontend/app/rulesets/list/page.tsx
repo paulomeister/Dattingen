@@ -30,11 +30,8 @@ export default function ListNormatives() {
     const getNormatives = async () => {
       try {
         const response = await api.get<Ruleset[]>("/rulesets/api/ListAll");
-        console.log("Response from API:", response)
 
         const data: Ruleset[] = response || []
-
-
 
         setNormatives(data.filter((normative) => normative?.status?.toLowerCase() === "published"))
         setFilteredNormatives(data.filter((normative) => normative?.status?.toLowerCase() === "published"))

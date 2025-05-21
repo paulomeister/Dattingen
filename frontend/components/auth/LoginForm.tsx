@@ -21,7 +21,7 @@ export function LoginForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
-  const { setAuthUser, setToken } = useAuth()
+  const { setAuthUser, setToken, logout } = useAuth()
   const { t } = useLanguage()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -44,7 +44,7 @@ export function LoginForm() {
 
         try {
 
-          const userResponse: Response = await fetch(`${environment.API_URL}/users/api/search?username=${username}`, {
+          const userResponse: Response = await fetch(`${environment.API_URL}/users/api/search?username=${username.toLowerCase()}`, {
             headers: {
               'Content-Type': 'application/json',
               'Authorization': token
@@ -53,15 +53,20 @@ export function LoginForm() {
           const response: ResponseDTO<UserDTO> = await userResponse.json();
           const user = response.data;
 
+          if (response.status !== 200 && response.status !== 201) {
+            toast.error("ERROR");
+            router.push("/")
+            return;
+          }
+
           setToken(token);
           setAuthUser(user);
 
           const isFirstTime = JSON.parse(localStorage.getItem('firstTime')!) === "true";
 
-
-
           if (user?.role?.toLowerCase() === 'coordinator' && isFirstTime) {
             localStorage.setItem("firstTime", JSON.stringify("false"));
+            logout()
             return router.push('/business/create');
           }
 

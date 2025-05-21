@@ -60,7 +60,6 @@ export default function CreateNormativesPage() {
         const responseData = await apiClient.post<Ruleset, typeof completeRulesetData>(`/rulesets/api/create`, completeRulesetData);
 
         if (responseData && responseData._id) {
-          console.log("Ruleset created successfully!");
           router.push(`/rulesets/create/${responseData._id}`);
           setFileConfirmed(true);
         } else {

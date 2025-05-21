@@ -24,16 +24,19 @@ function StatisticsView({ business }: BusinessDetailProps) {
 
         for (const audit of business.audits) {
           const response = await apiClient.get<ResponseDTO<AuditProcess[]>>(
-            `/audits/api/auditProcesses/getAll?businessId=${business._id}&rulesetId=${audit.rulesetId}`
+            `/audits/api/`
           );
-          const auditsData: AuditProcess[] = response.data;
+
+          const processesOfBusiness = response.data.filter(
+            (process: AuditProcess) => process.businessId === business._id
+          );
+
+          const auditsData: AuditProcess[] = processesOfBusiness;
+
           auditResponses.push(auditsData);
         }
 
-        console.log("Audits data:", auditResponses);
-
-        const newStatisticsData : StatisticsData = buildStatisticsData(auditResponses);
-        console.log("Statistics data:", newStatisticsData);
+        const newStatisticsData: StatisticsData = buildStatisticsData(auditResponses);
         setStatisticsData(newStatisticsData);
       } catch (err: unknown) {
         console.error("Error fetching data:", err);
@@ -96,7 +99,7 @@ function buildStatisticsData(auditResponses: AuditProcess[][]): StatisticsData {
       const startDate = new Date(audit.startDate);
       const endDate = new Date(audit.endDate);
       const conformityRate = (compliantControls / totalControls) * 100;
-      
+
       conformityTendency.push({
         fecha: endDate.toISOString().split('T')[0],
         cantidadConformidades: compliantControls

@@ -8,6 +8,7 @@ import { registerAuditors } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/button';
 import { Associate } from '@/types/Associate';
+import { useApiClient } from '@/hooks/useApiClient';
 
 export default function MiComponente({ params }: { params: Promise<{ id: string }> }) {
     const { id: businessId } = use(params); // 🔥 Aquí se desenvuelve el Promise
@@ -17,7 +18,7 @@ export default function MiComponente({ params }: { params: Promise<{ id: string 
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<boolean>(false);
     const router = useRouter();
-
+    const apiClient = useApiClient()
     const handleAuditorSelection = (auditors: UserDTO[]) => {
         setSelectedAuditors(auditors);
     };
@@ -29,7 +30,7 @@ export default function MiComponente({ params }: { params: Promise<{ id: string 
         }
 
         setIsSubmitting(true);
-        setError(null);        try {
+        setError(null); try {
             // Extract the IDs from the selected auditors
             const associates: Associate[] = selectedAuditors.map(auditor => ({
                 username: auditor.username as string,
@@ -39,6 +40,13 @@ export default function MiComponente({ params }: { params: Promise<{ id: string 
 
             // Call the API to register auditors
             const response = await registerAuditors(businessId, associates, token);
+
+
+            selectedAuditors.forEach(associate => {
+                apiClient.put(`/users/api/${associate._id}`, {
+                    businessId,
+                });
+            })
 
             if (response.status === 200) {
                 setSuccess(true);

@@ -56,7 +56,7 @@ export default function CreateAuditPage() {
     }
 
     fetchRulesetData();
-  }, [user, apiClient, router, rulesetId]);
+  }, [user, router, rulesetId]);
 
 
   const [formData, setFormData] = useState({

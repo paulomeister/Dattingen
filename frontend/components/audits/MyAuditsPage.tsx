@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Audit, AuditProcess } from "@/types/Audit";
+import { Audit, AuditProcess, AuditStatus } from "@/types/Audit";
 import { useApiClient } from "@/hooks/useApiClient";
 import { useAuth } from "@/lib/AuthContext";
 import { ResponseDTO } from "@/types/ResponseDTO";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { FileText, PlusCircle } from "lucide-react";
 import { Ruleset } from "@/types/Ruleset";
 import { useLanguage } from "@/lib/LanguageContext";
+import { Business } from "@/types/Business";
 
 // Define un tipo extendido para la UI
 interface AuditWithId extends Audit {
@@ -25,57 +26,99 @@ export function MyAuditsPage() {
     // Evita el bucle infinito: solo ejecuta si user._id está definido
     if (!user?._id) return;
     const fetchBusinessAudits = async () => {
-      try {
-        const responseTwo = await apiClient.get<ResponseDTO<AuditProcess[]>>(
-          `/audits/api/`
-        );
-        const userProcesses = (responseTwo.data || []).filter((proc) => {
-          const intAuditors = Array.isArray(proc.assignedIntAuditors)
-            ? proc.assignedIntAuditors
-            : [];
-          const extAuditors = Array.isArray(proc.assignedExtAuditors)
-            ? proc.assignedExtAuditors
-            : [];
-          return (
-            intAuditors.some((aud) => aud._id === user._id) ||
-            extAuditors.some((aud) => aud._id === user._id) ||
-            proc.businessId === user.businessId
+      if (user.role === "ExternalAuditor") {
+
+        try {
+          const response = await apiClient.get<ResponseDTO<AuditProcess[]>>(
+            `/audits/api/`
           );
-        });
+          const userProcesses = (response.data || []).filter((proc) => {
+            const intAuditors = Array.isArray(proc.assignedIntAuditors)
+              ? proc.assignedIntAuditors
+              : [];
+            const extAuditors = Array.isArray(proc.assignedExtAuditors)
+              ? proc.assignedExtAuditors
+              : [];
+            return (
+              intAuditors.some((aud) => aud._id === user._id) ||
+              extAuditors.some((aud) => aud._id === user._id) ||
+              proc.businessId === user.businessId
+            );
+          });
 
 
-        const audits: AuditWithId[] = await Promise.all(userProcesses.map(async (proc) => {
-          let rulesetName = proc.rulesetId;
-          try {
-            const rulesetRes = await apiClient.get<Ruleset>(`/rulesets/api/findbyid/${proc.rulesetId}`);
+          const audits: AuditWithId[] = await Promise.all(userProcesses.map(async (proc) => {
+            let rulesetName = proc.rulesetId;
+            try {
+              const rulesetRes = await apiClient.get<Ruleset>(`/rulesets/api/findbyid/${proc.rulesetId}`);
 
-            console.log("Ruleset response:", rulesetRes);
-            if (rulesetRes && rulesetRes.name) {
-              rulesetName = rulesetRes.name;
-            }
-          } catch { }
-          return {
-            _id: proc._id,
-            name: rulesetName,
-            rulesetId: proc.rulesetId,
-            status:
-              proc.status === "IN_PROGRESS"
-                ? 0
-                : proc.status === "COMPLETED"
-                  ? 1
-                  : 2,
-            startDate: new Date(proc.startDate),
-            endDate: new Date(proc.endDate),
-          };
-        }));
-        setAudits(audits);
-      } catch {
-        setAudits([]);
+              if (rulesetRes && rulesetRes.name) {
+                rulesetName = rulesetRes.name;
+              }
+            } catch { }
+            return {
+              _id: proc._id,
+              name: rulesetName,
+              rulesetId: proc.rulesetId,
+              status:
+                proc.status === "IN_PROGRESS"
+                  ? 0
+                  : proc.status === "COMPLETED"
+                    ? 1
+                    : 2,
+              startDate: new Date(proc.startDate),
+              endDate: new Date(proc.endDate),
+            };
+          }));
+          setAudits(audits);
+        } catch {
+          setAudits([]);
+        }
+
+      } else {
+        try {
+
+          const responseTwo = await apiClient.get<ResponseDTO<Business>>(
+            `/businesses/api/${user.businessId}`
+          );
+
+          const businessAudits: Audit[] = responseTwo.data.audits || [];
+
+          const audits: AuditWithId[] = await Promise.all(businessAudits.map(async (aud) => {
+            let rulesetName = aud.rulesetId;
+            try {
+              const rulesetRes = await apiClient.get<Ruleset>(`/rulesets/api/findbyid/${aud.rulesetId}`);
+
+              if (rulesetRes && rulesetRes.name) {
+                rulesetName = rulesetRes.name;
+              }
+            } catch { }
+            return {
+              _id: aud.rulesetId,
+              name: rulesetName,
+              rulesetId: aud.rulesetId,
+              status:
+                aud.status === AuditStatus.IN_PROGRESS
+                  ? 0
+                  : aud.status === AuditStatus.COMPLETED
+                    ? 1
+                    : 2,
+              startDate: new Date(aud.startDate),
+              endDate: new Date(aud.endDate),
+            };
+          }));
+          setAudits(audits);
+        } catch {
+          setAudits([]);
+        }
       }
+
+
+
     };
     fetchBusinessAudits();
     // Solo depende de user._id y apiClient
-  }, [user?._id, user?.businessId, apiClient]);
+  }, [user?._id, user?.businessId]);
 
   return (
     <div className="flex flex-col md:flex-row">
