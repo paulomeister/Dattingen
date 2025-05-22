@@ -98,7 +98,7 @@ export default function CreateAuditPage() {
   const createNewAudit = async (data: Audit) => {
     try {
       const res = await apiClient.post<ResponseDTO<Audit>, Audit>(`/businesses/api/${user?.businessId}/newAudit`, data);
-      if (res.status !== 200) {
+      if (res.status !== 200 && res.status !== 201) {
         throw new Error(res.message);
       }
       setTimeout(() => {

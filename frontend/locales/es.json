@@ -366,5 +366,65 @@
       "createButton": "Crear Proceso de Auditoría",
       "success": "¡Proceso de auditoría creado exitosamente!"
     }
+  },
+  "admin": {
+    "users": {
+      "title": "Gestión de Usuarios",
+      "subtitle": "Administra las cuentas de usuario en tu organización.",
+      "createUser": {
+        "title": "Crear Auditor Externo",
+        "cardTitle": "Nuevo Auditor Externo",
+        "cardDescription": "Crea una nueva cuenta de usuario para un auditor externo",
+        "form": {
+          "username": {
+            "label": "Nombre de usuario",
+            "placeholder": "Nombre de usuario",
+            "description": "Nombre de usuario único para el auditor"
+          },
+          "name": {
+            "label": "Nombre completo",
+            "placeholder": "Nombre completo",
+            "description": "Nombre completo del auditor"
+          },
+          "email": {
+            "label": "Correo electrónico",
+            "placeholder": "Correo electrónico",
+            "description": "Correo profesional"
+          },
+          "password": {
+            "label": "Contraseña",
+            "placeholder": "Contraseña",
+            "description": "Mínimo 6 caracteres"
+          },
+          "language": {
+            "label": "Idioma preferido",
+            "description": "Idioma predeterminado para la interfaz de usuario",
+            "options": {
+              "english": "Inglés",
+              "spanish": "Español",
+              "french": "Francés"
+            }
+          },
+          "submit": {
+            "label": "Crear Auditor Externo",
+            "loading": "Creando..."
+          }
+        },
+        "alerts": {
+          "error": {
+            "title": "Error",
+            "description": "No se pudo crear el auditor externo"
+          },
+          "success": {
+            "title": "Éxito",
+            "description": "Auditor externo creado exitosamente"
+          }
+        },
+        "toast": {
+          "success": "Auditor externo creado exitosamente",
+          "error": "No se pudo crear el auditor externo"
+        }
+      }
+    }
   }
 }

@@ -49,8 +49,7 @@ const NormativesSidebar = forwardRef<NormativesSidebarRef, NormativesSidebarProp
   // Lógica para obtener los términos de Obligatoriedad
   const fetchCompulsoriness = async () => {
     try {
-      const isSpanish = user?.language === "es";
-      const res = await fetch(`${environment.API_URL}/rulesets/api/ListCompulsoriness${isSpanish ? "/es" : ""}`, {
+      const res = await fetch(`${environment.API_URL}/rulesets/api/ListCompulsoriness`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -74,9 +73,7 @@ const NormativesSidebar = forwardRef<NormativesSidebarRef, NormativesSidebarProp
     }
 
     try {
-      // Añadir un parámetro timestamp para evitar caché
-      const timestamp = new Date().getTime();
-      const res = await fetch(`${environment.API_URL}/rulesets/api/findbyid/${rulesetId}?t=${timestamp}`, {
+      const res = await fetch(`${environment.API_URL}/rulesets/api/findbyid/${rulesetId}`, {
         method: "GET",
         headers: {
           "Authorization": localStorage.getItem("token") || "",
