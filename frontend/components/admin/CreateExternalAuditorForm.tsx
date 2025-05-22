@@ -8,13 +8,10 @@ import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { FormInputField, FormSelectField } from "@/components/ui/form-fields"
 import toast from "react-hot-toast"
-import { useAuth } from "@/lib/AuthContext"
 import { useLanguage } from "@/lib/LanguageContext"
-import { User } from "@/types/User"
-import { Check  } from "lucide-react"
+import { Check } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { environment } from "@/env/environment.dev"
-import { createUser } from "@/lib/utils"
 
 // Form schema with validation
 const formSchema = z.object({
@@ -39,7 +36,6 @@ type FormValues = z.infer<typeof formSchema>;
 
 export function CreateExternalAuditorForm() {
     // TODO no sé si se usa acá el token más adelante!
-    const { token } = useAuth()
     const { t } = useLanguage()
     const [success, setSuccess] = useState(false)
 
@@ -60,37 +56,48 @@ export function CreateExternalAuditorForm() {
         try {
             setSuccess(false)
 
-            // Create user object with ExternalAuditor role
-            const user: User = {
+            // Construir el objeto de registro igual que RegisterForm
+            const userRegister = {
                 ...values,
-                _id: null,
-                businessId: environment.ACMEBUSINESS, //s ! 
                 role: "ExternalAuditor",
+                securityQuestion: {
+                    securityQuestion: "What is your favorite color?",
+                    securityAnswer: "blue"
+                }
+            };
+
+            // Enviar como FormData al endpoint de RegisterForm
+            const formData = new FormData();
+            formData.append('incomingString', JSON.stringify(userRegister));
+            const response = await fetch(`${environment.API_URL}/security/api/signup`, {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok) {
+                setSuccess(true);
+                form.reset();
+                toast.success(t("admin.createUser.toast.success"));
+            } else {
+                const errorText = await response.text();
+                console.error(errorText);
+                toast.error(t("admin.createUser.toast.error"));
             }
-
-            // Register the user using the hook
-            await createUser(user)
-
-            // Show success message and reset form
-            setSuccess(true)
-            form.reset()
-
-            toast.success(t("admin.createUser.toast.success"))
         } catch (err) {
-            console.error("Error creating external auditor:", err)
-            toast.error(t("admin.createUser.toast.error"))
+            console.error("Error creating external auditor:", err);
+            toast.error(t("admin.createUser.toast.error"));
         }
     }
 
     // Create language options for the select field
     const languageOptions = [
-        { value: "en", label: t("admin.createUser.form.language.options.english", "English") },
-        { value: "es", label: t("admin.createUser.form.language.options.spanish", "Spanish") },
+        { value: "en", label: t("admin.createUser.form.language.options.english") },
+        { value: "es", label: t("admin.createUser.form.language.options.spanish") },
     ]
 
     return (
         <Form {...form}>
-           
+
 
             {success && (
                 <Alert className="mb-6 bg-green-50 text-green-800 border-green-200">
@@ -105,17 +112,17 @@ export function CreateExternalAuditorForm() {
                     <FormInputField
                         form={form}
                         name="username"
-                        label={t("admin.createUser.form.username.label", "Username")}
-                        placeholder={t("admin.createUser.form.username.placeholder", "Username")}
-                        description={t("admin.createUser.form.username.description", "Unique username for the auditor")}
+                        label={t("admin.createUser.form.username.label")}
+                        placeholder={t("admin.createUser.form.username.placeholder")}
+                        description={t("admin.createUser.form.username.description")}
                     />
 
                     <FormInputField
                         form={form}
                         name="name"
-                        label={t("admin.createUser.form.name.label", "Full Name")}
-                        placeholder={t("admin.createUser.form.name.placeholder", "Full name")}
-                        description={t("admin.createUser.form.name.description", "The auditor's full name")}
+                        label={t("admin.createUser.form.name.label")}
+                        placeholder={t("admin.createUser.form.name.placeholder")}
+                        description={t("admin.createUser.form.name.description")}
                     />
                 </div>
 
@@ -124,26 +131,26 @@ export function CreateExternalAuditorForm() {
                         form={form}
                         name="email"
                         type="email"
-                        label={t("admin.createUser.form.email.label", "Email")}
-                        placeholder={t("admin.createUser.form.email.placeholder", "Email address")}
-                        description={t("admin.createUser.form.email.description", "Professional email address")}
+                        label={t("admin.createUser.form.email.label")}
+                        placeholder={t("admin.createUser.form.email.placeholder")}
+                        description={t("admin.createUser.form.email.description")}
                     />
 
                     <FormInputField
                         form={form}
                         name="password"
                         type="password"
-                        label={t("admin.createUser.form.password.label", "Password")}
-                        placeholder={t("admin.createUser.form.password.placeholder", "Password")}
-                        description={t("admin.createUser.form.password.description", "Minimum 6 characters")}
+                        label={t("admin.createUser.form.password.label")}
+                        placeholder={t("admin.createUser.form.password.placeholder")}
+                        description={t("admin.createUser.form.password.description")}
                     />
                 </div>
 
                 <FormSelectField
                     form={form}
                     name="language"
-                    label={t("admin.createUser.form.language.label", "Preferred Language")}
-                    description={t("admin.createUser.form.language.description", "Default language for the user interface")}
+                    label={t("admin.createUser.form.language.label")}
+                    description={t("admin.createUser.form.language.description")}
                     options={languageOptions}
                 />
 
@@ -152,7 +159,7 @@ export function CreateExternalAuditorForm() {
                         type="submit"
                         className="w-full bg-secondary-color hover:bg-primary-color text-white transition-all duration-300 shadow-md hover:shadow-lg"
                     >
-                        {t("admin.createUser.form.submit.label", "Create External Auditor")}
+                        {t("admin.createUser.form.submit.label")}
                     </Button>
                 </div>
             </form>

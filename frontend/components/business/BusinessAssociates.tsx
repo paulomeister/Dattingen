@@ -11,6 +11,7 @@ import { Associate as BusinessAssociateType } from "@/types/Business";
 import Link from "next/link";
 import { useApiClient } from "@/hooks/useApiClient";
 import React from "react";
+import { Yesteryear } from "next/font/google";
 
 type MixedAssociate = BusinessAssociateType | AssociateType;
 
@@ -27,7 +28,7 @@ export default function BusinessAssociates({ associates, businessId }: BusinessA
   const [localAssociates, setLocalAssociates] = React.useState<MixedAssociate[]>(associates);
 
   // Solo admins y coordinadores pueden añadir auditores
-  const canAddAuditors = user?.role === 'admin' || user?.role === 'Coordinator';  // Función para obtener el ID de un asociado sin importar su tipo
+  const canAddAuditors = user?.role === 'admin' || user?.role === 'Coordinator' && user.businessId === businessId;  // Función para obtener el ID de un asociado sin importar su tipo
   const getAssociateId = (associate: MixedAssociate): string => {
     return associate._id;
   };
@@ -71,7 +72,7 @@ export default function BusinessAssociates({ associates, businessId }: BusinessA
             className="flex items-center gap-1 px-3 py-1.5 bg-primary-color hover:bg-secondary-color text-white rounded-md transition-colors text-sm font-medium"
           >
             <PlusIcon size={16} />
-            <span>Añadir Auditores</span>
+            <span>+ 👤</span>
           </Link>
         )}
       </div>
