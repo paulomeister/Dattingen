@@ -62,8 +62,8 @@ public class SecurityConfiguration {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf((csrf) -> csrf.disable())
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(new LoggingSecurityFilter(), CustomUsernameAndPasswordAuthenticationFilter.class)
                 .addFilter(new CustomUsernameAndPasswordAuthenticationFilter(authenticationManager, jwtConfigurationVariables, secretKey))
-                .addFilterAfter(new LoggingSecurityFilter(), CustomUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeHttpRequests((authz) -> authz
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest()
