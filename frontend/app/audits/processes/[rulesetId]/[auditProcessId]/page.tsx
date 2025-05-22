@@ -229,6 +229,17 @@ export default function AuditDetailPage() {
                 <span className="text-xs">
                   {'End'}: {audit.endDate.toLocaleDateString()}
                 </span>
+                {/* Mostrar auditores internos y externos asignados */}
+                {currentProcess && currentProcess?.assignedIntAuditors?.length > 0 && (
+                  <span className="text-xs font-semibold text-gray-700">
+                    {t('audits.processList.internalAuditors', 'Internal Auditors')}: {currentProcess.assignedIntAuditors.map(aud => aud.name).join(', ')}
+                  </span>
+                )}
+                {currentProcess && currentProcess?.assignedExtAuditors?.length > 0 && (
+                  <span className="text-xs font-semibold text-gray-700">
+                    {t('audits.processList.externalAuditors', 'External Auditors')}: {currentProcess.assignedExtAuditors.map(aud => aud.name).join(', ')}
+                  </span>
+                )}
               </div>
               {/* Switch solo visible para ExternalAuditor */}
               {user?.role === "ExternalAuditor" && (

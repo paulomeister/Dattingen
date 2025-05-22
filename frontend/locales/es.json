@@ -325,7 +325,9 @@
     "processList": {
       "title": "Procesos de Auditoría",
       "empty": "No se encontraron procesos de auditoría no evaluados.",
-      "assessments": "evaluaciones"
+      "assessments": "evaluaciones",
+      "internalAuditors": "Auditores Internos",
+      "externalAuditors": "Auditores Externos"
     },
     "create": {
       "title": "Crear Nueva Auditoría",

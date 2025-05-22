@@ -206,7 +206,9 @@
   "processList": {
     "title": "Audit Processes",
     "empty": "No Non Evaluated Audit Processes found.",
-    "assessments": "assessments"
+    "assessments": "assessments",
+    "internalAuditors": "Internal Auditors",
+    "externalAuditors": "External Auditors"
   },
   "create": {
     "title": "Create New Audit",
