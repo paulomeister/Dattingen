@@ -2,6 +2,7 @@ package com.dirac.securityservice.Security;
 
 import com.dirac.securityservice.Security.JWT.CustomUsernameAndPasswordAuthenticationFilter;
 import com.dirac.securityservice.Security.JWT.JwtConfigurationVariables;
+import com.dirac.securityservice.Security.Logging.LoggingSecurityFilter;
 import com.dirac.securityservice.Service.UsersRetrievalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -62,6 +63,7 @@ public class SecurityConfiguration {
                 .csrf((csrf) -> csrf.disable())
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilter(new CustomUsernameAndPasswordAuthenticationFilter(authenticationManager, jwtConfigurationVariables, secretKey))
+                .addFilterAfter(new LoggingSecurityFilter(), CustomUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeHttpRequests((authz) -> authz
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest()
