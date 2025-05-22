@@ -8,13 +8,10 @@ import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { FormInputField, FormSelectField } from "@/components/ui/form-fields"
 import toast from "react-hot-toast"
-import { useAuth } from "@/lib/AuthContext"
 import { useLanguage } from "@/lib/LanguageContext"
-import { User } from "@/types/User"
-import { Check  } from "lucide-react"
+import { Check } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { environment } from "@/env/environment.dev"
-import { createUser } from "@/lib/utils"
 
 // Form schema with validation
 const formSchema = z.object({
@@ -39,7 +36,6 @@ type FormValues = z.infer<typeof formSchema>;
 
 export function CreateExternalAuditorForm() {
     // TODO no sé si se usa acá el token más adelante!
-    const { token } = useAuth()
     const { t } = useLanguage()
     const [success, setSuccess] = useState(false)
 
@@ -60,25 +56,36 @@ export function CreateExternalAuditorForm() {
         try {
             setSuccess(false)
 
-            // Create user object with ExternalAuditor role
-            const user: User = {
+            // Construir el objeto de registro igual que RegisterForm
+            const userRegister = {
                 ...values,
-                _id: null,
-                businessId: environment.ACMEBUSINESS, //s ! 
                 role: "ExternalAuditor",
+                securityQuestion: {
+                    securityQuestion: "What is your favorite color?",
+                    securityAnswer: "blue"
+                }
+            };
+
+            // Enviar como FormData al endpoint de RegisterForm
+            const formData = new FormData();
+            formData.append('incomingString', JSON.stringify(userRegister));
+            const response = await fetch(`${environment.API_URL}/security/api/signup`, {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok) {
+                setSuccess(true);
+                form.reset();
+                toast.success(t("admin.createUser.toast.success"));
+            } else {
+                const errorText = await response.text();
+                console.error(errorText);
+                toast.error(t("admin.createUser.toast.error"));
             }
-
-            // Register the user using the hook
-            await createUser(user)
-
-            // Show success message and reset form
-            setSuccess(true)
-            form.reset()
-
-            toast.success(t("admin.createUser.toast.success"))
         } catch (err) {
-            console.error("Error creating external auditor:", err)
-            toast.error(t("admin.createUser.toast.error"))
+            console.error("Error creating external auditor:", err);
+            toast.error(t("admin.createUser.toast.error"));
         }
     }
 
@@ -90,7 +97,7 @@ export function CreateExternalAuditorForm() {
 
     return (
         <Form {...form}>
-           
+
 
             {success && (
                 <Alert className="mb-6 bg-green-50 text-green-800 border-green-200">

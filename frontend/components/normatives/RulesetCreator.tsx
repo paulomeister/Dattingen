@@ -147,6 +147,8 @@ const RulesetCreator = ({ rulesetId, onUpdateSuccess }: RulesetCreatorProps) => 
                 controls: controls
             };
 
+            console.log("Updated Ruleset:", updatedRuleset);
+
             const response = await fetch(
                 `${environment.API_URL}/rulesets/api/update/${rulesetId}`,
                 {

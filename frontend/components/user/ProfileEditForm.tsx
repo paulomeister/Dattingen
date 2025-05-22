@@ -95,9 +95,9 @@ const ProfileEditForm = ({ user }: ProfileEditFormProps) => {
               <FormItem>
                 <FormLabel className="text-sm font-medium">Name</FormLabel>
                 <FormControl>
-                  <Input 
-                    placeholder="Your name" 
-                    {...field} 
+                  <Input
+                    placeholder="Your name"
+                    {...field}
                     className="shadow-sm focus:ring-2 focus:ring-primary-color/30"
                   />
                 </FormControl>
@@ -128,8 +128,8 @@ const ProfileEditForm = ({ user }: ProfileEditFormProps) => {
             )}
           />
 
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             className="w-full bg-primary-color hover:bg-primary-color/90 text-white py-2 rounded-md shadow-md hover:shadow-lg transition-all"
             disabled={isSubmitting}
           >

@@ -42,15 +42,19 @@ const InternalAuditorSelector = ({ onSelect, selectedAuditors: initialSelectedAu
                     throw new Error(`Error: ${response.status}`);
                 }
                 const data = await response.json();
+
+                console.log('Fetched auditors:', data);
+
                 let auditorsList: UserDTO[] = [];
+
+
+
+
                 if (data.status === 200 && Array.isArray(data.data)) {
                     // 3. Filtrar los que NO estén en business.associates y que tengan businessId === null
-                    const validAssociateIds = currentAssociateIds.filter((id): id is string => typeof id === "string");
                     auditorsList = data.data.filter(
                         (aud: UserDTO) =>
-                            typeof aud._id === "string" &&
-                            !validAssociateIds.includes(aud._id) &&
-                            aud.businessId === null // <-- Solo los que no tienen businessId asignado
+                            aud.businessId === null || aud.businessId.trim() === ""// <-- Solo los que no tienen businessId asignado
                     );
                 }
                 setAuditors(auditorsList);
